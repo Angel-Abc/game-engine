@@ -1,20 +1,28 @@
-import { defineConfig } from 'vite'
+import { defineConfig, normalizePath } from 'vite'
 import react from '@vitejs/plugin-react'
 import { fileURLToPath, URL } from 'node:url'
+import path from 'node:path'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 // https://vite.dev/config/
+const marketValueDataDir = fileURLToPath(new URL('../market-value/data', import.meta.url))
+
 export default defineConfig({
   plugins: [
     react(),
     viteStaticCopy({
       targets: [
         {
-          src: 'data/**/*',
-          dest: '.',
+          src: normalizePath(path.join(marketValueDataDir, '**/*')),
+          dest: 'data',
+          rename: (_name, _ext, fullPath) => {
+            const rel = normalizePath(path.relative(marketValueDataDir, fullPath))
+            return rel
+          },
         },
       ],
-      structured: true,
+      structured: false,
+      silent: true,
     }),
   ],
   resolve: {

@@ -7,15 +7,18 @@ export const LogLevel = {
 
 export type LogLevel = typeof LogLevel[keyof typeof LogLevel]
 
-function formatMessageForConsole(message: string, ...args: any[]): { formattedMessage: string; extraArgs: any[] } {
+function formatMessageForConsole(
+    message: string,
+    ...args: unknown[]
+): { formattedMessage: string; extraArgs: unknown[] } {
     // This array will hold any arguments that should be passed separately to the console.
-    const extraArgs: any[] = [];
+    const extraArgs: unknown[] = [];
     
     // Replace placeholders in the message with either their string value or with a console format specifier.
     // We use a regex to find all placeholders like {0}, {1}, etc.
-    const formattedMessage = message.replace(/\{(\d+)\}/g, (_, indexStr) => {
+    const formattedMessage = message.replace(/\{(\d+)\}/g, (_: string, indexStr: string) => {
         const index = parseInt(indexStr, 10);
-        const arg = args[index];
+        const arg: unknown = args[index];
 
         // If the argument is an object (or not a primitive), use '%o' as the placeholder
         // and push the object into extraArgs to be passed to the console.
@@ -31,7 +34,11 @@ function formatMessageForConsole(message: string, ...args: any[]): { formattedMe
     return { formattedMessage, extraArgs };
 }
 
-export function logMessage(logLevel: LogLevel, message: string, ...args: any[]): string {
+export function logMessage(
+    logLevel: LogLevel,
+    message: string,
+    ...args: unknown[]
+): string {
     // Prepare the message and extra arguments for console logging.
     const { formattedMessage, extraArgs } = formatMessageForConsole(message, ...args);
     
@@ -57,18 +64,18 @@ export function logMessage(logLevel: LogLevel, message: string, ...args: any[]):
     return formattedMessage;
 }
 
-export function logDebug(message: string, ...args: any[]): string {
+export function logDebug(message: string, ...args: unknown[]): string {
     return logMessage(LogLevel.debug, message, ...args)
 }
 
-export function logInfo(message: string, ...args: any[]): string {
+export function logInfo(message: string, ...args: unknown[]): string {
     return logMessage(LogLevel.info, message, ...args)
 }
 
-export function logWarning(message: string, ...args: any[]): string {
+export function logWarning(message: string, ...args: unknown[]): string {
     return logMessage(LogLevel.warning, message, ...args)
 }
 
-export function fatalError(message: string, ...args: any[]): never {
+export function fatalError(message: string, ...args: unknown[]): never {
     throw new Error(logMessage(LogLevel.error, message, ...args))
 }

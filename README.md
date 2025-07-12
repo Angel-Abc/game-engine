@@ -13,3 +13,10 @@ Run `npm install` or `npm ci` before using `npm run lint` or `npm run build`. Th
 - `npm run lint` – run ESLint
 - `npm run preview` – serve the production build locally
 
+## Path Aliases
+
+You can import utility modules and shared types using the configured aliases:
+
+- `@utility/*` → `src/utility/*`
+- `@types/*` → `src/types/*`
+

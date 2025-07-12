@@ -23,3 +23,13 @@ Logs a formatted message to the console using the specified log level. Utility
 wrappers `logDebug`, `logInfo`, `logWarning` and `fatalError` are also provided
 for convenience.
 
+## `TrackedValue`
+
+```ts
+class TrackedValue<T>
+```
+
+Maintains an observable value. Use the `value` getter/setter to read or update
+the stored value. Call `subscribe(callback)` to be notified whenever the value
+changes. A cleanup function is returned to remove the subscription.
+

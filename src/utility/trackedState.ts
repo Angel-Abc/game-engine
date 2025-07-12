@@ -1,4 +1,4 @@
-import type { CleanUp } from '@types/utility'
+import type { CleanUp } from '../types/utility.ts'
 import { logDebug } from '@utility/logMessage.ts'
 
 export type TrackValueSubscriber = () => void

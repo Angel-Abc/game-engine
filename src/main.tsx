@@ -4,7 +4,7 @@ import './index.css'
 import App from './App.tsx'
 import { logDebug } from '@utility/logMessage.ts'
 import { loadJsonResource } from '@utility/loadJsonResource.ts'
-import { gameSchema, type Game } from './data/game.ts'
+import { gameSchema, type Game } from '@data/game'
 
 logDebug('Application starting...')
 

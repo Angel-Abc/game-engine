@@ -1,5 +1,5 @@
 import { ZodType } from 'zod'
-import { logDebug } from '@utility/logMessage.ts'
+import { logDebug } from '@utility/logMessage'
 
 export async function loadJsonResource<T>(url: string, schema: ZodType<T>): Promise<T> {
   logDebug('Fetching JSON resource from {0}', url)

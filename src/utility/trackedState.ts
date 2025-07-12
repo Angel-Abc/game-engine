@@ -1,5 +1,5 @@
 
-import { logDebug } from '@utility/logMessage.ts'
+import { logDebug } from '@utility/logMessage'
 
 export type CleanUp = () => void
 

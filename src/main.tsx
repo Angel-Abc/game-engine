@@ -4,11 +4,11 @@ import './index.css'
 import App from './App.tsx'
 import { logDebug } from '@utility/logMessage.ts'
 import { loadJsonResource } from '@utility/loadJsonResource.ts'
-import { gameSchema, type Game } from '@types/data/game.ts'
+import { gameSchema, type Game } from './data/game.ts'
 
 logDebug('Application starting...')
 
-const game: Game = await loadJsonResource<Game>('./game.json', gameSchema)
+const game: Game = await loadJsonResource<Game>('/data/game.json', gameSchema)
 logDebug('Game loaded: {0}', game)
 
 createRoot(document.getElementById('root')!).render(

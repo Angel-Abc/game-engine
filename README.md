@@ -18,5 +18,4 @@ Run `npm install` or `npm ci` before using `npm run lint` or `npm run build`. Th
 You can import utility modules and shared types using the configured aliases:
 
 - `@utility/*` → `src/utility/*`
-- `@types/*` → `src/types/*`
 

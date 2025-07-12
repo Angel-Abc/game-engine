@@ -15,7 +15,7 @@ validation does not succeed.
 
 ## `logMessage`
 
-```
+```ts
 logMessage(level: LogLevel, message: string, ...args: unknown[]): string
 ```
 

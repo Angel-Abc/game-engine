@@ -24,7 +24,8 @@
     "noUncheckedSideEffectImports": true,
     "baseUrl": ".",
     "paths": {
-      "@utility/*": ["src/utility/*"]
+      "@utility/*": ["src/utility/*"],
+      "@data/*": ["src/data/*"]
     }
   },
   "include": ["src"]

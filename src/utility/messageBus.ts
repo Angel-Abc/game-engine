@@ -25,7 +25,7 @@ export class MessageBus implements IMessageBus {
         this.queue.push(message)
         logDebug('EmptyQueueAfterPost: {0}', this.emptyQueueAfterPost)
         if (this.emptyQueueAfterPost === 0) {
-            this.EmptyQueue()
+            this.emptyQueue()
         }
     }
 
@@ -35,7 +35,7 @@ export class MessageBus implements IMessageBus {
 
     public enableEmptyQueueAfterPost(): void {
         this.emptyQueueAfterPost = Math.max(0, this.emptyQueueAfterPost - 1)
-        this.EmptyQueue()
+        this.emptyQueue()
     }
 
     public registerMessageListener(message: string, handler: (message: Message) => void): CleanUp {
@@ -69,7 +69,7 @@ export class MessageBus implements IMessageBus {
         listeners.forEach(listener => listener.handler(message))
     }
 
-    public EmptyQueue(): void {
+    public emptyQueue(): void {
         if (this.emptyingQueue || this.queue.length === 0) return
         this.emptyingQueue = true
         try {

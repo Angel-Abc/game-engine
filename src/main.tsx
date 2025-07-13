@@ -5,11 +5,13 @@ import { logDebug } from '@utility/logMessage.ts'
 import { loadJsonResource } from '@utility/loadJsonResource.ts'
 import { gameSchema, type Game } from '@data/load/game'
 import App from '@app/game.tsx'
+import { GameEngine } from './engine/gameEngine'
 
 logDebug('Application starting...')
 
 const game: Game = await loadJsonResource<Game>('/data/game.json', gameSchema)
 logDebug('Game loaded: {0}', game)
+const gameEngine = new GameEngine(game)
 
 const root = createRoot(document.body)
 root.render(
@@ -18,3 +20,4 @@ root.render(
   </StrictMode>,
 )
 
+gameEngine.start()

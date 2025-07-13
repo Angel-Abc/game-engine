@@ -16,10 +16,11 @@ Run `npm install` or `npm ci` before using `npm run lint` or `npm run build`. Th
 
 ## Path Aliases
 
-You can import utility modules and shared types using the configured aliases:
+You can import modules using the configured aliases:
 
 - `@utility/*` → `src/utility/*`
 - `@data/*` → `src/data/*`
+- `@app/*` → `src/app/*`
 
 ## Testing
 

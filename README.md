@@ -12,6 +12,7 @@ Run `npm install` or `npm ci` before using `npm run lint` or `npm run build`. Th
 - `npm run build` – create a production build
 - `npm run lint` – run ESLint
 - `npm run preview` – serve the production build locally
+- `npm run test` – run Vitest unit tests
 
 ## Path Aliases
 
@@ -19,4 +20,12 @@ You can import utility modules and shared types using the configured aliases:
 
 - `@utility/*` → `src/utility/*`
 - `@data/*` → `src/data/*`
+
+## Testing
+
+Run unit tests with [Vitest](https://vitest.dev/):
+
+```bash
+npm run test
+```
 

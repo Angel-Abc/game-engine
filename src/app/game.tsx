@@ -1,4 +1,4 @@
-interface GameProps {}
+type GameProps = Record<string, never>
 
 const Game: React.FC<GameProps> = (): React.JSX.Element => {
     return (

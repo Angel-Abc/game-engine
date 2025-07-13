@@ -6,7 +6,7 @@ vi.mock('@utility/logMessage', () => ({
 }))
 
 import { MessageBus } from '@utility/messageBus'
-import { logWarning } from '@utility/logMessage'
+import { logWarning, logDebug } from '@utility/logMessage'
 
 afterEach(() => {
   vi.restoreAllMocks()
@@ -34,6 +34,19 @@ describe('MessageBus', () => {
     bus.postMessage(msg)
 
     expect(logWarning).toHaveBeenCalled()
+    expect(onEmpty).toHaveBeenCalled()
+  })
+
+  it('logs debug instead of warning for notification messages', () => {
+    const onEmpty = vi.fn()
+    const bus = new MessageBus(onEmpty)
+    bus.registerNotificationMessage('notify')
+
+    const msg = { message: 'notify', payload: 'bar' }
+    bus.postMessage(msg)
+
+    expect(logDebug).toHaveBeenCalled()
+    expect(logWarning).not.toHaveBeenCalled()
     expect(onEmpty).toHaveBeenCalled()
   })
 

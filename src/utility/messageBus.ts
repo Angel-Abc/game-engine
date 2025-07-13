@@ -11,6 +11,7 @@ export class MessageBus implements IMessageBus {
     private key: number = 0
     private queue: Message[] = []
     private listeners: Map<string, MessageListener[]> = new Map<string, MessageListener[]>()
+    private silentMessages: Set<string> = new Set<string>()
     private emptyingQueue: boolean = false
     private emptyQueueAfterPost: number = 0
     private onQueueEmpty: () => void
@@ -38,6 +39,10 @@ export class MessageBus implements IMessageBus {
         this.emptyQueue()
     }
 
+    public registerNotificationMessage(message: string): void {
+        this.silentMessages.add(message)
+    }
+
     public registerMessageListener(message: string, handler: (message: Message) => void): CleanUp {
         if (!this.listeners.has(message)) {
             this.listeners.set(message, [])
@@ -62,8 +67,9 @@ export class MessageBus implements IMessageBus {
         const message = this.queue.shift()
         if (!message) return
         const listeners = this.listeners.get(message.message)
-        if (!listeners) {
-            logWarning('No message listener for message: {0}', message)
+        if (!listeners || listeners.length === 0) {
+            const logger = this.silentMessages.has(message.message) ? logDebug : logWarning
+            logger('No message listener for message: {0}', message)
             return
         }
         listeners.forEach(listener => listener.handler(message))

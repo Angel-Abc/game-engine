@@ -33,7 +33,9 @@ A simple publish/subscribe message queue. Register listeners for specific
 message strings using `registerMessageListener()`. Posted messages are routed to
 matching listeners in the order they were enqueued. Queue processing can be
 temporarily paused with `disableEmptyQueueAfterPost()` and resumed with
-`enableEmptyQueueAfterPost()`.
+`enableEmptyQueueAfterPost()`. Messages that are purely informational can be
+registered with `registerNotificationMessage()` to avoid warnings when no
+listener is present.
 
 ## `TrackedValue`
 
@@ -56,6 +58,7 @@ type LogLevel = typeof LogLevel[keyof typeof LogLevel]
 interface IMessageBus {
   postMessage(message: Message): void
   registerMessageListener(message: string, handler: (message: Message) => void): CleanUp
+  registerNotificationMessage(message: string): void
 }
 
 type Message = {

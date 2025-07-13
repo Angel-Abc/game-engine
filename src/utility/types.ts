@@ -10,7 +10,7 @@ export type CleanUp = () => void
 
 export type Message = {
     message: string
-    payload: any
+    payload: string | Record<string, unknown>
 }
 
 export interface IMessageBus {

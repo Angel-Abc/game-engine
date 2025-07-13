@@ -1,7 +1,6 @@
 
 import { logDebug } from '@utility/logMessage'
-
-export type CleanUp = () => void
+import { type CleanUp } from './types'
 
 export type TrackValueSubscriber = () => void
 export type OnValueChangedCallback<T> = (newValue: T, oldValue: T) => void

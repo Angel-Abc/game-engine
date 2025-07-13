@@ -1,4 +1,5 @@
-import { logMessage, LogLevel } from '@utility/logMessage'
+import { logMessage } from '@utility/logMessage'
+import { LogLevel } from '@utility/types'
 import { describe, it, expect, vi, afterEach } from 'vitest'
 
 // ensure console methods are restored after each test

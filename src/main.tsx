@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import { logDebug } from '@utility/logMessage.ts'
 import { loadJsonResource } from '@utility/loadJsonResource.ts'
-import { gameSchema, type Game } from '@data/game/game'
+import { gameSchema, type Game } from '@data/load/game'
 import App from './app/game.tsx'
 
 logDebug('Application starting...')

@@ -26,7 +26,8 @@
     "paths": {
       "@utility/*": ["src/utility/*"],
       "@data/*": ["src/data/*"],
-      "@app/*": ["src/app/*"]
+      "@app/*": ["src/app/*"],
+      "@loader/*": ["src/loader/*"]
     }
   },
   "include": ["src"]

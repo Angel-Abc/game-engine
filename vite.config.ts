@@ -33,6 +33,7 @@ export default defineConfig(({ mode }) => {
         '@utility': fileURLToPath(new URL('./src/utility', import.meta.url)),
         '@data': fileURLToPath(new URL('./src/data', import.meta.url)),
         '@app': fileURLToPath(new URL('./src/app', import.meta.url)),
+        '@loader': fileURLToPath(new URL('./src/loader', import.meta.url)),
       },
     },
   }

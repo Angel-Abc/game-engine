@@ -2,14 +2,14 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import { logDebug } from '@utility/logMessage.ts'
-import { loadJsonResource } from '@utility/loadJsonResource.ts'
-import { gameSchema, type Game } from '@data/load/game'
+import { loadGameData } from '@loader/index'
+import type { GameData } from '@data/game/game'
 import App from '@app/game.tsx'
 import { GameEngine } from './engine/gameEngine'
 
 logDebug('Application starting...')
 
-const game: Game = await loadJsonResource<Game>('/data/game.json', gameSchema)
+const game: GameData = await loadGameData()
 logDebug('Game loaded: {0}', game)
 const gameEngine = new GameEngine(game)
 

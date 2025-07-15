@@ -1,0 +1,21 @@
+{
+    "type": "component",
+    "description": "The game menu.",
+    "data": {
+        "type": "game-menu",
+        "buttons": [
+            {
+                "label": "Start Game",
+                "action": "start-game"
+            },
+            {
+                "label": "Settings",
+                "action": "open-settings"
+            },
+            {
+                "label": "Exit",
+                "action": "exit-game"
+            }
+        ]
+    }
+}

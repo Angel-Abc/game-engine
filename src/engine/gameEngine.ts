@@ -1,4 +1,4 @@
-import type { Game } from '@data/load/game'
+import type { GameData } from '@data/game/game'
 import { GameEngineState, type IGameEngine } from './type'
 import { fatalError, logDebug, logInfo } from '@utility/logMessage'
 import { TrackedValue, type ITrackedValue } from '@utility/trackedState'
@@ -19,10 +19,10 @@ function setGameEngine(engine: GameEngine): void {
 }
 
 export class GameEngine implements IGameEngine {
-    private game: Game
+    private game: GameData
     private _state: ITrackedValue<GameEngineState>
 
-    constructor(game: Game) {
+    constructor(game: GameData) {
         this.game = game
         logInfo('Game engine initialized with game: {0}', this.game.title)
         this._state = new TrackedValue<GameEngineState>(

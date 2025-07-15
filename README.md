@@ -6,6 +6,12 @@ This project uses [Vite](https://vitejs.dev/) with React and TypeScript. Hot mod
 
 Run `npm install` or `npm ci` before using `npm run lint` or `npm run build`. These commands need the `node_modules` folder generated from `package-lock.json`.
 
+The development server loads game data from the folder defined by the `GAME_DIR`
+environment variable. A default `.env` file is provided pointing to the included
+`sample-game` directory, so `npm run dev` works out of the box. To use a different
+game located elsewhere on your machine, create an `.env.local` file and set
+`GAME_DIR` to the desired path.
+
 ## Available Scripts
 
 - `npm run dev` – start the development server

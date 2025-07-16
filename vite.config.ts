@@ -9,6 +9,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   const gameDir = env.GAME_DIR || 'sample-game'
   const gameDataDir = fileURLToPath(new URL(gameDir, import.meta.url))
+  const resourcesDir = fileURLToPath(new URL('./src/resources', import.meta.url))
 
   return {
     plugins: [
@@ -23,6 +24,14 @@ export default defineConfig(({ mode }) => {
               return rel
             },
           },
+          {
+            src: normalizePath(path.join(resourcesDir, '**/*')),
+            dest: 'resources',
+            rename: (_name, _ext, fullPath) => {
+              const rel = normalizePath(path.relative(resourcesDir, fullPath))
+              return rel
+            },
+          },
         ],
         structured: false,
         silent: true,
@@ -34,6 +43,7 @@ export default defineConfig(({ mode }) => {
         '@data': fileURLToPath(new URL('./src/data', import.meta.url)),
         '@app': fileURLToPath(new URL('./src/app', import.meta.url)),
         '@loader': fileURLToPath(new URL('./src/loader', import.meta.url)),
+        '@resources': fileURLToPath(new URL('./src/resources', import.meta.url)),
       },
     },
   }

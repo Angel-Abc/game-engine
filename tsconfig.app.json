@@ -27,7 +27,8 @@
       "@utility/*": ["src/utility/*"],
       "@data/*": ["src/data/*"],
       "@app/*": ["src/app/*"],
-      "@loader/*": ["src/loader/*"]
+      "@loader/*": ["src/loader/*"],
+      "@resources/*": ["src/resources/*"]
     }
   },
   "include": ["src"]

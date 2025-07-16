@@ -27,7 +27,6 @@ export class GameEngine implements IGameEngine {
     private endingTurn: boolean = false
 
     constructor(game: GameData) {
-        const self = this
         this.messageBus = new MessageBus(() => this.handleOnQueueEmpty())
 
         this.game = game
@@ -36,7 +35,7 @@ export class GameEngine implements IGameEngine {
             'GameEngine.State',
             GameEngineState.init,
              (newValue, oldValue) => {
-                self.messageBus.postMessage({
+                this.messageBus.postMessage({
                     message: ENGINE_STATE_CHANGED_MESSAGE,
                     payload: {
                         oldState: oldValue,

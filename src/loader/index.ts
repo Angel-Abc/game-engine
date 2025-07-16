@@ -31,6 +31,8 @@ export async function loadGameData(basePath: string = BASE_PATH): Promise<GameDa
     return {
         title: gameLoad.title,
         description: gameLoad.description,
+        version: gameLoad.version,
+        startPage: gameLoad.startPage,
         modules,
         translations
     }

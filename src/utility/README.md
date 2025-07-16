@@ -25,17 +25,25 @@ for convenience.
 
 ## `MessageBus`
 
+The message bus is exposed as a set of functions operating on a shared
+queue:
+
 ```ts
-class MessageBus implements IMessageBus
+initializeMessageBus(onQueueEmpty: () => void): void
+postMessage(message: Message): void
+registerMessageListener(message: string, handler: (message: Message) => void): CleanUp
+registerNotificationMessage(message: string): void
+disableEmptyQueueAfterPost(): void
+enableEmptyQueueAfterPost(): void
+emptyQueue(): void
 ```
 
-A simple publish/subscribe message queue. Register listeners for specific
-message strings using `registerMessageListener()`. Posted messages are routed to
-matching listeners in the order they were enqueued. Queue processing can be
-temporarily paused with `disableEmptyQueueAfterPost()` and resumed with
-`enableEmptyQueueAfterPost()`. Messages that are purely informational can be
-registered with `registerNotificationMessage()` to avoid warnings when no
-listener is present.
+Register listeners for specific message strings using
+`registerMessageListener()`. Posted messages are routed to matching listeners in
+the order they were enqueued. Queue processing can be temporarily paused with
+`disableEmptyQueueAfterPost()` and resumed with `enableEmptyQueueAfterPost()`.
+Messages that are purely informational can be registered with
+`registerNotificationMessage()` to avoid warnings when no listener is present.
 
 ## `TrackedValue`
 

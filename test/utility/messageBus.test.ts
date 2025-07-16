@@ -5,7 +5,14 @@ vi.mock('@utility/logMessage', () => ({
   logWarning: vi.fn(),
 }))
 
-import { MessageBus } from '@utility/messageBus'
+import {
+  initializeMessageBus,
+  postMessage,
+  registerMessageListener,
+  registerNotificationMessage,
+  disableEmptyQueueAfterPost,
+  enableEmptyQueueAfterPost,
+} from '@utility/messageBus'
 import { logWarning, logDebug } from '@utility/logMessage'
 
 afterEach(() => {
@@ -15,12 +22,12 @@ afterEach(() => {
 describe('MessageBus', () => {
   it('delivers messages to registered listeners', () => {
     const onEmpty = vi.fn()
-    const bus = new MessageBus(onEmpty)
+    initializeMessageBus(onEmpty)
     const handler = vi.fn()
-    bus.registerMessageListener('test', handler)
+    registerMessageListener('test', handler)
 
     const msg = { message: 'test', payload: 'payload' }
-    bus.postMessage(msg)
+    postMessage(msg)
 
     expect(handler).toHaveBeenCalledWith(msg)
     expect(onEmpty).toHaveBeenCalled()
@@ -28,10 +35,10 @@ describe('MessageBus', () => {
 
   it('logs warning when no listener is registered', () => {
     const onEmpty = vi.fn()
-    const bus = new MessageBus(onEmpty)
+    initializeMessageBus(onEmpty)
 
     const msg = { message: 'missing', payload: 'foo' }
-    bus.postMessage(msg)
+    postMessage(msg)
 
     expect(logWarning).toHaveBeenCalled()
     expect(onEmpty).toHaveBeenCalled()
@@ -39,11 +46,11 @@ describe('MessageBus', () => {
 
   it('logs debug instead of warning for notification messages', () => {
     const onEmpty = vi.fn()
-    const bus = new MessageBus(onEmpty)
-    bus.registerNotificationMessage('notify')
+    initializeMessageBus(onEmpty)
+    registerNotificationMessage('notify')
 
     const msg = { message: 'notify', payload: 'bar' }
-    bus.postMessage(msg)
+    postMessage(msg)
 
     expect(logDebug).toHaveBeenCalled()
     expect(logWarning).not.toHaveBeenCalled()
@@ -52,17 +59,17 @@ describe('MessageBus', () => {
 
   it('processes queued messages when re-enabled', () => {
     const onEmpty = vi.fn()
-    const bus = new MessageBus(onEmpty)
+    initializeMessageBus(onEmpty)
     const handler = vi.fn()
-    bus.registerMessageListener('queued', handler)
+    registerMessageListener('queued', handler)
 
-    bus.disableEmptyQueueAfterPost()
-    bus.postMessage({ message: 'queued', payload: 42 })
+    disableEmptyQueueAfterPost()
+    postMessage({ message: 'queued', payload: 42 })
 
     expect(handler).not.toHaveBeenCalled()
     expect(onEmpty).not.toHaveBeenCalled()
 
-    bus.enableEmptyQueueAfterPost()
+    enableEmptyQueueAfterPost()
 
     expect(handler).toHaveBeenCalledWith({ message: 'queued', payload: 42 })
     expect(onEmpty).toHaveBeenCalled()

@@ -1,0 +1,7 @@
+[
+    {
+        "virtualInput": "VI_INVENTORY",
+        "virtualKeys": ["VK_I", "VK_SHIFT_I"],
+        "label": "I"
+    }
+]

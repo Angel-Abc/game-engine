@@ -1,0 +1,11 @@
+[
+    {
+        "virtualKey": "VK_Q",
+        "keyCode": "KeyQ"
+    },
+    {
+        "virtualKey": "VK_SHIFT_Q",
+        "keyCode": "KeyQ",
+        "shift": true
+    }
+]

@@ -1,6 +1,8 @@
 {
   "title": "Sample Game",
   "description": "A sample game for development",
+  "startPage": "pages/start",
+  "version": "1.0.0",
   "modules": [
     "pages/start",
     "components/game-menu"

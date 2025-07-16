@@ -5,15 +5,15 @@
         "type": "game-menu",
         "buttons": [
             {
-                "label": "Start Game",
+                "label": "MENU.START-GAME",
                 "action": "start-game"
             },
             {
-                "label": "Settings",
+                "label": "MENU.SETTINGS",
                 "action": "open-settings"
             },
             {
-                "label": "Exit",
+                "label": "MENU.EXIT",
                 "action": "exit-game"
             }
         ]

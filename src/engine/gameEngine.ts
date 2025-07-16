@@ -24,7 +24,7 @@ export class GameEngine implements IGameEngine {
 
     constructor(game: GameData) {
         this.game = game
-        logInfo('Game engine initialized with game: {0}', this.game.title)
+        logInfo('Game engine initialized with game: {0}', this.game)
         this._state = new TrackedValue<GameEngineState>(
             'GameEngine.State',
             GameEngineState.init,

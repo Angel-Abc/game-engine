@@ -1,0 +1,8 @@
+{
+    "name": "English",
+    "translattions": {
+        "MENU.START-GAME": "Start Game",
+        "MENU.SETTINGS": "Settings",
+        "MENU.EXIT": "Exit"
+    }
+}

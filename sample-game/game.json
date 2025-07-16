@@ -4,5 +4,8 @@
   "modules": [
     "pages/start",
     "components/game-menu"
+  ],
+  "translations": [
+    "translations"
   ]
 }

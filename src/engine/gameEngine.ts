@@ -39,6 +39,12 @@ export class GameEngine implements IGameEngine {
         logInfo('Game engine started')
     }
 
+    translate(key: string, language: string): string {
+        const lang = this.game.translations.languages[language]
+        if (!lang) return key
+        return lang.translations[key] ?? key
+    }
+
     get State(): ITrackedValue<GameEngineState> {
         return this._state
     }

@@ -1,10 +1,10 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import { logDebug } from '@utility/logMessage.ts'
+import { logDebug } from '@utility/logMessage'
 import { loadGameData } from '@loader/index'
 import type { GameData } from '@data/game/game'
-import App from '@app/game.tsx'
+import App from '@app/game'
 import { GameEngine } from './engine/gameEngine'
 
 logDebug('Application starting...')

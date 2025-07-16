@@ -3,6 +3,8 @@ import { z } from 'zod'
 export const gameSchema = z.object({
   title: z.string(),
   description: z.string(),
+  version: z.string(),
+  startPage: z.string(),
   modules: z.array(z.string()),
   translations: z.array(z.string()),
 })

@@ -7,6 +7,7 @@ export const gameSchema = z.object({
   startPage: z.string(),
   modules: z.array(z.string()),
   translations: z.array(z.string()),
+  inputs: z.array(z.string()).optional(),
 })
 
 export type Game = z.infer<typeof gameSchema>

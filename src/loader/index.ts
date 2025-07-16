@@ -3,16 +3,20 @@ import { gameSchema } from '@data/load/game'
 import { moduleSchema } from '@data/load/module'
 import { componentSchema } from '@data/load/component'
 import { translationsIndexSchema, languageDataSchema } from '@data/load/translation'
+import { VirtualKeysSchema, VirtualInputsSchema } from '@data/load/virtualInput'
 import type { GameData } from '@data/game/game'
 import type { Module } from '@data/game/module'
 import type { ComponentModule } from '@data/game/component'
 import type { PageModule, PageComponent } from '@data/game/page'
 import type { Translations, LanguageData } from '@data/game/translation'
+import type { VirtualKey, VirtualInput } from '@data/game/virtualInput'
 
 const BASE_PATH = '/data'
+const RESOURCE_PATH = '/resources'
 
 const moduleCache: Map<string, Module> = new Map()
 const translationCache: Map<string, LanguageData> = new Map()
+const virtualKeyCache: Map<string, VirtualKey> = new Map()
 
 export async function loadGameData(basePath: string = BASE_PATH): Promise<GameData> {
     const gameLoad = await loadJsonResource(`${basePath}/game.json`, gameSchema)
@@ -28,13 +32,19 @@ export async function loadGameData(basePath: string = BASE_PATH): Promise<GameDa
         Object.assign(translations.languages, data.languages)
     }
 
+    const inputPaths = gameLoad.inputs ?? []
+    const virtualKeys = await loadVirtualKeys(inputPaths, basePath)
+    const virtualInputs = await loadVirtualInputs(inputPaths, virtualKeys, basePath)
+
     return {
         title: gameLoad.title,
         description: gameLoad.description,
         version: gameLoad.version,
         startPage: gameLoad.startPage,
         modules,
-        translations
+        translations,
+        virtualKeys,
+        virtualInputs
     }
 }
 
@@ -108,5 +118,65 @@ export async function loadLanguage(lang: string, translationsPath: string, baseP
     const data = await loadJsonResource(`${basePath}/${translationsPath}/${lang}/index.json`, languageDataSchema)
     const result: LanguageData = { name: data.name, translations: { ...data.translations } }
     translationCache.set(cacheKey, result)
+    return result
+}
+
+export async function loadVirtualKeys(paths: string[], basePath: string = BASE_PATH, resourcesBase: string = RESOURCE_PATH): Promise<Record<string, VirtualKey>> {
+    const result: Record<string, VirtualKey> = {}
+
+    const mergeKeys = (keys: Array<{ virtualKey: string; keyCode: string; ctrl?: boolean; shift?: boolean; alt?: boolean }>) => {
+        keys.forEach(k => {
+            const key: VirtualKey = {
+                virtualKey: k.virtualKey,
+                keyCode: k.keyCode,
+                ctrl: k.ctrl ?? false,
+                shift: k.shift ?? false,
+                alt: k.alt ?? false,
+            }
+            result[key.virtualKey] = key
+            virtualKeyCache.set(key.virtualKey, key)
+        })
+    }
+
+    const resourceKeys = await loadJsonResource(`${resourcesBase}/input/virtual-keys.json`, VirtualKeysSchema)
+    mergeKeys(resourceKeys)
+
+    for (const p of paths) {
+        const keys = await loadJsonResource(`${basePath}/${p}/virtual-keys.json`, VirtualKeysSchema)
+        mergeKeys(keys)
+    }
+
+    return result
+}
+
+export async function loadVirtualInputs(paths: string[], virtualKeys: Record<string, VirtualKey>, basePath: string = BASE_PATH, resourcesBase: string = RESOURCE_PATH): Promise<Record<string, VirtualInput>> {
+    const result: Record<string, VirtualInput> = {}
+
+    const mergeInputs = (inputs: Array<{ virtualInput: string; virtualKeys: string[]; label: string }>) => {
+        inputs.forEach(i => {
+            const keys: VirtualKey[] = []
+            i.virtualKeys.forEach(k => {
+                const key = virtualKeys[k] || virtualKeyCache.get(k)
+                if (key) {
+                    keys.push(key)
+                }
+            })
+            result[i.virtualInput] = { virtualInput: i.virtualInput, virtualKeys: keys, label: i.label }
+        })
+    }
+
+    const resourceInputs = await loadJsonResource(`${resourcesBase}/input/virtual-inputs.json`, VirtualInputsSchema)
+    mergeInputs(resourceInputs)
+
+    for (const p of paths) {
+        let inputs
+        try {
+            inputs = await loadJsonResource(`${basePath}/${p}/virtual-inputs.json`, VirtualInputsSchema)
+        } catch {
+            inputs = await loadJsonResource(`${basePath}/${p}/virtual-input.json`, VirtualInputsSchema)
+        }
+        mergeInputs(inputs)
+    }
+
     return result
 }

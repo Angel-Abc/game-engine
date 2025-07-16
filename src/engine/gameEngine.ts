@@ -1,7 +1,9 @@
 import type { GameData } from '@data/game/game'
 import { GameEngineState, type IGameEngine } from './type'
-import { fatalError, logDebug, logInfo } from '@utility/logMessage'
+import { fatalError, logInfo } from '@utility/logMessage'
 import { TrackedValue, type ITrackedValue } from '@utility/trackedState'
+import { MessageBus } from '@utility/messageBus'
+import { END_TURN_MESSAGE, ENGINE_STATE_CHANGED_MESSAGE } from './messages'
 
 let gameEngine: GameEngine | null = null;
 export function getGameEngine(): IGameEngine {
@@ -21,18 +23,41 @@ function setGameEngine(engine: GameEngine): void {
 export class GameEngine implements IGameEngine {
     private game: GameData
     private _state: ITrackedValue<GameEngineState>
+    private messageBus: MessageBus
+    private endingTurn: boolean = false
 
     constructor(game: GameData) {
+        const self = this
+        this.messageBus = new MessageBus(() => this.handleOnQueueEmpty())
+
         this.game = game
         logInfo('Game engine initialized with game: {0}', this.game)
         this._state = new TrackedValue<GameEngineState>(
             'GameEngine.State',
             GameEngineState.init,
-            (newValue, oldValue) => {
-                logDebug('Game engine state changed from {0} to {1}', oldValue, newValue)
-            }
+             (newValue, oldValue) => {
+                self.messageBus.postMessage({
+                    message: ENGINE_STATE_CHANGED_MESSAGE,
+                    payload: {
+                        oldState: oldValue,
+                        newState: newValue
+                    }
+                })        
+             }
         )
         setGameEngine(this)
+    }
+
+    private handleOnQueueEmpty() {
+        if (this.endingTurn) {
+            this.endingTurn = false
+            return
+        }
+        this.endingTurn = true
+        this.messageBus.postMessage({
+            message: END_TURN_MESSAGE,
+            payload: null
+        })
     }
 
     start(): void {

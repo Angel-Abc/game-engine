@@ -3,7 +3,11 @@ import { logDebug } from '@utility/logMessage'
 import type { IMessageBus } from '@utility/types'
 import { VIRTUAL_INPUT_MESSAGE } from './messages'
 
-export class VirtualInputHandler {
+export interface IVirtualInputHandler {
+    cleanup(): void
+}
+
+export class VirtualInputHandler implements IVirtualInputHandler {
     private keydownEventHandler: (event: KeyboardEvent) => void
     private virtualKeys: Map<string, VirtualKey> = new Map<string, VirtualKey>()
     private virtualInputs: Map<string, VirtualInput> = new Map<string, VirtualInput>()

@@ -4,9 +4,10 @@ import { GameEngineState, type IGameEngine } from './types'
 import { fatalError, logInfo } from '@utility/logMessage'
 import { TrackedValue, type ITrackedValue } from '@utility/trackedState'
 import { MessageBus } from '@utility/messageBus'
-import { END_TURN_MESSAGE, ENGINE_STATE_CHANGED_MESSAGE } from './messages'
+import { END_TURN_MESSAGE, ENGINE_STATE_CHANGED_MESSAGE, ENGINE_SWITCH_PAGE_MESSAGE } from './messages'
 import type { IMessageBus } from '@utility/types'
 import { VirtualInputHandler, type IVirtualInputHandler } from './virtualInputHandler'
+import type { PageModule } from '@data/game/page'
 
 let gameEngine: GameEngine | null = null
 export function getGameEngine(): IGameEngine {
@@ -26,13 +27,16 @@ function setGameEngine(engine: GameEngine): void {
 export class GameEngine implements IGameEngine {
     private game: GameData
     private _state: ITrackedValue<GameEngineState>
+    private _activePage: PageModule | undefined
     private messageBus: IMessageBus
     private endingTurn: boolean = false
     private inputHandler: IVirtualInputHandler
 
     constructor(game: GameData) {
         this.messageBus = new MessageBus(() => this.handleOnQueueEmpty())
-
+        this.messageBus.registerNotificationMessage(END_TURN_MESSAGE)
+        this.messageBus.registerNotificationMessage(ENGINE_STATE_CHANGED_MESSAGE)
+        this.messageBus.registerMessageListener(ENGINE_SWITCH_PAGE_MESSAGE, (message) => this.updatePage(message.payload as string))
         this.game = game
         logInfo('Game engine initialized with game: {0}', this.game)
         this._state = new TrackedValue<GameEngineState>(
@@ -71,7 +75,7 @@ export class GameEngine implements IGameEngine {
     start(): void {
         logInfo('Game engine started')
         this.messageBus.postMessage({
-            message: ENGINE_STATE_CHANGED_MESSAGE,
+            message: ENGINE_SWITCH_PAGE_MESSAGE,
             payload: this.game.startPage
         })
     }
@@ -90,4 +94,19 @@ export class GameEngine implements IGameEngine {
         return this._state
     }
 
+    updatePage(page: string): void {
+        this._state.value = GameEngineState.loading
+        logInfo('Switching to page: {0}', page)
+        const module = this.game.modules[page] 
+        if (module.type !== 'page') {
+            fatalError(`Module ${page} is not a page module`)
+        }
+        this._activePage = module
+        this._state.value = GameEngineState.running
+    }
+
+    get ActivePage(): PageModule | undefined {
+        return this._activePage
+    }
 }
+

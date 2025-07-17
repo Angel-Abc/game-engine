@@ -1,3 +1,4 @@
+import type { PageModule } from '@data/game/page'
 import type { ITrackedValue } from '@utility/trackedState'
 
 export const GameEngineState = {
@@ -12,5 +13,6 @@ export interface IGameEngine {
     cleanup(): void
     get State(): ITrackedValue<GameEngineState>
     translate(key: string, language: string): string
+    get ActivePage(): PageModule | undefined 
 }
 

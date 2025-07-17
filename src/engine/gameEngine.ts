@@ -1,6 +1,6 @@
 import type { GameData } from '@data/game/game'
 import type { VirtualKey, VirtualInput } from '@data/game/virtualInput'
-import { GameEngineState, type IGameEngine } from './type'
+import { GameEngineState, type IGameEngine } from './types'
 import { fatalError, logInfo } from '@utility/logMessage'
 import { TrackedValue, type ITrackedValue } from '@utility/trackedState'
 import { MessageBus } from '@utility/messageBus'
@@ -8,11 +8,11 @@ import { END_TURN_MESSAGE, ENGINE_STATE_CHANGED_MESSAGE } from './messages'
 import type { IMessageBus } from '@utility/types'
 import { VirtualInputHandler, type IVirtualInputHandler } from './virtualInputHandler'
 
-let gameEngine: GameEngine | null = null;
+let gameEngine: GameEngine | null = null
 export function getGameEngine(): IGameEngine {
     if (gameEngine === null) {
         fatalError('Game engine is not initialized')
-    }  
+    }
     return gameEngine
 }
 
@@ -38,7 +38,7 @@ export class GameEngine implements IGameEngine {
         this._state = new TrackedValue<GameEngineState>(
             'GameEngine.State',
             GameEngineState.init,
-             (newValue, oldValue) => {
+            (newValue, oldValue) => {
                 this.messageBus.postMessage({
                     message: ENGINE_STATE_CHANGED_MESSAGE,
                     payload: {
@@ -46,7 +46,7 @@ export class GameEngine implements IGameEngine {
                         newState: newValue
                     }
                 })
-             }
+            }
         )
         const keyMap = new Map<string, VirtualKey>()
         Object.values(this.game.virtualKeys).forEach(k => keyMap.set(k.virtualKey, k))
@@ -70,6 +70,10 @@ export class GameEngine implements IGameEngine {
 
     start(): void {
         logInfo('Game engine started')
+        this.messageBus.postMessage({
+            message: ENGINE_STATE_CHANGED_MESSAGE,
+            payload: this.game.startPage
+        })
     }
 
     cleanup(): void {

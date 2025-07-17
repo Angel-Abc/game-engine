@@ -1,7 +1,7 @@
 import { logDebug } from '@utility/logMessage'
 import { useSyncExternalStore } from 'react'
-import { getGameEngine } from 'src/engine/gameEngine'
-import { GameEngineState } from 'src/engine/types'
+import { getGameEngine } from '@engine/gameEngine'
+import { GameEngineState } from '@engine/types'
 
 type GameProps = Record<string, never>
 

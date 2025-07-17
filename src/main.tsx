@@ -5,7 +5,7 @@ import { logDebug } from '@utility/logMessage'
 import { loadGameData } from '@loader/index'
 import type { GameData } from '@data/game/game'
 import App from '@app/game'
-import { GameEngine } from './engine/gameEngine'
+import { GameEngine } from '@engine/gameEngine'
 
 logDebug('Application starting...')
 

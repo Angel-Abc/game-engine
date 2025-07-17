@@ -4,6 +4,7 @@ import { fatalError, logInfo } from '@utility/logMessage'
 import { TrackedValue, type ITrackedValue } from '@utility/trackedState'
 import { MessageBus } from '@utility/messageBus'
 import { END_TURN_MESSAGE, ENGINE_STATE_CHANGED_MESSAGE } from './messages'
+import type { IMessageBus } from '@utility/types'
 
 let gameEngine: GameEngine | null = null;
 export function getGameEngine(): IGameEngine {
@@ -23,7 +24,7 @@ function setGameEngine(engine: GameEngine): void {
 export class GameEngine implements IGameEngine {
     private game: GameData
     private _state: ITrackedValue<GameEngineState>
-    private messageBus: MessageBus
+    private messageBus: IMessageBus
     private endingTurn: boolean = false
 
     constructor(game: GameData) {

@@ -12,6 +12,7 @@ logDebug('Application starting...')
 const game: GameData = await loadGameData()
 logDebug('Game loaded: {0}', game)
 const gameEngine = new GameEngine(game)
+window.addEventListener('beforeunload', () => gameEngine.cleanup())
 
 const root = createRoot(document.body)
 root.render(

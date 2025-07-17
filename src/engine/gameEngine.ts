@@ -72,6 +72,10 @@ export class GameEngine implements IGameEngine {
         logInfo('Game engine started')
     }
 
+    cleanup(): void {
+        this.inputHandler.cleanup()
+    }
+
     translate(key: string, language: string): string {
         const lang = this.game.translations.languages[language]
         if (!lang) return key

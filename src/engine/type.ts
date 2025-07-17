@@ -9,6 +9,7 @@ export type GameEngineState = typeof GameEngineState[keyof typeof GameEngineStat
 
 export interface IGameEngine {
     start(): void
+    cleanup(): void
     get State(): ITrackedValue<GameEngineState>
     translate(key: string, language: string): string
 }

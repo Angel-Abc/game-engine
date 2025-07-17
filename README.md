@@ -29,6 +29,7 @@ You can import modules using the configured aliases:
 - `@app/*` → `src/app/*`
 - `@loader/*` → `src/loader/*`
 - `@resources/*` → `src/resources/*`
+- `@engine/*` → `src/engine/*`
 
 ## Testing
 

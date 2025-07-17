@@ -28,7 +28,8 @@
       "@data/*": ["src/data/*"],
       "@app/*": ["src/app/*"],
       "@loader/*": ["src/loader/*"],
-      "@resources/*": ["src/resources/*"]
+      "@resources/*": ["src/resources/*"],
+      "@engine/*": ["src/engine/*"]
     }
   },
   "include": ["src"]

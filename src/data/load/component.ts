@@ -1,13 +1,15 @@
 import { z } from 'zod'
 
-export const buttonActionSchema = z.object({
-    type: z.string().optional(),
+const postMessageActionSchema = z.object({
+    type: z.literal('post-message'),
     message: z.string(),
     payload: z
         .union([z.number(), z.string(), z.record(z.string(), z.unknown())])
         .nullable()
         .optional(),
 })
+
+export const buttonActionSchema = z.discriminatedUnion('type', [postMessageActionSchema])
 
 export const buttonSchema = z.object({
     label: z.string(),

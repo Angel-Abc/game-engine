@@ -5,7 +5,7 @@ import { fatalError, logInfo } from '@utility/logMessage'
 import { TrackedValue, type ITrackedValue } from '@utility/trackedState'
 import { MessageBus } from '@utility/messageBus'
 import { END_TURN_MESSAGE, ENGINE_STATE_CHANGED_MESSAGE, ENGINE_SWITCH_PAGE_MESSAGE } from './messages'
-import type { IMessageBus } from '@utility/types'
+import type { IMessageBus, Message } from '@utility/types'
 import { VirtualInputHandler, type IVirtualInputHandler } from './virtualInputHandler'
 import type { PageModule } from '@data/game/page'
 
@@ -107,6 +107,10 @@ export class GameEngine implements IGameEngine {
 
     get ActivePage(): PageModule | undefined {
         return this._activePage
+    }
+
+    postMessage(message: Message): void {
+        this.messageBus.postMessage(message)
     }
 }
 

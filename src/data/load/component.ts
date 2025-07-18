@@ -1,8 +1,17 @@
 import { z } from 'zod'
 
+export const buttonActionSchema = z.object({
+    type: z.string().optional(),
+    message: z.string(),
+    payload: z
+        .union([z.number(), z.string(), z.record(z.string(), z.unknown())])
+        .nullable()
+        .optional(),
+})
+
 export const buttonSchema = z.object({
     label: z.string(),
-    action: z.string(),
+    action: buttonActionSchema,
 })
 
 export const gameMenuDataSchema = z.object({

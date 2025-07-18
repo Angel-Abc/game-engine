@@ -1,0 +1,10 @@
+{
+    "type": "page",
+    "description": "The start screen of the game.",
+    "screen": {
+        "type": "grid",
+        "rows": 20,
+        "columns": 20
+    },
+    "components": []
+}

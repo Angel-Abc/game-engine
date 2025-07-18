@@ -1,26 +1,24 @@
+import type { CSSCustomProperties } from '@app/types'
 import type { Screen as GameScreen } from '@data/game/screen'
-import type { CSSProperties, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
 export type ScreenProps = {
     screen: GameScreen
     children?: ReactNode
 }
 
-const ScreenControl: React.FC<ScreenProps> = ({ screen, children }): React.JSX.Element => {
+const Screen: React.FC<ScreenProps> = ({ screen, children }): React.JSX.Element => {
     switch (screen.type) {
         case 'grid': {
-            const style: CSSProperties = {
-                display: 'grid',
-                width: '100vw',
-                height: '100vh',
-                gridTemplateRows: `repeat(${screen.rows}, 1fr)`,
-                gridTemplateColumns: `repeat(${screen.columns}, 1fr)`
+            const style: CSSCustomProperties = {
+                '--ge-grid-rows': screen.rows.toString(),
+                '--ge-grid-columns': screen.columns.toString(),
             }
-            return <div style={style}>{children}</div>
+            return <div style={style} className='screen-grid'>{children}</div>
         }
         default:
             return <div>{children}</div>
     }
 }
 
-export default ScreenControl
+export default Screen

@@ -1,6 +1,6 @@
 import type { PageModule } from '@data/game/page'
-import ScreenControl from './controls/screen'
-import type { CSSProperties } from 'react'
+import Screen from './controls/screen'
+import type { CSSCustomProperties } from './types'
 
 type PageProps = {
     module: PageModule
@@ -8,20 +8,23 @@ type PageProps = {
 
 const Page: React.FC<PageProps> = ({ module }): React.JSX.Element => {
     return (
-        <ScreenControl screen={module.screen}>
+        <Screen screen={module.screen}>
             {module.components.map((c, idx) => {
                 const { row, column, rowSpan = 1, columnSpan = 1 } = c.position
-                const style: CSSProperties = {
-                    gridRow: `${row + 1} / span ${rowSpan}`,
-                    gridColumn: `${column + 1} / span ${columnSpan}`,
+                const style: CSSCustomProperties = {
+                    '--ge-grid-item-position-row-start': (row + 1).toString(),
+                    '--ge-grid-item-position-column-start': (column + 1).toString(),
+                    '--ge-grid-item-position-row-end': (row + 1 + rowSpan).toString(),
+                    '--ge-grid-item-position-column-end': (column + 1 + columnSpan).toString(),
                 }
+                const key = `${idx}_${c.component.type}`
                 return (
-                    <div key={idx} style={style}>
+                    <div key={key} style={style} className='screen-component'>
                         <div>{c.component.description}</div>
                     </div>
                 )
             })}
-        </ScreenControl>
+        </Screen>
     )
 }
 

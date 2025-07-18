@@ -10,10 +10,10 @@
         {
             "type": "game-menu",
             "position": {
-                "row": 0,
-                "column": 0,
-                "rowSpan": 2,
-                "columnSpan": 2
+                "row": 4,
+                "column": 3,
+                "rowSpan": 8,
+                "columnSpan": 4
             }
         }
     ]

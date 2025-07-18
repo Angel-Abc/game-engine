@@ -30,6 +30,7 @@ You can import modules using the configured aliases:
 - `@loader/*` → `src/loader/*`
 - `@resources/*` → `src/resources/*`
 - `@engine/*` → `src/engine/*`
+- `@styling/*` → `src/styling/*`
 
 ## Testing
 

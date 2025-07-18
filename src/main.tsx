@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './index.css'
+import '@styling/index.css'
 import { logDebug } from '@utility/logMessage'
 import { loadGameData } from '@loader/index'
 import type { GameData } from '@data/game/game'

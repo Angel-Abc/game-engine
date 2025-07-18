@@ -17,6 +17,7 @@
             {
                 "label": "MENU.SETTINGS",
                 "action": {
+                    "type": "post-message",
                     "message": "SYSTEM.SHOW_SETTINGS",
                     "payload": {}
                 }
@@ -24,6 +25,7 @@
             {
                 "label": "MENU.EXIT",
                 "action": {
+                    "type": "post-message",
                     "message": "SYSTEM.EXIT_GAME",
                     "payload": {}
                 }

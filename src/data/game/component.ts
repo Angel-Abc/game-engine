@@ -1,6 +1,12 @@
+export interface ButtonAction {
+    type?: string
+    message: string
+    payload: null | number | string | Record<string, unknown>
+}
+
 export interface Button {
     label: string
-    action: string
+    action: ButtonAction
 }
 
 export interface GameMenuData {

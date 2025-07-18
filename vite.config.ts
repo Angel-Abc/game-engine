@@ -45,6 +45,7 @@ export default defineConfig(({ mode }) => {
         '@loader': fileURLToPath(new URL('./src/loader', import.meta.url)),
         '@resources': fileURLToPath(new URL('./src/resources', import.meta.url)),
         '@engine': fileURLToPath(new URL('./src/engine', import.meta.url)),
+        '@styling': fileURLToPath(new URL('./src/styling', import.meta.url)),
       },
     },
   }

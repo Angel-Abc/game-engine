@@ -11,6 +11,7 @@ export default defineConfig({
       '@data': fileURLToPath(new URL('./src/data', import.meta.url)),
       '@app': fileURLToPath(new URL('./src/app', import.meta.url)),
       '@engine': fileURLToPath(new URL('./src/engine', import.meta.url)),
+      '@styling': fileURLToPath(new URL('./src/styling', import.meta.url)),
     },
   },
 })

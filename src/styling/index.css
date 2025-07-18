@@ -25,3 +25,14 @@ body {
   display: grid;
   background-color: blue;
 }
+
+.game-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.game-menu button {
+    padding: 0.5rem 1rem;
+    font-size: inherit;
+}

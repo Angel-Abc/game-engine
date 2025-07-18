@@ -1,6 +1,8 @@
 import type { PageModule } from '@data/game/page'
 import Screen from './controls/screen'
+import GameMenu from './components/gameMenu'
 import type { CSSCustomProperties } from './types'
+import type { ComponentModule } from '@data/game/component'
 
 type PageProps = {
     module: PageModule
@@ -18,9 +20,17 @@ const Page: React.FC<PageProps> = ({ module }): React.JSX.Element => {
                     '--ge-grid-item-position-column-end': (column + 1 + columnSpan).toString(),
                 }
                 const key = `${idx}_${c.component.type}`
+                const renderComponent = (component: ComponentModule): React.ReactNode => {
+                    switch (component.data.type) {
+                        case 'game-menu':
+                            return <GameMenu data={component.data} />
+                        default:
+                            return <div>{component.description}</div>
+                    }
+                }
                 return (
                     <div key={key} style={style} className='screen-component'>
-                        <div>{c.component.description}</div>
+                        {renderComponent(c.component)}
                     </div>
                 )
             })}

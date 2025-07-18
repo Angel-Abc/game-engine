@@ -3,7 +3,10 @@ import { z } from 'zod'
 export const buttonActionSchema = z.object({
     type: z.string().optional(),
     message: z.string(),
-    payload: z.union([z.number(), z.string(), z.record(z.unknown())]).nullable().optional(),
+    payload: z
+        .union([z.number(), z.string(), z.record(z.string(), z.unknown())])
+        .nullable()
+        .optional(),
 })
 
 export const buttonSchema = z.object({

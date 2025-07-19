@@ -2,7 +2,7 @@
 @import "./reset.css";
 
 body {
-    background-color: var(--ge-color-contrast);
+    background-color: var(--ge-color-background);
     width: 100vw;
     height: 100vh;
     font-size: var(--ge-font-size);

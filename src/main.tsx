@@ -11,6 +11,12 @@ logDebug('Application starting...')
 
 const game: GameData = await loadGameData()
 logDebug('Game loaded: {0}', game)
+for (const css of game.css) {
+  const link = document.createElement('link')
+  link.rel = 'stylesheet'
+  link.href = css
+  document.head.appendChild(link)
+}
 const gameEngine = new GameEngine(game)
 window.addEventListener('beforeunload', () => gameEngine.cleanup())
 

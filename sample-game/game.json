@@ -12,5 +12,8 @@
   ],
   "inputs": [
     "inputs"
+  ],
+  "css": [
+    "css/game.css"
   ]
 }

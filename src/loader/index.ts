@@ -35,6 +35,7 @@ export async function loadGameData(basePath: string = BASE_PATH): Promise<GameDa
     const inputPaths = gameLoad.inputs ?? []
     const virtualKeys = await loadVirtualKeys(inputPaths, basePath)
     const virtualInputs = await loadVirtualInputs(inputPaths, virtualKeys, basePath)
+    const cssFiles = (gameLoad.css ?? []).map(p => `${basePath}/${p}`)
 
     return {
         title: gameLoad.title,
@@ -44,7 +45,8 @@ export async function loadGameData(basePath: string = BASE_PATH): Promise<GameDa
         modules,
         translations,
         virtualKeys,
-        virtualInputs
+        virtualInputs,
+        css: cssFiles
     }
 }
 

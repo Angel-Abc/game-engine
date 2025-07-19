@@ -11,4 +11,5 @@ export interface GameData {
     translations: Translations
     virtualKeys: Record<string, VirtualKey>
     virtualInputs: Record<string, VirtualInput>
+    css: string[]
 }

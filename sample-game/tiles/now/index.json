@@ -1,0 +1,14 @@
+{
+    "tiles": [
+        {
+            "key": "now.wall",
+            "description": "NOW.TILE-WALL",
+            "color": "gray"
+        },
+        {
+            "key": "now.floor",
+            "description": "NOW.TILE-FLOOR",
+            "color": "lightgray"
+        }
+    ]
+}

@@ -9,6 +9,7 @@ export const gameSchema = z.object({
   translations: z.array(z.string()),
   inputs: z.array(z.string()).optional(),
   css: z.array(z.string()).optional(),
+  tiles: z.array(z.string()).optional(),
 })
 
 export type Game = z.infer<typeof gameSchema>

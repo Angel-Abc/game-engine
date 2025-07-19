@@ -40,3 +40,77 @@ Run unit tests with [Vitest](https://vitest.dev/):
 npm run test
 ```
 
+## Game Data Structure
+
+Game content is defined in JSON files loaded at runtime. The root `game.json`
+lists all modules and supporting assets:
+
+```json
+{
+  "title": "Sample Game",
+  "description": "A sample game for development",
+  "startPage": "pages/start",
+  "version": "1.0.0",
+  "modules": ["pages/start", "components/game-menu"],
+  "translations": ["translations"],
+  "inputs": ["inputs"],
+  "css": ["css/game.css"]
+}
+```
+
+Each entry in `modules` points to a folder containing an `index.json` file. A
+module can be either a **component** or a **page**.
+
+### Component Modules
+
+Component JSON files use the following shape:
+
+```json
+{
+  "type": "component",
+  "description": "The game menu.",
+  "data": {
+    "type": "game-menu",
+    "buttons": [
+      {
+        "label": "MENU.START-GAME",
+        "action": {
+          "type": "post-message",
+          "message": "SYSTEM.SWITCH-PAGE",
+          "payload": { "page": "pages/navigate" }
+        }
+      }
+    ]
+  }
+}
+```
+
+### Page Modules
+
+Page JSON files describe a screen layout and which components appear on it:
+
+```json
+{
+  "type": "page",
+  "description": "The start screen of the game.",
+  "screen": { "type": "grid", "rows": 20, "columns": 20 },
+  "components": [
+    {
+      "type": "game-menu",
+      "position": { "row": 4, "column": 3, "rowSpan": 8, "columnSpan": 4 }
+    }
+  ],
+  "background-image": "temp-background.png"
+}
+```
+
+### Translations and Input
+
+Translations are stored under a folder referenced from `game.json`. The
+`index.json` file lists supported languages, and each language has an
+`index.json` containing a name and key/value translation pairs.
+
+Input mappings are defined in `virtual-keys.json` and `virtual-inputs.json`
+files. These map physical key codes to virtual keys and virtual keys to higher
+level virtual inputs used by the engine.
+

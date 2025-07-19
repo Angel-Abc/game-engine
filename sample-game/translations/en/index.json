@@ -9,6 +9,8 @@
         "OUTDOOR.TILE-DUNE": "Sand dunes.",
         "OUTDOOR.TILE-FOREST": "Forest. Large green trees.",
         "OUTDOOR.TILE-ROAD": "Cobblestones all the way.",
-        "OUTDOOR.TILE-GRASS": "Fields of green grass."
+        "OUTDOOR.TILE-GRASS": "Fields of green grass.",
+        "NOW.TILE-WALL": "Solid stone wall.",
+        "NOW.TILE-FLOOR": "Smooth stone floor."
     }
 }

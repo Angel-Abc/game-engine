@@ -4,12 +4,14 @@ import { moduleSchema } from '@data/load/module'
 import { componentSchema } from '@data/load/component'
 import { translationsIndexSchema, languageDataSchema } from '@data/load/translation'
 import { VirtualKeysSchema, VirtualInputsSchema } from '@data/load/virtualInput'
+import { tilesSchema } from '@data/load/tile'
 import type { GameData } from '@data/game/game'
 import type { Module } from '@data/game/module'
 import type { ComponentModule } from '@data/game/component'
 import type { PageModule, PageComponent } from '@data/game/page'
 import type { Translations, LanguageData } from '@data/game/translation'
 import type { VirtualKey, VirtualInput } from '@data/game/virtualInput'
+import type { Tile } from '@data/game/tile'
 
 const BASE_PATH = '/data'
 const RESOURCE_PATH = '/resources'
@@ -17,6 +19,7 @@ const RESOURCE_PATH = '/resources'
 const moduleCache: Map<string, Module> = new Map()
 const translationCache: Map<string, LanguageData> = new Map()
 const virtualKeyCache: Map<string, VirtualKey> = new Map()
+const tileCache: Map<string, Record<string, Tile>> = new Map()
 
 export async function loadGameData(basePath: string = BASE_PATH): Promise<GameData> {
     const gameLoad = await loadJsonResource(`${basePath}/game.json`, gameSchema)
@@ -36,6 +39,12 @@ export async function loadGameData(basePath: string = BASE_PATH): Promise<GameDa
     const virtualKeys = await loadVirtualKeys(inputPaths, basePath)
     const virtualInputs = await loadVirtualInputs(inputPaths, virtualKeys, basePath)
     const cssFiles = (gameLoad.css ?? []).map(p => `${basePath}/${p}`)
+    const tilePaths = gameLoad.tiles ?? []
+    const tiles: Record<string, Tile> = {}
+    for (const p of tilePaths) {
+        const set = await loadTiles(p, basePath)
+        Object.assign(tiles, set)
+    }
 
     return {
         title: gameLoad.title,
@@ -46,7 +55,8 @@ export async function loadGameData(basePath: string = BASE_PATH): Promise<GameDa
         translations,
         virtualKeys,
         virtualInputs,
-        css: cssFiles
+        css: cssFiles,
+        tiles
     }
 }
 
@@ -183,5 +193,26 @@ export async function loadVirtualInputs(paths: string[], virtualKeys: Record<str
         mergeInputs(inputs)
     }
 
+    return result
+}
+
+export async function loadTiles(path: string, basePath: string = BASE_PATH): Promise<Record<string, Tile>> {
+    const cached = tileCache.get(path)
+    if (cached) {
+        return cached
+    }
+
+    const data = await loadJsonResource(`${basePath}/${path}/index.json`, tilesSchema)
+    const result: Record<string, Tile> = {}
+    for (const t of data.tiles) {
+        result[t.key] = {
+            key: t.key,
+            description: t.description,
+            color: t.color,
+            image: t.image ? `${basePath}/${path}/${t.image}` : undefined,
+        }
+    }
+
+    tileCache.set(path, result)
     return result
 }

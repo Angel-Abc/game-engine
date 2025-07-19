@@ -15,5 +15,9 @@
   ],
   "css": [
     "css/game.css"
+  ],
+  "tiles": [
+    "tiles/outdoor",
+    "tiles/now"
   ]
 }

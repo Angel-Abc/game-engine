@@ -54,7 +54,8 @@ lists all modules and supporting assets:
   "modules": ["pages/start", "components/game-menu"],
   "translations": ["translations"],
   "inputs": ["inputs"],
-  "css": ["css/game.css"]
+  "css": ["css/game.css"],
+  "tiles": ["tiles/outdoor", "tiles/now"]
 }
 ```
 
@@ -113,4 +114,15 @@ Translations are stored under a folder referenced from `game.json`. The
 Input mappings are defined in `virtual-keys.json` and `virtual-inputs.json`
 files. These map physical key codes to virtual keys and virtual keys to higher
 level virtual inputs used by the engine.
+
+Tile data is stored under folders listed in the `tiles` array. Each folder
+contains an `index.json` file with a list of tiles:
+
+```json
+{
+  "tiles": [
+    { "key": "outdoor.beach", "description": "OUTDOOR.TILE-BEACH", "color": "yellow" }
+  ]
+}
+```
 

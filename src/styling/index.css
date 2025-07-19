@@ -31,7 +31,6 @@ body {
   grid-row-start: var(--ge-grid-item-position-row-start);
   grid-row-end: var(--ge-grid-item-position-row-end);
   display: grid;
-  background-color: blue;
 }
 
 .game-menu {
@@ -41,6 +40,5 @@ body {
 }
 
 .game-menu button {
-    padding: 0.5rem 1rem;
-    font-size: inherit;
+    flex: 1;
 }

@@ -21,8 +21,8 @@ const GameMenu: React.FC<GameMenuProps> = ({ data }): React.JSX.Element => {
 
     return (
         <div className='game-menu'>
-            {data.buttons.map((b, idx) => (
-                <button key={idx} onClick={() => onButtonClick(b)}>
+            {data.buttons.map((b) => (
+                <button type="button" key={b.label} onClick={() => onButtonClick(b)}>
                     {engine.translate(b.label, 'en')}
                 </button>
             ))}

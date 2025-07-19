@@ -2,10 +2,6 @@
 :root {
     --ge-color-contrast: oklch(0.66 0.241 354.308);
     --ge-color-primary: oklch(0.66 0.1233 272.65);
-    --ge-color-dark-brown: oklch(0.35 0.0529 65.37);
-    --ge-color-dark-brown-60: oklch(0.35 0.0529 65.37 / 60%);
-    --ge-color-light-brown: oklch(0.66 0.0529 65.37);
-    --ge-color-light-brown-70: oklch(0.66 0.0529 65.37 / 70%);
 
     --ge-font-size: calc(1vw + 0.5rem);
     --ge-font-family: 'Arial', sans-serif;

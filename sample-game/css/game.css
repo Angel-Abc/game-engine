@@ -1,6 +1,11 @@
-body {
-    background-color: #eef;
+:root {
+    --sg-color-dark-brown: oklch(0.35 0.0529 65.37);
+    --sg-color-dark-brown-60: oklch(0.35 0.0529 65.37 / 60%);
+    --sg-color-light-brown: oklch(0.66 0.0529 65.37);
+    --sg-color-light-brown-70: oklch(0.66 0.0529 65.37 / 70%);
 }
+
 .game-menu button {
-    color: darkblue;
+    color: white;
+    background-color: var(--sg-color-light-brown-70);
 }

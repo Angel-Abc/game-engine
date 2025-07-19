@@ -3,8 +3,8 @@
     "description": "The start screen of the game.",
     "screen": {
         "type": "grid",
-        "rows": 20,
-        "columns": 20
+        "rows": 24,
+        "columns": 24
     },
     "components": []
 }

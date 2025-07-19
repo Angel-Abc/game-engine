@@ -18,6 +18,7 @@ export const pageSchema = z.object({
     description: z.string(),
     screen: screenSchema,
     components: z.array(pageComponentSchema),
+    'background-image': z.string().optional(),
 })
 
 export type GridPosition = z.infer<typeof gridPositionSchema>

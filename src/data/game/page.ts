@@ -18,4 +18,5 @@ export interface PageModule {
     description: string
     screen: Screen
     components: PageComponent[]
+    backgroundImage?: string
 }

@@ -9,8 +9,13 @@ type PageProps = {
 }
 
 const Page: React.FC<PageProps> = ({ module }): React.JSX.Element => {
+    const pageStyle: CSSCustomProperties = {}
+    if (module.backgroundImage) {
+        pageStyle['--ge-page-background-image'] = `url("${module.backgroundImage}")`
+    }
     return (
-        <Screen screen={module.screen}>
+        <div className='game-page' style={pageStyle}>
+            <Screen screen={module.screen}>
             {module.components.map((c, idx) => {
                 const { row, column, rowSpan = 1, columnSpan = 1 } = c.position
                 const style: CSSCustomProperties = {
@@ -34,7 +39,8 @@ const Page: React.FC<PageProps> = ({ module }): React.JSX.Element => {
                     </div>
                 )
             })}
-        </Screen>
+            </Screen>
+        </div>
     )
 }
 

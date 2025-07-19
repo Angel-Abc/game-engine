@@ -86,4 +86,13 @@ export class MessageBus implements IMessageBus {
         }
         this.onQueueEmpty()
     }
+
+    public shutDown(): void {
+        this.queue = []
+        this.listeners.clear()
+        this.silentMessages.clear()
+        this.emptyingQueue = false
+        this.emptyQueueAfterPost = 0
+        logDebug('MessageBus shut down')
+    }
 }

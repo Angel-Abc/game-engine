@@ -17,4 +17,5 @@ export interface IMessageBus {
     postMessage(message: Message): void
     registerMessageListener(message: string, handler: (message: Message) => void): CleanUp
     registerNotificationMessage(message: string): void
+    shutDown(): void
 }

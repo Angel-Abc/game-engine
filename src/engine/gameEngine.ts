@@ -4,7 +4,7 @@ import { GameEngineState, type IGameEngine } from './types'
 import { fatalError, logInfo } from '@utility/logMessage'
 import { TrackedValue, type ITrackedValue } from '@utility/trackedState'
 import { MessageBus } from '@utility/messageBus'
-import { END_TURN_MESSAGE, ENGINE_STATE_CHANGED_MESSAGE, ENGINE_SWITCH_PAGE_MESSAGE } from './messages'
+import { END_TURN_MESSAGE, ENGINE_STATE_CHANGED_MESSAGE, EXIT_GAME_MESSAGE, SWITCH_PAGE_MESSAGE } from './messages'
 import type { IMessageBus, Message } from '@utility/types'
 import { VirtualInputHandler, type IVirtualInputHandler } from './virtualInputHandler'
 import type { PageModule } from '@data/game/page'
@@ -36,7 +36,8 @@ export class GameEngine implements IGameEngine {
         this.messageBus = new MessageBus(() => this.handleOnQueueEmpty())
         this.messageBus.registerNotificationMessage(END_TURN_MESSAGE)
         this.messageBus.registerNotificationMessage(ENGINE_STATE_CHANGED_MESSAGE)
-        this.messageBus.registerMessageListener(ENGINE_SWITCH_PAGE_MESSAGE, (message) => this.updatePage(message.payload as string))
+        this.messageBus.registerMessageListener(SWITCH_PAGE_MESSAGE, (message) => this.updatePage(message.payload as string))
+        this.messageBus.registerMessageListener(EXIT_GAME_MESSAGE, () => this.cleanup())
         this.game = game
         logInfo('Game engine initialized with game: {0}', this.game)
         this._state = new TrackedValue<GameEngineState>(
@@ -75,13 +76,15 @@ export class GameEngine implements IGameEngine {
     start(): void {
         logInfo('Game engine started')
         this.messageBus.postMessage({
-            message: ENGINE_SWITCH_PAGE_MESSAGE,
+            message: SWITCH_PAGE_MESSAGE,
             payload: this.game.startPage
         })
     }
 
     cleanup(): void {
+        this.messageBus.shutDown()
         this.inputHandler.cleanup()
+        document.body.innerHTML = '<div>Press F5 to restart.</div>'
     }
 
     translate(key: string, language: string): string {

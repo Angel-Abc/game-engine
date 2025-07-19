@@ -68,11 +68,14 @@ export async function loadModule(modulePath: string, basePath: string = BASE_PAT
             const comp = await loadComponentModule(c.type, basePath)
             components.push({ component: comp, position: { ...c.position } })
         }
+        const bg = load['background-image']
+        const moduleDir = `${basePath}/${modulePath}`
         result = {
             type: 'page',
             description: load.description,
             screen: { ...load.screen },
-            components
+            components,
+            backgroundImage: bg ? `${moduleDir}/${bg}` : undefined
         } as PageModule
     }
 

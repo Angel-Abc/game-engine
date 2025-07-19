@@ -100,7 +100,10 @@ export class GameEngine implements IGameEngine {
     updatePage(page: string): void {
         this._state.value = GameEngineState.loading
         logInfo('Switching to page: {0}', page)
-        const module = this.game.modules[page] 
+        const module = this.game.modules[page]
+        if (!module) {
+            fatalError(`Page module ${page} not found`)
+        }
         if (module.type !== 'page') {
             fatalError(`Module ${page} is not a page module`)
         }

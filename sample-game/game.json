@@ -19,5 +19,8 @@
   "tiles": [
     "tiles/outdoor",
     "tiles/now"
+  ],
+  "maps": [
+    "maps/start-beach"
   ]
 }

@@ -2,6 +2,7 @@ import type { Module } from './module'
 import type { Translations } from './translation'
 import type { VirtualKey, VirtualInput } from './virtualInput'
 import type { Tile } from './tile'
+import type { GameMap } from './map'
 
 export interface GameData {
     title: string
@@ -14,4 +15,5 @@ export interface GameData {
     virtualInputs: Record<string, VirtualInput>
     css: string[]
     tiles: Record<string, Tile>
+    maps: Record<string, GameMap>
 }

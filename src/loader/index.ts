@@ -5,6 +5,7 @@ import { componentSchema } from '@data/load/component'
 import { translationsIndexSchema, languageDataSchema } from '@data/load/translation'
 import { VirtualKeysSchema, VirtualInputsSchema } from '@data/load/virtualInput'
 import { tilesSchema } from '@data/load/tile'
+import { squaresMapSchema } from '@data/load/map'
 import type { GameData } from '@data/game/game'
 import type { Module } from '@data/game/module'
 import type { ComponentModule } from '@data/game/component'
@@ -12,6 +13,7 @@ import type { PageModule, PageComponent } from '@data/game/page'
 import type { Translations, LanguageData } from '@data/game/translation'
 import type { VirtualKey, VirtualInput } from '@data/game/virtualInput'
 import type { Tile } from '@data/game/tile'
+import type { GameMap } from '@data/game/map'
 
 const BASE_PATH = '/data'
 const RESOURCE_PATH = '/resources'
@@ -20,6 +22,7 @@ const moduleCache: Map<string, Module> = new Map()
 const translationCache: Map<string, LanguageData> = new Map()
 const virtualKeyCache: Map<string, VirtualKey> = new Map()
 const tileCache: Map<string, Record<string, Tile>> = new Map()
+const mapCache: Map<string, GameMap> = new Map()
 
 export async function loadGameData(basePath: string = BASE_PATH): Promise<GameData> {
     const gameLoad = await loadJsonResource(`${basePath}/game.json`, gameSchema)
@@ -45,6 +48,12 @@ export async function loadGameData(basePath: string = BASE_PATH): Promise<GameDa
         const set = await loadTiles(p, basePath)
         Object.assign(tiles, set)
     }
+    const mapPaths = gameLoad.maps ?? []
+    const maps: Record<string, GameMap> = {}
+    for (const p of mapPaths) {
+        const map = await loadMap(p, basePath)
+        maps[map.key] = map
+    }
 
     return {
         title: gameLoad.title,
@@ -56,7 +65,8 @@ export async function loadGameData(basePath: string = BASE_PATH): Promise<GameDa
         virtualKeys,
         virtualInputs,
         css: cssFiles,
-        tiles
+        tiles,
+        maps
     }
 }
 
@@ -214,5 +224,33 @@ export async function loadTiles(path: string, basePath: string = BASE_PATH): Pro
     }
 
     tileCache.set(path, result)
+    return result
+}
+
+export async function loadMap(path: string, basePath: string = BASE_PATH): Promise<GameMap> {
+    const cached = mapCache.get(path)
+    if (cached) {
+        return cached
+    }
+
+    const data = await loadJsonResource(`${basePath}/${path}/index.json`, squaresMapSchema)
+    const tiles: Record<string, string> = {}
+    data.tiles.forEach(t => {
+        tiles[t.key] = t.tile
+    })
+    const mapRows = data.map.map(row => row.split(','))
+
+    const result: GameMap = {
+        type: 'squares-map',
+        key: data.key,
+        name: data.name,
+        description: data.description,
+        width: data.width,
+        height: data.height,
+        tiles,
+        map: mapRows,
+    }
+
+    mapCache.set(path, result)
     return result
 }

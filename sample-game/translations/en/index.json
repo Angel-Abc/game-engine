@@ -11,6 +11,8 @@
         "OUTDOOR.TILE-ROAD": "Cobblestones all the way.",
         "OUTDOOR.TILE-GRASS": "Fields of green grass.",
         "NOW.TILE-WALL": "Solid stone wall.",
-        "NOW.TILE-FLOOR": "Smooth stone floor."
+        "NOW.TILE-FLOOR": "Smooth stone floor.",
+        "START-BEACH.NAME": "Start Beach",
+        "START-BEACH.DESCRIPTION": "A sunny beach where your journey begins."
     }
 }

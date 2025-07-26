@@ -1,0 +1,10 @@
+{
+    "name": "@angelabc/game-engine",
+    "version": "0.0.0",
+    "private": true,
+    "description": "Game Engine with sample game",
+    "keywords": [],
+    "author": "AngelAbc",
+    "license": "MPL-2.0",
+    "type": "module"
+}

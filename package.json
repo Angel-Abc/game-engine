@@ -1,10 +1,19 @@
 {
-    "name": "@angelabc/game-engine",
-    "version": "0.0.0",
-    "private": true,
-    "description": "Game Engine with sample game",
-    "keywords": [],
-    "author": "AngelAbc",
-    "license": "MPL-2.0",
-    "type": "module"
+  "name": "@angelabc/game-engine",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Game Engine with sample game",
+  "keywords": [],
+  "author": "AngelAbc",
+  "license": "MPL-2.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "typescript": "~5.8.3",
+    "vite": "^7.0.4"
+  }
 }

@@ -1,0 +1,8 @@
+{
+    "title": "Sample Game",
+    "description": "A sample game for developent of the game engine",
+    "version": "1.0.0",
+    "initial-data": {
+        "language": "en"
+    }
+}

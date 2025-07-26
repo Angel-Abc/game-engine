@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import copy from 'rollup-plugin-copy'
+import { viteStaticCopy } from 'vite-plugin-static-copy'
 import { fileURLToPath, URL } from 'node:url'
 
 const gameFolder = process.env.GAME_FOLDER || 'sample-game'
@@ -8,13 +8,14 @@ const gameFolder = process.env.GAME_FOLDER || 'sample-game'
 export default defineConfig({
   plugins: [
     react(),
-    copy({
+    viteStaticCopy({
       targets: [
-        { src: 'resources', dest: 'dist', rename: 'res' },
-        { src: gameFolder, dest: 'dist', rename: 'data' },
+        { src: 'resources/**/*', dest: 'res' },
+        { src: `${gameFolder}/**/*`, dest: 'data' },
       ],
-      hook: 'writeBundle',
-      verbose: true,
+      watch: {
+        reloadPageOnChange: true,
+      },
     }),
   ],
   resolve: {

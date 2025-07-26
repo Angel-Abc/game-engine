@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { create2DArray } from '../../src/utils/array'
+import { create2DArray } from '@utils/array'
 
 describe('create2DArray', () => {
   it('creates a 2D array with specified dimensions and initial value', () => {

@@ -20,3 +20,7 @@ The build step copies the game data from the directory specified by the
 `GAME_FOLDER` environment variable into `dist/data`. If this variable is not
 set, the `sample-game` folder is used.
 
+During development the same files are served via `vite-plugin-static-copy`,
+allowing JSON resources from `resources/` or your game folder to be accessible
+while running `npm run dev`.
+

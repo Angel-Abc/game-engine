@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { setValueAtPath } from '../../src/utils/objectPath'
+import { setValueAtPath } from '@utils/objectPath'
 
 describe('setValueAtPath', () => {
   it('sets value on existing path', () => {

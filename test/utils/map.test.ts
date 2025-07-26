@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { hasMapChanged, updateMap } from '../../src/utils/map'
+import { hasMapChanged, updateMap } from '@utils/map'
 
 describe('hasMapChanged', () => {
   it('returns false for identical maps', () => {

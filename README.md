@@ -16,3 +16,7 @@ for a development server, or build with:
 npm run build
 ```
 
+The build step copies the game data from the directory specified by the
+`GAME_FOLDER` environment variable into `dist/data`. If this variable is not
+set, the `sample-game` folder is used.
+

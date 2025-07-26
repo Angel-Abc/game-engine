@@ -8,12 +8,10 @@ describe('loadJsonResource', () => {
   let originalFetch: typeof fetch
 
   beforeEach(() => {
-    // @ts-ignore
     originalFetch = globalThis.fetch
   })
 
   afterEach(() => {
-    // @ts-ignore
     globalThis.fetch = originalFetch
   })
 
@@ -21,7 +19,6 @@ describe('loadJsonResource', () => {
     const json = { a: 5 }
     const response = { ok: true, json: vi.fn().mockResolvedValue(json) } as unknown as Response
     const fetchMock = vi.fn().mockResolvedValue(response)
-    // @ts-ignore
     globalThis.fetch = fetchMock as any
 
     const result = await loadJsonResource(url, schema)
@@ -31,7 +28,6 @@ describe('loadJsonResource', () => {
 
   it('throws when validation fails', async () => {
     const response = { ok: true, json: vi.fn().mockResolvedValue({ a: 'x' }) } as unknown as Response
-    // @ts-ignore
     globalThis.fetch = vi.fn().mockResolvedValue(response) as any
 
     await expect(loadJsonResource(url, schema)).rejects.toThrow()

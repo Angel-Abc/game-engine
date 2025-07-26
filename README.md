@@ -4,7 +4,7 @@ This engine is licensed under the Mozilla Public License 2.0. You can use it fre
 
 ## Development
 
-The project uses [Vite](https://vitejs.dev/) with TypeScript. After installing dependencies run:
+The project uses [Vite](https://vitejs.dev/) with **React** and TypeScript. After installing dependencies run:
 
 ```bash
 npm run dev

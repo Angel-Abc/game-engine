@@ -1,5 +1,6 @@
 import js from '@eslint/js';
 import tsPlugin from '@typescript-eslint/eslint-plugin';
+import reactPlugin from 'eslint-plugin-react';
 
 export default [
   {
@@ -7,6 +8,16 @@ export default [
   },
   js.configs.recommended,
   ...tsPlugin.configs['flat/recommended'],
+  {
+    ...reactPlugin.configs.flat.recommended,
+    settings: { react: { version: 'detect' } },
+  },
+  {
+    files: ['**/*.tsx'],
+    rules: {
+      'react/react-in-jsx-scope': 'off',
+    },
+  },
   {
     files: ['test/**/*.ts'],
     rules: {

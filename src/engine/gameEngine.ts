@@ -3,7 +3,7 @@ import { MessageBus } from '@utils/messageBus'
 import type { ILoader } from 'src/loader/loader'
 import { END_TURN_MESSAGE } from './messages'
 
-let gameEngine: GameEngine | null = null
+const gameEngine: GameEngine | null = null
 export function getGameEngine(): IGameEngine {
     if (gameEngine === null) {
         fatalError('Game engine is not initialized')

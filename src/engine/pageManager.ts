@@ -4,6 +4,7 @@ import { SWITCH_PAGE_MESSAGE } from './messages'
 
 export interface IPageManager {
     switchPage(page: string): Promise<void>
+    cleanup(): void
 }
 
 export class PageManager implements IPageManager {

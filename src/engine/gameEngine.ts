@@ -38,11 +38,13 @@ export type ContextData = {
 
 export interface IGameEngine {
     start(): Promise<void>
+    cleanup(): void
     get StateManager(): IStateManager<ContextData>
     get State(): ITrackedValue<GameEngineState>
     get TranslationService(): ITranslationService
     get Loader(): ILoader
     get MessageBus(): IMessageBus
+    get PageManager(): IPageManager
 }
 
 export class GameEngine implements IGameEngine {
@@ -76,7 +78,6 @@ export class GameEngine implements IGameEngine {
         this.translationService = new TranslationService()
         this.pageManager = new PageManager(this)
         setGameEngine(this)
-        void this.pageManager
     }
 
     public async start(): Promise<void> {
@@ -91,6 +92,10 @@ export class GameEngine implements IGameEngine {
             message: SWITCH_PAGE_MESSAGE,
             payload: this.loader.Game.initialData.startPage
         })
+    }
+
+    public cleanup(): void {
+        this.pageManager.cleanup()
     }
 
     public get StateManager(): IStateManager<ContextData> {
@@ -114,6 +119,10 @@ export class GameEngine implements IGameEngine {
 
     public get MessageBus(): IMessageBus {
         return this.messageBus
+    }
+
+    public get PageManager(): IPageManager {
+        return this.pageManager
     }
 
     private handleOnQueueEmpty(): void {

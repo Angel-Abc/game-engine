@@ -3,10 +3,13 @@
     "description": "A sample game for developent of the game engine",
     "version": "1.0.0",
     "initial-data": {
-        "language": "en"
+        "language": "en",
+        "start-page": "start-page"
     },
     "languages": {
         "en": "languages/en.json"
+    },
+    "pages": {
+        "start-page": "pages/start-page.json"
     }
-
 }

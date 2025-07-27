@@ -1,11 +1,13 @@
 import { fatalError } from '@utils/logMessage'
-import { MessageBus } from '@utils/messageBus'
+import { MessageBus, type IMessageBus } from '@utils/messageBus'
 import type { ILoader } from 'src/loader/loader'
-import { END_TURN_MESSAGE, ENGINE_STATE_CHANGED_MESSAGE } from './messages'
+import { END_TURN_MESSAGE, ENGINE_STATE_CHANGED_MESSAGE, SWITCH_PAGE_MESSAGE } from './messages'
 import { StateManager, type IStateManager } from './stateManager'
 import { ChangeTracker } from './changeTracker'
 import { TrackedValue, type ITrackedValue } from '@utils/trackedState'
 import { TranslationService, type ITranslationService } from './translationService'
+import { PageManager, type IPageManager } from './pageManager'
+import type { Page } from 'src/loader/data/page'
 
 const gameEngine: GameEngine | null = null
 export function getGameEngine(): IGameEngine {
@@ -24,7 +26,11 @@ export type GameEngineState = typeof GameEngineState[keyof typeof GameEngineStat
 
 export type ContextData = {
     language: string,
-    data: Record<string, unknown>
+    pages: Record<string, Page>,
+    data: {
+        activePage: Page | null,
+        [key: string]: unknown
+    }
 }
 
 export interface IGameEngine {
@@ -32,6 +38,8 @@ export interface IGameEngine {
     get StateManager(): IStateManager<ContextData>
     get State(): ITrackedValue<GameEngineState>
     get TranslationService(): ITranslationService
+    get Loader(): ILoader
+    get MessageBus(): IMessageBus
 }
 
 export class GameEngine implements IGameEngine {
@@ -39,8 +47,10 @@ export class GameEngine implements IGameEngine {
     private messageBus: MessageBus
     private stateManager: IStateManager<ContextData> | null = null
     private translationService: ITranslationService
+    private pageManager: IPageManager
 
     private endingTurn: boolean = false
+    private currentLanguage: string | null = null
     private state: ITrackedValue<GameEngineState>
 
     constructor(loader: ILoader) {
@@ -61,15 +71,21 @@ export class GameEngine implements IGameEngine {
             }
         )
         this.translationService = new TranslationService()
+        this.pageManager = new PageManager(this)
     }
 
     public async start(): Promise<void> {
         this.state.value = GameEngineState.loading
         await this.loader.reset()
         this.initStateManager()
-        const language = this.stateManager?.state.language ?? fatalError('No language set!')
+        const language = (this.currentLanguage ?? this.stateManager?.state.language) ?? fatalError('No language set!')
+        this.currentLanguage = language
         this.translationService.setLanguage(await this.loader.loadLanguage(language))
         this.state.value = GameEngineState.running
+        this.messageBus.postMessage({
+            message: SWITCH_PAGE_MESSAGE,
+            payload: this.loader.Game.initialData.startPage
+        })
     }
 
     public get StateManager(): IStateManager<ContextData> {
@@ -85,6 +101,14 @@ export class GameEngine implements IGameEngine {
 
     public get TranslationService(): ITranslationService {
         return this.translationService
+    }
+
+    public get Loader(): ILoader {
+        return this.loader
+    }
+
+    public get MessageBus(): IMessageBus {
+        return this.messageBus
     }
 
     private handleOnQueueEmpty(): void {
@@ -107,7 +131,10 @@ export class GameEngine implements IGameEngine {
     private initStateManager(): void {
         const contextData: ContextData = {
             language: this.loader.Game.initialData.language,
-            data: { }
+            pages: {},
+            data: {
+                activePage: null
+            }
         }
         this.stateManager = new StateManager<ContextData>(contextData, new ChangeTracker<ContextData>())
     }

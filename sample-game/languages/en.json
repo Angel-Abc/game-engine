@@ -1,5 +1,5 @@
 {
-    "name": "English",
+    "id": "English",
     "translations":{
         "MENU.START-GAME": "Start Game",
         "MENU.LOAD-GAME": "Load Game",

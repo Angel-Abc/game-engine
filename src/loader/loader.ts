@@ -4,8 +4,11 @@ import { languageSchema, type Language } from './schema/language'
 import { fatalError, logDebug } from '@utils/logMessage'
 import { type Game as GameData } from './data/game'
 import { type Language as LanguageData } from './data/language'
+import { type Page as PageData} from './data/page'
+import { pageSchema, type Page } from './schema/page'
 
 export interface ILoader {
+    loadPage(page: string): Promise<PageData>
     loadRoot(): Promise<void>
     reset(): Promise<void>
     get Game(): GameData
@@ -17,6 +20,7 @@ export class Loader implements ILoader {
     private game: GameData | null = null
     private root: Game | null = null
     private languages: Map<string, LanguageData> = new Map()
+    private pages: Map<string, PageData> = new Map()
 
     constructor(basePath: string = '/data') {
         this.basePath = basePath
@@ -29,15 +33,18 @@ export class Loader implements ILoader {
 
     public async reset(): Promise<void> {
         this.languages.clear()
+        this.pages.clear()
         this.root = await loadJsonResource(`${this.basePath}/index.json`, gameSchema)
         this.game = {
             title: this.root.title,
             description: this.root.description,
             version: this.root.version,
             initialData: {
-                language: this.root['initial-data'].language
+                language: this.root['initial-data'].language,
+                startPage: this.root['initial-data']['start-page']
             },
-            languages: this.root.languages
+            languages: this.root.languages,
+            pages: this.root.pages
         }
     }
 
@@ -47,10 +54,21 @@ export class Loader implements ILoader {
         if (!path) fatalError('Language {0} was not found!', language)
         const schemaData = await loadJsonResource<Language>(`${this.basePath}/${path}`, languageSchema)
         const result: LanguageData = {
-            name: schemaData.name,
+            id: schemaData.id,
             translations: { ...schemaData.translations }
         }
         this.languages.set(language, result)
+        return result
+    }
+
+    public async loadPage(page: string): Promise<PageData> {
+        if (this.pages.has(page)) return this.pages.get(page)!
+        const path = this.game?.pages[page]
+        const schemaData = await loadJsonResource<Page>(`${this.basePath}/${path}`, pageSchema)
+        const result: PageData = {
+            id: schemaData.id
+        }
+        this.pages.set(page, result)
         return result
     }
 

@@ -1,5 +1,6 @@
 export type InitialData = {
     language: string
+    startPage: string
 }
 
 export type Game = {
@@ -8,4 +9,5 @@ export type Game = {
     version: string
     initialData: InitialData
     languages: Record<string, string>
+    pages: Record<string, string>
 }

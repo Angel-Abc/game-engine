@@ -5,6 +5,7 @@ import { END_TURN_MESSAGE, ENGINE_STATE_CHANGED_MESSAGE } from './messages'
 import { StateManager, type IStateManager } from './stateManager'
 import { ChangeTracker } from './changeTracker'
 import { TrackedValue, type ITrackedValue } from '@utils/trackedState'
+import { TranslationService, type ITranslationService } from './translationService'
 
 const gameEngine: GameEngine | null = null
 export function getGameEngine(): IGameEngine {
@@ -22,6 +23,7 @@ export const GameEngineState = {
 export type GameEngineState = typeof GameEngineState[keyof typeof GameEngineState]
 
 export type ContextData = {
+    language: string,
     data: Record<string, unknown>
 }
 
@@ -29,12 +31,14 @@ export interface IGameEngine {
     start(): Promise<void>
     get StateManager(): IStateManager<ContextData>
     get State(): ITrackedValue<GameEngineState>
+    get TranslationService(): ITranslationService
 }
 
 export class GameEngine implements IGameEngine {
     private loader: ILoader
     private messageBus: MessageBus
     private stateManager: IStateManager<ContextData> | null = null
+    private translationService: ITranslationService
 
     private endingTurn: boolean = false
     private state: ITrackedValue<GameEngineState>
@@ -56,12 +60,15 @@ export class GameEngine implements IGameEngine {
                 })
             }
         )
+        this.translationService = new TranslationService()
     }
 
     public async start(): Promise<void> {
         this.state.value = GameEngineState.loading
         await this.loader.reset()
         this.initStateManager()
+        const language = this.stateManager?.state.language ?? fatalError('No language set!')
+        this.translationService.setLanguage(await this.loader.loadLanguage(language))
         this.state.value = GameEngineState.running
     }
 
@@ -74,6 +81,10 @@ export class GameEngine implements IGameEngine {
 
     public get State(): ITrackedValue<GameEngineState> {
         return this.state
+    }
+
+    public get TranslationService(): ITranslationService {
+        return this.translationService
     }
 
     private handleOnQueueEmpty(): void {
@@ -95,7 +106,8 @@ export class GameEngine implements IGameEngine {
 
     private initStateManager(): void {
         const contextData: ContextData = {
-            data: {}
+            language: this.loader.Game.initialData.language,
+            data: { }
         }
         this.stateManager = new StateManager<ContextData>(contextData, new ChangeTracker<ContextData>())
     }

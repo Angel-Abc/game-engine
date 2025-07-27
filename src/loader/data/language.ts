@@ -1,5 +1,5 @@
 
 export type Language = {
-    title: string
+    name: string
     translations: Record<string, string>
 }

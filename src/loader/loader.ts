@@ -47,7 +47,7 @@ export class Loader implements ILoader {
         if (!path) fatalError('Language {0} was not found!', language)
         const schemaData = await loadJsonResource<Language>(`${this.basePath}/${path}`, languageSchema)
         const result: LanguageData = {
-            title: schemaData.title,
+            name: schemaData.name,
             translations: { ...schemaData.translations }
         }
         this.languages.set(language, result)

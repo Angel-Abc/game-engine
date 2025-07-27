@@ -1,0 +1,1 @@
+export const END_TURN_MESSAGE = 'SYSTEM.END-TURN'

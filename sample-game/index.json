@@ -4,5 +4,8 @@
     "version": "1.0.0",
     "initial-data": {
         "language": "en"
-    }
+    },
+    "translations": [
+        "languages/en.json"
+    ]
 }

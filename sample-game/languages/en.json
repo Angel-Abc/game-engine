@@ -1,0 +1,10 @@
+{
+    "name": "English",
+    "translations":{
+        "MENU.START-GAME": "Start Game",
+        "MENU.LOAD-GAME": "Load Game",
+        "MENU.SETTINGS": "Settings",
+        "MENU.EXIT": "Exit Game"
+    }
+    
+}

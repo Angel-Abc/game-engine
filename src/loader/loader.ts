@@ -7,6 +7,7 @@ export interface ILoader {
     loadRoot(): Promise<void>
     reset(): void
     get Game(): GameData
+    
 }
 
 export class Loader implements ILoader {

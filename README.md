@@ -24,3 +24,11 @@ During development the same files are served via `vite-plugin-static-copy`,
 allowing JSON resources from `resources/` or your game folder to be accessible
 while running `npm run dev`.
 
+## Testing
+
+Run the unit tests once with:
+
+```bash
+npm test
+```
+

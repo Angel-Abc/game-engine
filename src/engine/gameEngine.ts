@@ -22,7 +22,7 @@ export const GameEngineState = {
 export type GameEngineState = typeof GameEngineState[keyof typeof GameEngineState]
 
 export type ContextData = {
-    data: {}
+    data: Record<string, unknown>
 }
 
 export interface IGameEngine {

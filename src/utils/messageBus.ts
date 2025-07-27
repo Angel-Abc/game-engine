@@ -4,12 +4,12 @@ import type { CleanUp, Message } from './types'
 type MessageListener = {
     key: number
     message: string
-    handler: (message: Message) => void
+    handler: (message: Message) => void | Promise<void>
 }
 
 export interface IMessageBus {
     postMessage(message: Message): void
-    registerMessageListener(message: string, handler: (message: Message) => void): CleanUp
+    registerMessageListener(message: string, handler: (message: Message) => void | Promise<void>): CleanUp
     registerNotificationMessage(message: string): void
     shutDown(): void
 }
@@ -49,7 +49,7 @@ export class MessageBus implements IMessageBus {
         this.silentMessages.add(message)
     }
 
-    public registerMessageListener(message: string, handler: (message: Message) => void): CleanUp {
+    public registerMessageListener(message: string, handler: (message: Message) => void | Promise<void>): CleanUp {
         if (!this.listeners.has(message)) {
             this.listeners.set(message, [])
         }
@@ -68,7 +68,7 @@ export class MessageBus implements IMessageBus {
         }
     }
 
-    private handleFirstMessage() {
+    private handleFirstMessage(): void | Promise<void> {
         if (this.queue.length === 0) return
         const message = this.queue.shift()
         if (!message) return
@@ -78,15 +78,28 @@ export class MessageBus implements IMessageBus {
             logger('No message listener for message: {0}', message)
             return
         }
-        listeners.forEach(listener => listener.handler(message))
+        const promises: Promise<void>[] = []
+        listeners.forEach(listener => {
+            const result = listener.handler(message)
+            if (result && typeof (result as Promise<void>).then === 'function') {
+                promises.push(result as Promise<void>)
+            }
+        })
+        if (promises.length > 0) {
+            return Promise.all(promises).then(() => {})
+        }
     }
 
-    public emptyQueue(): void {
+    public async emptyQueue(): Promise<void> {
         if (this.emptyingQueue || this.queue.length === 0) return
         this.emptyingQueue = true
         try {
-            while (this.queue.length > 0)
-                this.handleFirstMessage()
+            while (this.queue.length > 0) {
+                const result = this.handleFirstMessage()
+                if (result instanceof Promise) {
+                    await result
+                }
+            }
         } finally {
             this.emptyingQueue = false
         }

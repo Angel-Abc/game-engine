@@ -9,7 +9,10 @@ import { TranslationService, type ITranslationService } from './translationServi
 import { PageManager, type IPageManager } from './pageManager'
 import type { Page } from 'src/loader/data/page'
 
-const gameEngine: GameEngine | null = null
+let gameEngine: GameEngine | null = null
+function setGameEngine(engine: GameEngine): void {
+    gameEngine = engine
+}
 export function getGameEngine(): IGameEngine {
     if (gameEngine === null) {
         fatalError('Game engine is not initialized')
@@ -72,6 +75,8 @@ export class GameEngine implements IGameEngine {
         )
         this.translationService = new TranslationService()
         this.pageManager = new PageManager(this)
+        setGameEngine(this)
+        void this.pageManager
     }
 
     public async start(): Promise<void> {

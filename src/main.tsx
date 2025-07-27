@@ -9,9 +9,8 @@ logDebug('Application starting ...')
 
 const loader: ILoader = new Loader()
 await loader.loadRoot()
-logDebug('Loaded game = {0}', loader.Game)
 const engine: IGameEngine = new GameEngine(loader)
-engine.start()
+await engine.start()
 
 const root = document.getElementById('app')
 if (root) {

@@ -7,4 +7,5 @@ export type Game = {
     description: string
     version: string
     initialData: InitialData
+    languages: Record<string, string>
 }

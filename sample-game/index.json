@@ -5,7 +5,8 @@
     "initial-data": {
         "language": "en"
     },
-    "translations": [
-        "languages/en.json"
-    ]
+    "languages": {
+        "en": "languages/en.json"
+    }
+
 }

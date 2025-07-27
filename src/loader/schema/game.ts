@@ -9,6 +9,6 @@ export const gameSchema = z.object({
     description: z.string(),
     version: z.string(),
     'initial-data': initialDataSchema,
-    'translations': z.array(z.string())
+    languages: z.record(z.string(), z.string())
 })
 export type Game = z.infer<typeof gameSchema>

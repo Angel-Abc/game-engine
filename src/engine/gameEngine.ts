@@ -26,7 +26,7 @@ export type ContextData = {
 }
 
 export interface IGameEngine {
-    start(): void
+    start(): Promise<void>
     get StateManager(): IStateManager<ContextData>
     get State(): ITrackedValue<GameEngineState>
 }
@@ -58,9 +58,9 @@ export class GameEngine implements IGameEngine {
         )
     }
 
-    public start(): void {
+    public async start(): Promise<void> {
         this.state.value = GameEngineState.loading
-        this.loader.reset()
+        await this.loader.reset()
         this.initStateManager()
         this.state.value = GameEngineState.running
     }

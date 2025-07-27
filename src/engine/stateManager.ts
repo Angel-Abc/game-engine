@@ -5,8 +5,9 @@ export interface IStateManager<TData extends Record<string, unknown>> {
     rollbackTurn(): void
     commitTurn(): void
     save(): string 
-    load(saveString: string): void   
+    load(saveString: string): void
     get state(): TData
+    untrackedModify(update: (data: TData) => void): void
 }
 
 export class StateManager<TData extends Record<string, unknown>> implements IStateManager<TData> {
@@ -25,6 +26,10 @@ export class StateManager<TData extends Record<string, unknown>> implements ISta
 
     get state(): TData {
         return this.stateProxy
+    }
+
+    public untrackedModify(update: (data: TData) => void): void {
+        update(this.underlyingData)
     }
 
     public commitTurn(): void {

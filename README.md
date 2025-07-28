@@ -10,11 +10,13 @@ The project uses [Vite](https://vitejs.dev/) with **React** and TypeScript. Afte
 npm run dev
 ```
 
-for a development server, or start the JSON editor with:
+for a development server on port `5173`, or start the JSON editor with:
 
 ```bash
 npm run dev:editor
 ```
+
+This command serves the editor on port `5174`.
 
 Build with:
 

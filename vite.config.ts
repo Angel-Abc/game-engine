@@ -2,8 +2,10 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 import { fileURLToPath, URL } from 'node:url'
+import { resolve } from 'node:path'
 
 const gameFolder = process.env.GAME_FOLDER || 'sample-game'
+const rootDir = fileURLToPath(new URL('.', import.meta.url))
 
 export default defineConfig({
   plugins: [
@@ -21,6 +23,14 @@ export default defineConfig({
   resolve: {
     alias: {
       '@utils': fileURLToPath(new URL('./src/utils', import.meta.url)),
+    },
+  },
+  build: {
+    rollupOptions: {
+      input: {
+        index: resolve(rootDir, 'index.html'),
+        editor: resolve(rootDir, 'editor.html'),
+      },
     },
   },
 })

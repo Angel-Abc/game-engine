@@ -10,7 +10,13 @@ The project uses [Vite](https://vitejs.dev/) with **React** and TypeScript. Afte
 npm run dev
 ```
 
-for a development server, or build with:
+for a development server, or start the JSON editor with:
+
+```bash
+npm run dev:editor
+```
+
+Build with:
 
 ```bash
 npm run build

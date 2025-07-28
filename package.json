@@ -11,6 +11,7 @@
     "dev": "vite --port 5173",
     "dev:editor": "vite --port 5174 --open /editor.html",
     "build": "tsc && vite build",
+    "build:release": "WITH_EDITOR=false npm run build",
     "preview": "vite preview",
     "test": "vitest run",
     "lint": "eslint . --ext .ts,.tsx",

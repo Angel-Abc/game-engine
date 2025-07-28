@@ -24,6 +24,12 @@ Build with:
 npm run build
 ```
 
+To build without including the editor, run:
+
+```bash
+npm run build:release
+```
+
 The build step copies the game data from the directory specified by the
 `GAME_FOLDER` environment variable into `dist/data`. If this variable is not
 set, the `sample-game` folder is used.

@@ -6,6 +6,7 @@ import { resolve } from 'node:path'
 
 const gameFolder = process.env.GAME_FOLDER || 'sample-game'
 const rootDir = fileURLToPath(new URL('.', import.meta.url))
+const withEditor = process.env.WITH_EDITOR !== 'false'
 
 export default defineConfig({
   plugins: [
@@ -29,7 +30,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         index: resolve(rootDir, 'index.html'),
-        editor: resolve(rootDir, 'editor.html'),
+        ...(withEditor ? { editor: resolve(rootDir, 'editor.html') } : {}),
       },
     },
   },

@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const initialDataSchema = z.object({
+const initialDataSchema = z.object({
     language: z.string(),
     'start-page': z.string()
 })

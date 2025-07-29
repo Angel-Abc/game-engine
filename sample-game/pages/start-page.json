@@ -1,3 +1,8 @@
 {
-    "id": "start-screen"
+    "id": "start-screen",
+    "screen": {
+        "type": "grid",
+        "width": 24,
+        "height": 24
+    }
 }

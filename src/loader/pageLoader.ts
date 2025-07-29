@@ -42,6 +42,6 @@ function getComponent(component: Component): ComponentData {
                 }
             }
         default:
-            fatalError('Unsupport page component type: {0}', component.type)
+            fatalError('Unsupported page component type: {0}', component.type)
     }
 }

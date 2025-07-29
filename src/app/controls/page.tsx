@@ -7,8 +7,6 @@ export type PageProps = {
 export const Page: React.FC<PageProps> = ({ page }): React.JSX.Element => {
     if (page === null) return (<></>)
     return (
-        <Screen screen={page.screen}>
-            <div>{page.id}</div>
-        </Screen>
+        <Screen screen={page.screen} components={page.components} />
     )
 }

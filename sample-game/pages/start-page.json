@@ -4,5 +4,16 @@
         "type": "grid",
         "width": 24,
         "height": 24
-    }
+    },
+    "components": [
+        {
+            "type": "game-menu",
+            "position": {
+                "top": 4,
+                "left": 4,
+                "right": 10,
+                "bottom": 16
+            }
+        }
+    ]
 }

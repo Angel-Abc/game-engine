@@ -23,6 +23,9 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
+      '@app': fileURLToPath(new URL('./src/app', import.meta.url)),
+      '@engine': fileURLToPath(new URL('./src/engine', import.meta.url)),
+      '@loader': fileURLToPath(new URL('./src/loader', import.meta.url)),
       '@utils': fileURLToPath(new URL('./src/utils', import.meta.url)),
     },
   },

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { ChangeTracker } from '../../src/engine/changeTracker'
+import { ChangeTracker } from '@engine/changeTracker'
 
 interface Data extends Record<string, unknown> { value: number }
 

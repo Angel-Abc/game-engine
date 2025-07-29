@@ -1,10 +1,10 @@
 import { describe, it, expect, vi } from 'vitest'
-import { PageManager } from '../../src/engine/pageManager'
-import { ChangeTracker } from '../../src/engine/changeTracker'
-import { StateManager } from '../../src/engine/stateManager'
+import { PageManager } from '@engine/pageManager'
+import { ChangeTracker } from '@engine/changeTracker'
+import { StateManager } from '@engine/stateManager'
 import { TrackedValue } from '@utils/trackedState'
-import { GameEngineState, type ContextData, type IGameEngine } from '../../src/engine/gameEngine'
-import type { IPageManager } from '../../src/engine/pageManager'
+import { GameEngineState, type ContextData, type IGameEngine } from '@engine/gameEngine'
+import type { IPageManager } from '@engine/pageManager'
 
 function createTestEngine() {
   const loader = {

@@ -1,13 +1,13 @@
 import { fatalError, logDebug } from '@utils/logMessage'
 import { MessageBus, type IMessageBus } from '@utils/messageBus'
-import type { ILoader } from 'src/loader/loader'
+import type { ILoader } from '@loader/loader'
 import { END_TURN_MESSAGE, ENGINE_STATE_CHANGED_MESSAGE, SWITCH_PAGE_MESSAGE } from './messages'
 import { StateManager, type IStateManager } from './stateManager'
 import { ChangeTracker } from './changeTracker'
 import { TrackedValue, type ITrackedValue } from '@utils/trackedState'
 import { TranslationService, type ITranslationService } from './translationService'
 import { PageManager, type IPageManager } from './pageManager'
-import type { Page } from 'src/loader/data/page'
+import type { Page } from '@loader/data/page'
 
 let gameEngine: GameEngine | null = null
 function setGameEngine(engine: GameEngine): void {

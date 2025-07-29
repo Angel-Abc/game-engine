@@ -1,5 +1,5 @@
 import { fatalError } from '@utils/logMessage'
-import type { Language } from 'src/loader/data/language'
+import type { Language } from '@loader/data/language'
 
 export interface ITranslationService {
     translate(key: string): string

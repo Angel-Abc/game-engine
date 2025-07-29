@@ -1,7 +1,7 @@
 import { useEffect, useState, useSyncExternalStore } from 'react'
-import { GameEngineState, getGameEngine } from '../engine/gameEngine'
-import { PAGE_SWITCHED_MESSAGE } from '../engine/messages'
-import type { Page as PageData } from '../loader/data/page'
+import { GameEngineState, getGameEngine } from '@engine/gameEngine'
+import { PAGE_SWITCHED_MESSAGE } from '@engine/messages'
+import type { Page as PageData } from '@loader/data/page'
 import { Page } from './page'
 
 export const App: React.FC = (): React.JSX.Element => {

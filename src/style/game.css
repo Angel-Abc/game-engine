@@ -18,6 +18,7 @@ body {
 }
 
 .grid-component {
+    display: grid;
     grid-column-start: var(--grid-left);
     grid-column-end: var(--grid-right);
     grid-row-start: var(--grid-top);

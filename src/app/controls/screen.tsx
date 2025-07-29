@@ -1,9 +1,10 @@
 import type { CSSCustomProperties } from '@app/types'
-import type { Component, Screen as ScreenData } from '@loader/data/page'
+import type { Component as ComponentData, Screen as ScreenData } from '@loader/data/page'
+import { Component } from './component'
 
 export type ScreenProps = {
     screen: ScreenData
-    components: Component[]
+    components: ComponentData[]
 }
 
 export const Screen: React.FC<ScreenProps> = ({ screen, components }): React.JSX.Element => {
@@ -25,7 +26,7 @@ export const Screen: React.FC<ScreenProps> = ({ screen, components }): React.JSX
                         }
                         return (
                             <div className='grid-component' style={componentStyle} key={key}>
-                                TODO: render component here
+                                <Component component={component} />
                             </div>
                         )
                     })}

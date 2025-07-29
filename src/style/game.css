@@ -16,3 +16,10 @@ body {
     width: 100vw;
     height: 100vh;
 }
+
+.grid-component {
+    grid-column-start: var(--grid-left);
+    grid-column-end: var(--grid-right);
+    grid-row-start: var(--grid-top);
+    grid-row-end: var(--grid-bottom);
+}

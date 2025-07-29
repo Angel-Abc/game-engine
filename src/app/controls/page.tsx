@@ -1,4 +1,4 @@
-import type { Page as PageData } from 'src/loader/data/page'
+import type { Page as PageData } from '@loader/data/page'
 
 type PageProps = {
     page: PageData | null

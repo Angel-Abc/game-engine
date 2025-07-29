@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { ChangeTracker } from '../../src/engine/changeTracker'
-import { StateManager } from '../../src/engine/stateManager'
+import { ChangeTracker } from '@engine/changeTracker'
+import { StateManager } from '@engine/stateManager'
 
 interface Data extends Record<string, unknown> { count: number }
 

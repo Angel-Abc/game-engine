@@ -11,7 +11,8 @@ function createTestEngine() {
     loadPage: vi.fn(async (page: string) => ({ id: page }))
   }
   const messageBus = {
-    registerMessageListener: vi.fn().mockReturnValue(() => {})
+    registerMessageListener: vi.fn().mockReturnValue(() => {}),
+    postMessage: vi.fn()
   }
   const stateManager = new StateManager<ContextData>({ language: 'en', pages: {}, data: { activePage: null } }, new ChangeTracker<ContextData>())
   const state = new TrackedValue<GameEngineState>('state', GameEngineState.init)

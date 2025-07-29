@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client'
 import { useState } from 'react'
-import '../style.css'
+import './editor.css'
 
 function EditorApp() {
   const [json, setJson] = useState('{}')

@@ -1,0 +1,17 @@
+@import "./variables.css";
+
+body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    font-size: var(--ge-font-size);
+    font-family: var(--ge-font-family);
+}
+
+.screen-grid {
+    display: grid;
+    grid-template-rows: repeat(var(--ge-grid-height), 1fr);
+    grid-template-columns: repeat(var(--ge-grid-width), 1fr);
+    width: 100vw;
+    height: 100vh;
+}

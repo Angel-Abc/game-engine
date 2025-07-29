@@ -1,11 +1,14 @@
 import type { Page as PageData } from '@loader/data/page'
-
-type PageProps = {
+import { Screen } from './screen'
+export type PageProps = {
     page: PageData | null
 }
 
 export const Page: React.FC<PageProps> = ({ page }): React.JSX.Element => {
+    if (page === null) return (<></>)
     return (
-        <div>{page?.id ?? 'NULL'}</div>
+        <Screen screen={page.screen}>
+            <div>{page.id}</div>
+        </Screen>
     )
 }

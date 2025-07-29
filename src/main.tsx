@@ -1,9 +1,11 @@
 import { createRoot } from 'react-dom/client'
-import './style.css'
 import { logDebug } from '@utils/logMessage'
 import { Loader, type ILoader } from '@loader/loader'
 import { GameEngine, type IGameEngine } from '@engine/gameEngine'
 import { App } from '@app/app'
+import './style/reset.css'
+import './style/variables.css'
+import './style/game.css'
 
 logDebug('Application starting ...')
 

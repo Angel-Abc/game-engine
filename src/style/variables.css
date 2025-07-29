@@ -1,0 +1,9 @@
+/* all CSS variables used */
+:root {
+    --ge-min-root-size: min(100vw, 100vh);
+    --ge-font-size: calc(0.02 * var(--ge-min-root-size));
+    --ge-font-family: 'Arial', sans-serif;
+
+    --ge-grid-width: 12;
+    --ge-grid-height: 12;
+}

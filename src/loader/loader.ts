@@ -4,7 +4,7 @@ import { languageSchema, type Language } from './schema/language'
 import { fatalError, logDebug } from '@utils/logMessage'
 import { type Game as GameData } from './data/game'
 import { type Language as LanguageData } from './data/language'
-import { type Page as PageData} from './data/page'
+import { type Page as PageData, type Screen as ScreenData} from './data/page'
 import { pageSchema, type Page } from './schema/page'
 
 export interface ILoader {
@@ -65,8 +65,18 @@ export class Loader implements ILoader {
         if (this.pages.has(page)) return this.pages.get(page)!
         const path = this.game?.pages[page]
         const schemaData = await loadJsonResource<Page>(`${this.basePath}/${path}`, pageSchema)
+        let screen: ScreenData
+        switch(schemaData.screen.type) {
+            case 'grid':
+                screen = {
+                    type: 'grid',
+                    width: schemaData.screen.width,
+                    height: schemaData.screen.height
+                }
+        }
         const result: PageData = {
-            id: schemaData.id
+            id: schemaData.id,
+            screen: screen
         }
         this.pages.set(page, result)
         return result

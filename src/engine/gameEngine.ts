@@ -156,6 +156,5 @@ export class GameEngine implements IGameEngine {
     private initializeMessageListeners(): void {
         this.messageBus.registerNotificationMessage(END_TURN_MESSAGE)
         this.messageBus.registerNotificationMessage(ENGINE_STATE_CHANGED_MESSAGE)
-
     }
 }

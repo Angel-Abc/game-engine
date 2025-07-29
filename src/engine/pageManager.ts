@@ -1,6 +1,6 @@
 import { logDebug } from '@utils/logMessage'
 import { GameEngineState, type IGameEngine } from './gameEngine'
-import { SWITCH_PAGE_MESSAGE } from './messages'
+import { PAGE_SWITCHED_MESSAGE, SWITCH_PAGE_MESSAGE } from './messages'
 
 export interface IPageManager {
     switchPage(page: string): Promise<void>
@@ -38,7 +38,12 @@ export class PageManager implements IPageManager {
             context.pages[page] = pageData
             context.data.activePage = pageData
         }
+        this.gameEngine.MessageBus.postMessage({
+            message: PAGE_SWITCHED_MESSAGE,
+            payload: page
+        })
         this.gameEngine.State.value = GameEngineState.running
+
     }
 }
 

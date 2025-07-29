@@ -1,19 +1,29 @@
-import { logDebug } from '@utils/logMessage'
-import { useSyncExternalStore } from 'react'
+import { useEffect, useState, useSyncExternalStore } from 'react'
 import { GameEngineState, getGameEngine } from '../engine/gameEngine'
+import { PAGE_SWITCHED_MESSAGE } from '../engine/messages'
+import type { Page as PageData } from '../loader/data/page'
+import { Page } from './page'
 
 export const App: React.FC = (): React.JSX.Element => {
-    const engine = getGameEngine()
-    const engineState = useSyncExternalStore(engine.State.subscribe.bind(engine.State), () => engine.State.value)
+  const engine = getGameEngine()
+  const engineState = useSyncExternalStore(engine.State.subscribe.bind(engine.State), () => engine.State.value)
+  const [activePage, setActivePage] = useState<PageData | null>(engine.StateManager.state.data.activePage)
 
-    logDebug('Game component rendered with engine state: {0}', engineState)
+  useEffect(() => {
+    const cleanup = engine.MessageBus.registerMessageListener(PAGE_SWITCHED_MESSAGE, () => {
+      setActivePage(engine.StateManager.state.data.activePage)
+    })
+    return cleanup
+  }, [engine])
 
-    switch(engineState) {
-      case GameEngineState.init:
-        return (<div>Initializing game engine ...</div>)
-      case GameEngineState.loading:
-        return (<div>Loading game data ...</div>)
-      case GameEngineState.running:
-        return (<div>TODO</div>)
-    }
+  switch (engineState) {
+    case GameEngineState.init:
+      return (<div>Initializing game engine ...</div>)
+    case GameEngineState.loading:
+      return (<div>Loading game data ...</div>)
+    case GameEngineState.running:
+      return (
+        <Page page={activePage} />
+      )
+  }
 }

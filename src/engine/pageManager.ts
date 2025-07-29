@@ -27,16 +27,16 @@ export class PageManager implements IPageManager {
 
     public async switchPage(page: string): Promise<void> {
         const context = this.gameEngine.StateManager.state
-        if (context.data.activePage?.id === page) return
+        if (context.data.activePage === page) return
 
         this.gameEngine.State.value = GameEngineState.loading
         if (context.pages[page]) {
-            context.data.activePage = context.pages[page]
+            context.data.activePage = page
         } else {
             const pageData = await this.gameEngine.Loader.loadPage(page)
             logDebug('page {0} loaded as {1}', page, pageData)
             context.pages[page] = pageData
-            context.data.activePage = pageData
+            context.data.activePage = page
         }
         this.gameEngine.MessageBus.postMessage({
             message: PAGE_SWITCHED_MESSAGE,

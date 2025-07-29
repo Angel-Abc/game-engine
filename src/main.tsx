@@ -11,6 +11,16 @@ logDebug('Application starting ...')
 
 const loader: ILoader = new Loader()
 await loader.loadRoot()
+
+// add css files to the header
+// this is only done once
+loader.Styling.forEach(css => {
+  const link = document.createElement('link')
+  link.rel = 'stylesheet'
+  link.href = css
+  document.head.appendChild(link)
+})
+
 const engine: IGameEngine = new GameEngine(loader)
 await engine.start()
 

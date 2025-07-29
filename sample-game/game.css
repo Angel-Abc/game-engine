@@ -1,0 +1,4 @@
+/* overrule game engine default variables */
+:root {
+    --ge-background-color: oklch(32.208% 0.06034 78.284);
+}

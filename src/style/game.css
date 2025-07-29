@@ -6,6 +6,7 @@ body {
     overflow: hidden;
     font-size: var(--ge-font-size);
     font-family: var(--ge-font-family);
+    background-color: var(--ge-background-color);
 }
 
 .screen-grid {

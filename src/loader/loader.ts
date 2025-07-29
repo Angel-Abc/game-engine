@@ -1,10 +1,10 @@
 import { loadJsonResource } from '@utils/loadJsonResource'
 import { gameSchema, type Game } from './schema/game'
-import { languageSchema, type Language } from './schema/language'   
+import { languageSchema, type Language } from './schema/language'
 import { fatalError, logDebug } from '@utils/logMessage'
 import { type Game as GameData } from './data/game'
 import { type Language as LanguageData } from './data/language'
-import { type Page as PageData, type Screen as ScreenData} from './data/page'
+import { type Page as PageData, type Screen as ScreenData } from './data/page'
 import { pageSchema, type Page } from './schema/page'
 
 export interface ILoader {
@@ -12,12 +12,14 @@ export interface ILoader {
     loadRoot(): Promise<void>
     reset(): Promise<void>
     get Game(): GameData
+    get Styling(): string[]
     loadLanguage(language: string): Promise<LanguageData>
 }
 
 export class Loader implements ILoader {
     private basePath: string
     private game: GameData | null = null
+    private styling: string[] = []
     private root: Game | null = null
     private languages: Map<string, LanguageData> = new Map()
     private pages: Map<string, PageData> = new Map()
@@ -35,6 +37,7 @@ export class Loader implements ILoader {
         this.languages.clear()
         this.pages.clear()
         this.root = await loadJsonResource(`${this.basePath}/index.json`, gameSchema)
+        this.styling = this.root.styling.map(css => `${this.basePath}/${css}`)
         this.game = {
             title: this.root.title,
             description: this.root.description,
@@ -66,7 +69,7 @@ export class Loader implements ILoader {
         const path = this.game?.pages[page]
         const schemaData = await loadJsonResource<Page>(`${this.basePath}/${path}`, pageSchema)
         let screen: ScreenData
-        switch(schemaData.screen.type) {
+        switch (schemaData.screen.type) {
             case 'grid':
                 screen = {
                     type: 'grid',
@@ -85,5 +88,9 @@ export class Loader implements ILoader {
     public get Game(): GameData {
         if (this.game) return this.game
         fatalError('No game root loaded yet')
+    }
+
+    public get Styling(): string[] {
+        return this.styling
     }
 }

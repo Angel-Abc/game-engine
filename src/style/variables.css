@@ -1,5 +1,7 @@
 /* all CSS variables used */
 :root {
+    --ge-background-color: oklch(0 0 0);
+
     --ge-min-root-size: min(100vw, 100vh);
     --ge-font-size: calc(0.02 * var(--ge-min-root-size));
     --ge-font-family: 'Arial', sans-serif;

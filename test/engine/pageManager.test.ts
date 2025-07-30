@@ -20,6 +20,7 @@ function createTestEngine() {
   const engine: IGameEngine = {
     async start() {},
     cleanup() {},
+    executeAction: vi.fn(),
     get StateManager() { return stateManager },
     get State() { return state },
     get TranslationService() { return {} as any },

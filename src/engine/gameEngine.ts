@@ -1,4 +1,4 @@
-import { fatalError, logDebug } from '@utils/logMessage'
+import { fatalError } from '@utils/logMessage'
 import { MessageBus, type IMessageBus } from '@utils/messageBus'
 import type { ILoader } from '@loader/loader'
 import { END_TURN_MESSAGE, ENGINE_STATE_CHANGED_MESSAGE, SWITCH_PAGE_MESSAGE } from './messages'
@@ -159,7 +159,6 @@ export class GameEngine implements IGameEngine {
 
     private endTurn(): void {
         this.stateManager?.commitTurn()
-        logDebug('TEST: {0}', this.stateManager?.save())
     }
 
     private initStateManager(): void {

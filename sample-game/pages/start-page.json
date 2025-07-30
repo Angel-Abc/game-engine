@@ -9,11 +9,45 @@
         {
             "type": "game-menu",
             "position": {
-                "top": 4,
+                "top": 6,
                 "left": 4,
-                "right": 10,
-                "bottom": 16
-            }
+                "right": 8,
+                "bottom": 18
+            },
+            "buttons": [
+                {
+                    "label": "MENU.START-GAME",
+                    "action": {
+                        "type": "post-message",
+                        "message": "SYSTEM.START-GAME",
+                        "payload": {}
+                    }
+                },
+                {
+                    "label": "MENU.SETTINGS",
+                    "action": {
+                        "type": "post-message",
+                        "message": "SYSTEM.SHOW-SETTINGS",
+                        "payload": {}
+                    }
+                },
+                {
+                    "label": "MENU.LOAD-GAME",
+                    "action": {
+                        "type": "post-message",
+                        "message": "SYSTEM.LOAD-GAME",
+                        "payload": {}
+                    }
+                },
+                {
+                    "label": "MENU.EXIT-GAME",
+                    "action": {
+                        "type": "post-message",
+                        "message": "SYSTEM.EXIT-GAME",
+                        "payload": {}
+                    }
+                }
+            ]
         }
     ]
 }

@@ -8,6 +8,7 @@ import { TrackedValue, type ITrackedValue } from '@utils/trackedState'
 import { TranslationService, type ITranslationService } from './translationService'
 import { PageManager, type IPageManager } from './pageManager'
 import type { Page } from '@loader/data/page'
+import type { Action } from '@loader/data/action'
 
 let gameEngine: GameEngine | null = null
 function setGameEngine(engine: GameEngine): void {
@@ -39,6 +40,7 @@ export type ContextData = {
 export interface IGameEngine {
     start(): Promise<void>
     cleanup(): void
+    executeAction(action: Action): void
     get StateManager(): IStateManager<ContextData>
     get State(): ITrackedValue<GameEngineState>
     get TranslationService(): ITranslationService
@@ -96,6 +98,10 @@ export class GameEngine implements IGameEngine {
 
     public cleanup(): void {
         this.pageManager.cleanup()
+    }
+
+    public executeAction(action: Action): void {
+        logDebug('TODO action: {0}', action)
     }
 
     public get StateManager(): IStateManager<ContextData> {

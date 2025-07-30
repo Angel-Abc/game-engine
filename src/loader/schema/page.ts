@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { buttonSchema } from './button'
 
 const componentPositionSchema = z.object({
     top: z.number(),
@@ -12,7 +13,8 @@ const baseComponentSchema = z.object({
 })
 
 const gameMenuComponentSchema = baseComponentSchema.extend({
-    type: z.literal('game-menu')
+    type: z.literal('game-menu'),
+    buttons: z.array(buttonSchema)
 })
 const ComponentSchema = z.discriminatedUnion('type', [gameMenuComponentSchema])
 
@@ -26,8 +28,9 @@ const screenSchema = z.discriminatedUnion('type', [gridScreenSchema])
 export const pageSchema = z.object({
     id: z.string(),
     screen: screenSchema,
-    components: z.array(ComponentSchema)
+    components: z.array(ComponentSchema),
 })
+
 export type Page = z.infer<typeof pageSchema>
 export type Screen = z.infer<typeof screenSchema>
 export type Component = z.infer<typeof ComponentSchema>

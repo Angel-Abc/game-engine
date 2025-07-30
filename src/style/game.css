@@ -24,3 +24,15 @@ body {
     grid-row-start: var(--grid-top);
     grid-row-end: var(--grid-bottom);
 }
+
+.game-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    & button {
+        flex: 1;
+        cursor: pointer;
+        font-size: 125%;
+    }
+}

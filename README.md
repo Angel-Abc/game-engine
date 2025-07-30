@@ -38,6 +38,24 @@ During development the same files are served via `vite-plugin-static-copy`,
 allowing JSON resources from `resources/` or your game folder to be accessible
 while running `npm run dev`.
 
+## Game API Server
+
+The editor communicates with a small Express server that reads and writes the
+`index.json` file of your game. Start it together with the dev server using:
+
+```bash
+npm run dev
+```
+
+or run it separately with:
+
+```bash
+npm run dev:server
+```
+
+The server uses the `GAME_FOLDER` environment variable to determine where the
+game data lives. If not set, it defaults to `sample-game`.
+
 ## Testing
 
 Run the unit tests once with:

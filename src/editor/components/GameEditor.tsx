@@ -22,6 +22,7 @@ export const GameEditor: React.FC = () => {
           },
           languages: { ...parsed.languages },
           pages: { ...parsed.pages },
+          handlers: [...parsed.handlers],
         }
         setGame(result)
         setStyling(parsed.styling)
@@ -34,6 +35,7 @@ export const GameEditor: React.FC = () => {
           initialData: { language: '', startPage: '' },
           languages: {},
           pages: {},
+          handlers: [],
         })
         setStyling([])
       })
@@ -88,6 +90,7 @@ export const GameEditor: React.FC = () => {
       languages: game.languages,
       pages: game.pages,
       styling,
+      handlers: game.handlers,
     }
     const json = JSON.stringify(obj, null, 2)
     void saveGame(json)

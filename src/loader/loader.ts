@@ -7,6 +7,7 @@ import { type Language as LanguageData } from './data/language'
 import { type Page as PageData } from './data/page'
 import { pageLoader } from './pageLoader'
 import type { Handlers } from './data/handler'
+import { handlerLoader } from './handlerLoader'
 
 export interface ILoader {
     loadPage(page: string): Promise<PageData>
@@ -15,6 +16,7 @@ export interface ILoader {
     get Game(): GameData
     get Styling(): string[]
     loadLanguage(language: string): Promise<LanguageData>
+    loadHandlers(path: string): Promise<Handlers>
 }
 
 export class Loader implements ILoader {
@@ -24,6 +26,7 @@ export class Loader implements ILoader {
     private root: Game | null = null
     private languages: Map<string, LanguageData> = new Map()
     private pages: Map<string, PageData> = new Map()
+    private handlers: Map<string, Handlers> = new Map()
 
     constructor(basePath: string = '/data') {
         this.basePath = basePath
@@ -37,6 +40,7 @@ export class Loader implements ILoader {
     public async reset(): Promise<void> {
         this.languages.clear()
         this.pages.clear()
+        this.handlers.clear()
         this.root = await loadJsonResource(`${this.basePath}/index.json`, gameSchema)
         this.styling = this.root.styling.map(css => `${this.basePath}/${css}`)
         this.game = {
@@ -70,6 +74,13 @@ export class Loader implements ILoader {
         if (this.pages.has(page)) return this.pages.get(page)!
         const path = this.game?.pages[page] ?? fatalError('Unknown page: {0}', page)
         return pageLoader(this.basePath, path, result => this.pages.set(page, result))
+    }
+
+    public async loadHandlers(path: string): Promise<Handlers> {
+        if (this.handlers.has(path)) return this.handlers.get(path)!
+        const handlers = await handlerLoader(this.basePath, path)
+        this.handlers.set(path, handlers)
+        return handlers
     }
 
     public get Game(): GameData {

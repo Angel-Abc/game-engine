@@ -11,7 +11,7 @@
   },
   "pages": {
     "start-page": "pages/start-page.json",
-    "main-game": "page/main-game.json"
+    "main-game": "pages/main-game.json"
   },
   "styling": [
     "game.css"

@@ -184,6 +184,16 @@ export class GameEngine implements IGameEngine {
 
     private async registerGameHandlers(): Promise<void> {
         this.cleanupHandlers()
-        // TODO: load all handlers files, register each handler, keep track of cleanup
+        const handlerFiles = this.loader.Game.handlers
+        for (const path of handlerFiles) {
+            const handlers = await this.loader.loadHandlers(path)
+            handlers.forEach(handler => {
+                const cleanup = this.messageBus.registerMessageListener(
+                    handler.message,
+                    () => this.executeAction(handler.action)
+                )
+                this.handlerCleanupList.push(cleanup)
+            })
+        }
     }
 }

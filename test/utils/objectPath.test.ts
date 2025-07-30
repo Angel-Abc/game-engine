@@ -12,5 +12,6 @@ describe('setValueAtPath', () => {
     const obj: Record<string, any> = {}
     setValueAtPath(obj, 'x.y', 3)
     expect(obj.x).toBeUndefined()
+    expect(Object.keys(obj).length).toBe(0)
   })
 })

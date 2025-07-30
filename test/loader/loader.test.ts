@@ -8,7 +8,8 @@ const rootData = {
   'initial-data': { language: 'en', 'start-page': 'page1' },
   languages: { en: 'en.json' },
   pages: { page1: 'page1.json' },
-  styling: []
+  styling: [],
+  handlers: ['handlers.json']
 }
 
 const pageData = {
@@ -16,6 +17,13 @@ const pageData = {
   screen: { type: 'grid', width: 1, height: 1 },
   components: []
 }
+
+const handlersData = [
+  {
+    message: 'TEST.MSG',
+    action: { type: 'post-message', message: 'TARGET', payload: {} }
+  }
+]
 
 let originalFetch: typeof fetch
 
@@ -65,5 +73,29 @@ describe('Loader', () => {
     await loader.loadRoot()
 
     await expect(loader.loadPage('missing')).rejects.toThrow()
+  })
+
+  it('caches loaded handlers', async () => {
+    const fetchMock = vi.fn().mockImplementation(async (url: string) => {
+      if (url.endsWith('/index.json')) {
+        return { ok: true, json: vi.fn().mockResolvedValue(rootData) } as any
+      }
+      if (url.endsWith('/handlers.json')) {
+        return { ok: true, json: vi.fn().mockResolvedValue(handlersData) } as any
+      }
+      throw new Error(`Unexpected url ${url}`)
+    })
+    globalThis.fetch = fetchMock as any
+
+    const loader = new Loader('/data')
+    await loader.loadRoot()
+
+    const first = await loader.loadHandlers('handlers.json')
+    const second = await loader.loadHandlers('handlers.json')
+
+    expect(first).toEqual(handlersData)
+    expect(second).toBe(first)
+    const handlerCalls = fetchMock.mock.calls.filter(call => String(call[0]).endsWith('/handlers.json'))
+    expect(handlerCalls.length).toBe(1)
   })
 })

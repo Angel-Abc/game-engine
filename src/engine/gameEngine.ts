@@ -101,7 +101,16 @@ export class GameEngine implements IGameEngine {
     }
 
     public executeAction(action: Action): void {
-        logDebug('TODO action: {0}', action)
+        switch (action.type) {
+            case 'post-message':
+                this.messageBus.postMessage({
+                    message: action.message,
+                    payload: action.payload
+                })
+                break
+            default:
+                fatalError('Unsupported action type')
+        }
     }
 
     public get StateManager(): IStateManager<ContextData> {

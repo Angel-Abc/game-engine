@@ -13,11 +13,17 @@ export async function saveGame(
     alertFn('Invalid JSON')
     return
   }
-  const response = await fetchFn('/api/game', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: json,
-  })
+  let response: Response
+  try {
+    response = await fetchFn('/api/game', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: json,
+    })
+  } catch (e) {
+    alertFn((e as Error).message)
+    return
+  }
   if (response.ok) {
     alertFn('Saved')
   } else {

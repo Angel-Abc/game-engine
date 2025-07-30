@@ -9,6 +9,7 @@ import { TranslationService, type ITranslationService } from './translationServi
 import { PageManager, type IPageManager } from './pageManager'
 import type { Page } from '@loader/data/page'
 import type { Action } from '@loader/data/action'
+import type { CleanUp } from '@utils/types'
 
 let gameEngine: GameEngine | null = null
 function setGameEngine(engine: GameEngine): void {
@@ -59,6 +60,7 @@ export class GameEngine implements IGameEngine {
     private endingTurn: boolean = false
     private currentLanguage: string | null = null
     private state: ITrackedValue<GameEngineState>
+    private handlerCleanupList: CleanUp[] = []
 
     constructor(loader: ILoader) {
         this.loader = loader
@@ -85,6 +87,7 @@ export class GameEngine implements IGameEngine {
     public async start(): Promise<void> {
         this.state.value = GameEngineState.loading
         await this.loader.reset()
+        await this.registerGameHandlers()
         this.initStateManager()
         const language = (this.currentLanguage ?? this.stateManager?.state.language) ?? fatalError('No language set!')
         this.currentLanguage = language
@@ -98,6 +101,7 @@ export class GameEngine implements IGameEngine {
 
     public cleanup(): void {
         this.pageManager.cleanup()
+        this.cleanupHandlers()
     }
 
     public executeAction(action: Action): void {
@@ -172,5 +176,15 @@ export class GameEngine implements IGameEngine {
     private initializeMessageListeners(): void {
         this.messageBus.registerNotificationMessage(END_TURN_MESSAGE)
         this.messageBus.registerNotificationMessage(ENGINE_STATE_CHANGED_MESSAGE)
+    }
+
+    private cleanupHandlers() {
+        this.handlerCleanupList.forEach(c => c())
+        this.handlerCleanupList = []
+    }
+
+    private async registerGameHandlers(): Promise<void> {
+        this.cleanupHandlers()
+        // TODO: load all handlers files, register each handler, keep track of cleanup
     }
 }

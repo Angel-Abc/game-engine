@@ -17,7 +17,7 @@ export const GameMenu: React.FC<GameMenuProps> = ({ component }): React.JSX.Elem
         <div className='game-menu'>
             {component.buttons.map(button => (
                 <button type='button' key={button.label} onClick={() => onButtonClick(button)}>
-                    {button.label}
+                    {engine.TranslationService.translate(button.label)}
                 </button>
             ))}
         </div>

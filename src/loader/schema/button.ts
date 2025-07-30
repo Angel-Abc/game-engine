@@ -1,9 +1,9 @@
 import { z } from 'zod'
-import { ActionSchema } from './action'
+import { actionSchema } from './action'
 
 export const buttonSchema = z.object({
     label: z.string(),
-    action: ActionSchema
+    action: actionSchema
 })
 
 export type Button = z.infer<typeof buttonSchema>

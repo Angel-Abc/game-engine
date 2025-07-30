@@ -1,6 +1,6 @@
 {
   "title": "Sample Game",
-  "description": "A sample game for development of the game engine!",
+  "description": "A sample game for development of the game engine",
   "version": "1.0.0",
   "initial-data": {
     "language": "en",
@@ -10,9 +10,13 @@
     "en": "languages/en.json"
   },
   "pages": {
-    "start-page": "pages/start-page.json"
+    "start-page": "pages/start-page.json",
+    "main-game": "page/main-game.json"
   },
   "styling": [
     "game.css"
+  ],
+  "handlers": [
+    "handlers/system.json"
   ]
 }

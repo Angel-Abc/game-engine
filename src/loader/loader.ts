@@ -6,6 +6,7 @@ import { type Game as GameData } from './data/game'
 import { type Language as LanguageData } from './data/language'
 import { type Page as PageData } from './data/page'
 import { pageLoader } from './pageLoader'
+import type { Handlers } from './data/handler'
 
 export interface ILoader {
     loadPage(page: string): Promise<PageData>
@@ -47,7 +48,8 @@ export class Loader implements ILoader {
                 startPage: this.root['initial-data']['start-page']
             },
             languages: this.root.languages,
-            pages: this.root.pages
+            pages: this.root.pages,
+            handlers: this.root.handlers
         }
     }
 

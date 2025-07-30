@@ -1,0 +1,9 @@
+{
+    "id": "main-game",
+    "screen": {
+        "type": "grid",
+        "width": 24,
+        "height": 24
+    },
+    "components": []
+}

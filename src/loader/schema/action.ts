@@ -6,6 +6,6 @@ export const postMessageActionSchema = z.object({
     payload: z.union([z.number(), z.string(), z.record(z.string(), z.unknown())])
 })
 
-export const ActionSchema = z.discriminatedUnion('type', [postMessageActionSchema])
+export const actionSchema = z.discriminatedUnion('type', [postMessageActionSchema])
 
-export type Action = z.infer<typeof ActionSchema>
+export type Action = z.infer<typeof actionSchema>

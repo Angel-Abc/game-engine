@@ -10,4 +10,5 @@ export type Game = {
     initialData: InitialData
     languages: Record<string, string>
     pages: Record<string, string>
+    handlers: string[]
 }

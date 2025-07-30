@@ -14,7 +14,7 @@ export async function pageLoader(basePath: string, path: string, update: (page: 
     const result: PageData = {
         id: schemaData.id,
         screen: getScreenData(schemaData.screen),
-        components: getComponents(basePath, schemaData.components),
+        components: getComponents(basePath, schemaData.components)
     }
     update(result)
     return result

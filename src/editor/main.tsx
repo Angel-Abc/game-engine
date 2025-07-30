@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client'
-import { useState, useEffect } from 'react'
+import { GameEditor } from './components/GameEditor'
 import './editor.css'
 
 export async function saveGame(
@@ -33,25 +33,10 @@ export async function saveGame(
 }
 
 function EditorApp() {
-  const [json, setJson] = useState('{}')
-
-  useEffect(() => {
-    fetch('/api/game')
-      .then((r) => r.json())
-      .then((data) => setJson(JSON.stringify(data, null, 2)))
-      .catch(() => setJson('{}'))
-  }, [])
-
-  const save = () => saveGame(json)
   return (
     <div>
       <h1>Game JSON Editor</h1>
-      <textarea
-        style={{ width: '100%', height: '80vh' }}
-        value={json}
-        onChange={(e) => setJson(e.target.value)}
-      />
-      <button onClick={save}>Save</button>
+      <GameEditor />
     </div>
   )
 }

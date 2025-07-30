@@ -30,4 +30,11 @@ describe('saveGame', () => {
     await saveGame('{}', fetchMock as any, alertMock)
     expect(alertMock).toHaveBeenCalledWith('error')
   })
+
+  it('alerts error message when fetch rejects', async () => {
+    const fetchMock = vi.fn().mockRejectedValue(new Error('network'))
+    const alertMock = vi.fn()
+    await saveGame('{}', fetchMock as any, alertMock)
+    expect(alertMock).toHaveBeenCalledWith('network')
+  })
 })

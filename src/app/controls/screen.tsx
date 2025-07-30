@@ -1,5 +1,6 @@
 import type { CSSCustomProperties } from '@app/types'
-import type { Component as ComponentData, Screen as ScreenData } from '@loader/data/page'
+import type { Screen as ScreenData } from '@loader/data/page'
+import type { Component as ComponentData } from '@loader/data/component'
 import { Component } from './component'
 
 export type ScreenProps = {
@@ -19,10 +20,10 @@ export const Screen: React.FC<ScreenProps> = ({ screen, components }): React.JSX
                     {components.map((component, index) => {
                         const key = `${component.type}_${index}`
                         const componentStyle: CSSCustomProperties = {
-                            '--grid-top': component.position.top.toString(),
-                            '--grid-left': component.position.left.toString(),
-                            '--grid-right': component.position.right.toString(),
-                            '--grid-bottom': component.position.bottom.toString(),
+                            '--grid-top': (component.position.top + 1).toString(),
+                            '--grid-left': (component.position.left + 1).toString(),
+                            '--grid-right': (component.position.right + 1).toString(),
+                            '--grid-bottom': (component.position.bottom + 1).toString(),
                         }
                         return (
                             <div className='grid-component' style={componentStyle} key={key}>

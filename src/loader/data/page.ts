@@ -1,21 +1,4 @@
-import type { Button } from './button'
-
-export interface ComponentPosition {
-    top: number
-    left: number
-    right: number
-    bottom: number
-}
-
-export interface BaseComponent {
-    position: ComponentPosition
-}
-
-export interface GameMenuComponent extends BaseComponent {
-    type: 'game-menu'
-    buttons: Button[]
-}
-export type Component = GameMenuComponent
+import type { Component } from './component'
 
 export interface GridScreen {
     type: 'grid'

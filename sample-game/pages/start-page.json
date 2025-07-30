@@ -7,6 +7,16 @@
     },
     "components": [
         {
+            "type": "image",
+            "position": {
+                "top": 0,
+                "left": 0,
+                "right": 24,
+                "bottom": 24
+            },
+            "image": "images/temp-background.png"
+        },
+        {
             "type": "game-menu",
             "position": {
                 "top": 6,

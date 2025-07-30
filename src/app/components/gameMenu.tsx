@@ -1,6 +1,6 @@
 import { getGameEngine } from '@engine/gameEngine'
 import type { Button } from '@loader/data/button'
-import type { GameMenuComponent } from '@loader/data/page'
+import type { GameMenuComponent } from '@loader/data/component'
 
 export type GameMenuProps = {
     component: GameMenuComponent

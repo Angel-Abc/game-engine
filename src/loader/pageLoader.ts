@@ -64,6 +64,14 @@ function getComponent(context: Context, component: Component): ComponentData {
                 type: 'image',
                 image: `${context.basePath}/${component.image}`  
             }
+        case 'squares-map':
+            return {
+                type: 'squares-map',
+                mapSize: {
+                    rows: component.mapSize.rows,
+                    columns: component.mapSize.columns
+                }
+            }
     }
 }
 

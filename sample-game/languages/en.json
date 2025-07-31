@@ -4,7 +4,13 @@
         "MENU.START-GAME": "Start Game",
         "MENU.LOAD-GAME": "Load Game",
         "MENU.SETTINGS": "Settings",
-        "MENU.EXIT-GAME": "Exit Game"
+        "MENU.EXIT-GAME": "Exit Game",
+        "OUTDOOR.TILE-OCEAN": "Ocean. Waves and water.",
+        "OUTDOOR.TILE-BEACH": "Beach. Yellow sand.",
+        "OUTDOOR.TILE-DUNE": "Sand dunes.",
+        "OUTDOOR.TILE-FOREST": "Forest. Large green trees.",
+        "OUTDOOR.TILE-ROAD": "Cobblestones all the way.",
+        "OUTDOOR.TILE-GRASS": "Fields of green grass."
     }
     
 }

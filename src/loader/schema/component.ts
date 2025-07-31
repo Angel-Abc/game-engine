@@ -11,6 +11,18 @@ const imageComponentSchema = z.object({
     image: z.string()
 })
 
-export const componentSchema = z.discriminatedUnion('type', [gameMenuComponentSchema, imageComponentSchema])
+const squaresMapComponentSchema = z.object({
+    type: z.literal('squares-map'),
+    mapSize: z.object({
+        rows: z.number(),
+        columns: z.number()
+    })
+})
+
+export const componentSchema = z.discriminatedUnion('type', [
+    gameMenuComponentSchema, 
+    imageComponentSchema, 
+    squaresMapComponentSchema
+])
 
 export type Component = z.infer<typeof componentSchema>

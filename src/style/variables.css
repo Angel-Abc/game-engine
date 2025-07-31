@@ -8,6 +8,13 @@
 
     --ge-grid-width: 12;
     --ge-grid-height: 12;
+    --ge-grid-item-top: 0;
+    --ge-grid-item-left: 0;
+    --ge-grid-item-right: 11;
+    --ge-grid-item-bottom: 11;
+
+    --ge-map-viewport-width: 9;
+    --ge-map-viewport-height: 9;
 
     --ge-image-path: ''
 }

@@ -19,10 +19,8 @@ body {
 
 .grid-component {
     display: grid;
-    grid-column-start: var(--grid-left);
-    grid-column-end: var(--grid-right);
-    grid-row-start: var(--grid-top);
-    grid-row-end: var(--grid-bottom);
+    grid-column: var(--ge-grid-item-left) / calc(var(--ge-grid-item-right) + 1);
+    grid-row: var(--ge-grid-item-top) / calc(var(--ge-grid-item-bottom) + 1);
 }
 
 .game-menu {

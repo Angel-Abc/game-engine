@@ -10,5 +10,18 @@ export interface ImageComponent {
     image: string
 }
 
-export type Component = GameMenuComponent | ImageComponent
+interface MapSize {
+    rows: number
+    columns: number
+}
+
+export interface SquaresMapComponent {
+    type: 'squares-map',
+    mapSize: MapSize
+}
+
+export type Component =
+    GameMenuComponent |
+    ImageComponent |
+    SquaresMapComponent
 

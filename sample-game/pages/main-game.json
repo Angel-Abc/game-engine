@@ -4,6 +4,23 @@
         "type": "grid",
         "width": 24,
         "height": 24,
-        "components": []
+        "components": [
+            {
+                "position": {
+                    "top": 0,
+                    "left": 18,
+                    "right": 23,
+                    "bottom": 5
+                },
+                "component": {
+                    "type": "squares-map",
+                    "mapSize": {
+                        "rows": 9,
+                        "columns": 13
+                    }
+                }
+
+            }
+        ]
     }
 }

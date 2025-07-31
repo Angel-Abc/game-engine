@@ -13,6 +13,9 @@
     "start-page": "pages/start-page.json",
     "main-game": "pages/main-game.json"
   },
+  "tiles": {
+    "outdoor": "tiles/outdoor/index.json"
+  },
   "styling": [
     "game.css"
   ],

@@ -18,10 +18,10 @@ export const Screen: React.FC<ScreenProps> = ({ screen }): React.JSX.Element => 
                     {screen.components.map((item, index) => {
                         const key = `${item.component.type}_${index}`
                         const componentStyle: CSSCustomProperties = {
-                            '--grid-top': (item.position.top + 1).toString(),
-                            '--grid-left': (item.position.left + 1).toString(),
-                            '--grid-right': (item.position.right + 1).toString(),
-                            '--grid-bottom': (item.position.bottom + 1).toString(),
+                            '--ge-grid-item-top': (item.position.top + 1).toString(),
+                            '--ge-grid-item-left': (item.position.left + 1).toString(),
+                            '--ge-grid-item-right': (item.position.right + 1).toString(),
+                            '--ge-grid-item-bottom': (item.position.bottom + 1).toString(),
                         }
                         return (
                             <div className='grid-component' style={componentStyle} key={key}>

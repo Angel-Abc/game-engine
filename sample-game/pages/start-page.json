@@ -9,8 +9,8 @@
                 "position": {
                     "top": 0,
                     "left": 0,
-                    "right": 24,
-                    "bottom": 24
+                    "right": 23,
+                    "bottom": 23
                 },
                 "component": {
                     "type": "image",
@@ -21,8 +21,8 @@
                 "position": {
                     "top": 6,
                     "left": 4,
-                    "right": 8,
-                    "bottom": 18
+                    "right": 7,
+                    "bottom": 17
                 },
                 "component": {
                     "type": "game-menu",

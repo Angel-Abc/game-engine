@@ -14,8 +14,7 @@ const rootData = {
 
 const pageData = {
   id: 'page1',
-  screen: { type: 'grid', width: 1, height: 1 },
-  components: []
+  screen: { type: 'grid', width: 1, height: 1, components: [] }
 }
 
 const handlersData = [

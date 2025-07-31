@@ -73,7 +73,7 @@ export class Loader implements ILoader {
     public async loadPage(page: string): Promise<PageData> {
         if (this.pages.has(page)) return this.pages.get(page)!
         const path = this.game?.pages[page] ?? fatalError('Unknown page: {0}', page)
-        return pageLoader(this.basePath, path, result => this.pages.set(page, result))
+        return pageLoader({basePath: this.basePath, path}, result => this.pages.set(page, result))
     }
 
     public async loadHandlers(path: string): Promise<Handlers> {

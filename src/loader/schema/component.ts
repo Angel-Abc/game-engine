@@ -1,27 +1,16 @@
 import { z } from 'zod'
 import { buttonSchema } from './button'
 
-const componentPositionSchema = z.object({
-    top: z.number(),
-    left: z.number(),
-    right: z.number(),
-    bottom: z.number()
-})
-
-const baseComponentSchema = z.object({
-    position: componentPositionSchema
-})
-
-const gameMenuComponentSchema = baseComponentSchema.extend({
+const gameMenuComponentSchema = z.object({
     type: z.literal('game-menu'),
     buttons: z.array(buttonSchema)
 })
 
-const imageComponentSchema = baseComponentSchema.extend({
+const imageComponentSchema = z.object({
     type: z.literal('image'),
     image: z.string()
 })
 
-export const ComponentSchema = z.discriminatedUnion('type', [gameMenuComponentSchema, imageComponentSchema])
+export const componentSchema = z.discriminatedUnion('type', [gameMenuComponentSchema, imageComponentSchema])
 
-export type Component = z.infer<typeof ComponentSchema>
+export type Component = z.infer<typeof componentSchema>

@@ -1,14 +1,12 @@
 import type { CSSCustomProperties } from '@app/types'
 import type { Screen as ScreenData } from '@loader/data/page'
-import type { Component as ComponentData } from '@loader/data/component'
 import { Component } from './component'
 
 export type ScreenProps = {
     screen: ScreenData
-    components: ComponentData[]
 }
 
-export const Screen: React.FC<ScreenProps> = ({ screen, components }): React.JSX.Element => {
+export const Screen: React.FC<ScreenProps> = ({ screen }): React.JSX.Element => {
     switch (screen.type) {
         case 'grid': {
             const style: CSSCustomProperties = {
@@ -17,19 +15,20 @@ export const Screen: React.FC<ScreenProps> = ({ screen, components }): React.JSX
             }
             return (
                 <div style={style} className='screen-grid'>
-                    {components.map((component, index) => {
-                        const key = `${component.type}_${index}`
+                    {screen.components.map((item, index) => {
+                        const key = `${item.component.type}_${index}`
                         const componentStyle: CSSCustomProperties = {
-                            '--grid-top': (component.position.top + 1).toString(),
-                            '--grid-left': (component.position.left + 1).toString(),
-                            '--grid-right': (component.position.right + 1).toString(),
-                            '--grid-bottom': (component.position.bottom + 1).toString(),
+                            '--grid-top': (item.position.top + 1).toString(),
+                            '--grid-left': (item.position.left + 1).toString(),
+                            '--grid-right': (item.position.right + 1).toString(),
+                            '--grid-bottom': (item.position.bottom + 1).toString(),
                         }
                         return (
                             <div className='grid-component' style={componentStyle} key={key}>
-                                <Component component={component} />
+                                <Component component={item.component} />
                             </div>
                         )
+
                     })}
                 </div>
             )

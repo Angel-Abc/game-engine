@@ -3,7 +3,7 @@
     "screen": {
         "type": "grid",
         "width": 24,
-        "height": 24
-    },
-    "components": []
+        "height": 24,
+        "components": []
+    }
 }

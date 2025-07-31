@@ -1,63 +1,68 @@
 import { loadJsonResource } from '@utils/loadJsonResource'
-import type { Page as PageData, Screen as ScreenData } from './data/page'
+import type { Page as PageData, Screen as ScreenData, GridScreenItem as GridScreenItemData } from './data/page'
 import type { Component as ComponentData } from './data/component'
 import type { Button as ButtonData } from './data/button'
 import type { Action as Actiondata } from './data/action'
-import { type Page, type Screen, pageSchema } from './schema/page'
+import { type Page, type Screen, pageSchema, type GridScreenItem } from './schema/page'
 import { type Component } from './data/component'
 import { type Button } from './schema/button'
 import { type Action } from './schema/action'
 import { fatalError } from '@utils/logMessage'
 
-export async function pageLoader(basePath: string, path: string, update: (page: PageData) => void): Promise<PageData> {
-    const schemaData = await loadJsonResource<Page>(`${basePath}/${path}`, pageSchema)
+interface Context {
+    basePath: string
+    path: string
+}
+
+export async function pageLoader(context: Context, update: (page: PageData) => void): Promise<PageData> {
+    const schemaData = await loadJsonResource<Page>(`${context.basePath}/${context.path}`, pageSchema)
     const result: PageData = {
         id: schemaData.id,
-        screen: getScreenData(schemaData.screen),
-        components: getComponents(basePath, schemaData.components)
+        screen: getScreenData(context, schemaData.screen),
     }
     update(result)
     return result
 }
 
-function getScreenData(screen: Screen): ScreenData {
+function getScreenData(context: Context, screen: Screen): ScreenData {
     switch (screen.type) {
         case 'grid':
             return {
                 type: 'grid',
                 width: screen.width,
-                height: screen.height
+                height: screen.height,
+                components: getGridScreenComponents(context, screen.components)
             }
     }
 }
 
-function getComponents(basePath: string, components: Component[]): ComponentData[] {
-    return components.map(c => getComponent(basePath, c))
+function getGridScreenComponents(context: Context, components: GridScreenItem[]): GridScreenItemData[] {
+    return components.map(c => getGridScreenComponent(context, c))    
 }
 
-function getComponent(basePath: string, component: Component): ComponentData {
+function getGridScreenComponent(context: Context, item: GridScreenItem): GridScreenItemData {
+    return {
+        position: {
+            top: item.position.top,
+            left: item.position.left,
+            right: item.position.right,
+            bottom: item.position.bottom
+        },
+        component: getComponent(context, item.component)
+    }
+}
+
+function getComponent(context: Context, component: Component): ComponentData {
     switch (component.type) {
         case 'game-menu':
             return {
                 type: 'game-menu',
-                position: {
-                    top: component.position.top,
-                    left: component.position.left,
-                    right: component.position.right,
-                    bottom: component.position.bottom
-                },
                 buttons: getButtons(component.buttons)
             }
         case 'image':
             return {
                 type: 'image',
-                position: {
-                    top: component.position.top,
-                    left: component.position.left,
-                    right: component.position.right,
-                    bottom: component.position.bottom
-                },
-                image: `${basePath}/${component.image}`  
+                image: `${context.basePath}/${component.image}`  
             }
     }
 }

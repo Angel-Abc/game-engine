@@ -20,9 +20,9 @@ describe('Screen', () => {
     const child = (element.props.children as React.ReactElement<Record<string, unknown>>[])[0]
     const style = child.props.style as Record<string, string>
 
-    expect(style['--grid-top']).toBe('2')
-    expect(style['--grid-left']).toBe('3')
-    expect(style['--grid-right']).toBe('4')
-    expect(style['--grid-bottom']).toBe('5')
+    expect(style['--ge-grid-item-top']).toBe('2')
+    expect(style['--ge-grid-item-left']).toBe('3')
+    expect(style['--ge-grid-item-right']).toBe('4')
+    expect(style['--ge-grid-item-bottom']).toBe('5')
   })
 })

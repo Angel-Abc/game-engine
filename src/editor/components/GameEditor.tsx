@@ -22,6 +22,7 @@ export const GameEditor: React.FC = () => {
           },
           languages: { ...parsed.languages },
           pages: { ...parsed.pages },
+          tiles: { ...parsed.tiles },
           handlers: [...parsed.handlers],
         }
         setGame(result)
@@ -35,6 +36,7 @@ export const GameEditor: React.FC = () => {
           initialData: { language: '', startPage: '' },
           languages: {},
           pages: {},
+          tiles: {},
           handlers: [],
         })
         setStyling([])
@@ -89,6 +91,7 @@ export const GameEditor: React.FC = () => {
       },
       languages: game.languages,
       pages: game.pages,
+      tiles: game.tiles,
       styling,
       handlers: game.handlers,
     }

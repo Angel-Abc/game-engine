@@ -8,6 +8,7 @@ const rootData = {
   'initial-data': { language: 'en', 'start-page': 'page1' },
   languages: { en: 'en.json' },
   pages: { page1: 'page1.json' },
+  tiles: { outdoor: 'tiles.json' },
   styling: [],
   handlers: ['handlers.json']
 }
@@ -23,6 +24,13 @@ const handlersData = [
     action: { type: 'post-message', message: 'TARGET', payload: {} }
   }
 ]
+
+const tileSetData = {
+  id: 'outdoor',
+  tiles: [
+    { key: 'tile1', description: 'desc', color: 'blue' }
+  ]
+}
 
 let originalFetch: typeof fetch
 
@@ -96,5 +104,29 @@ describe('Loader', () => {
     expect(second).toBe(first)
     const handlerCalls = fetchMock.mock.calls.filter(call => String(call[0]).endsWith('/handlers.json'))
     expect(handlerCalls.length).toBe(1)
+  })
+
+  it('caches loaded tile sets', async () => {
+    const fetchMock = vi.fn().mockImplementation(async (url: string) => {
+      if (url.endsWith('/index.json')) {
+        return { ok: true, json: vi.fn().mockResolvedValue(rootData) } as any
+      }
+      if (url.endsWith('/tiles.json')) {
+        return { ok: true, json: vi.fn().mockResolvedValue(tileSetData) } as any
+      }
+      throw new Error(`Unexpected url ${url}`)
+    })
+    globalThis.fetch = fetchMock as any
+
+    const loader = new Loader('/data')
+    await loader.loadRoot()
+
+    const first = await loader.loadTileSet('outdoor')
+    const second = await loader.loadTileSet('outdoor')
+
+    expect(first).toEqual(tileSetData)
+    expect(second).toBe(first)
+    const tileCalls = fetchMock.mock.calls.filter(call => String(call[0]).endsWith('/tiles.json'))
+    expect(tileCalls.length).toBe(1)
   })
 })

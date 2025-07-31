@@ -16,6 +16,9 @@
   "tiles": {
     "outdoor": "tiles/outdoor/index.json"
   },
+  "maps": {
+    "start-beach": "maps/start-beach/index.json"
+  },
   "styling": [
     "game.css"
   ],

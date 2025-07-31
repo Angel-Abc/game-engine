@@ -58,7 +58,7 @@ export class Loader implements ILoader {
             },
             languages: this.root.languages,
             pages: this.root.pages,
-            tiles: this.root.tiles ?? {},
+            tiles: this.root.tiles,
             handlers: this.root.handlers
         }
     }

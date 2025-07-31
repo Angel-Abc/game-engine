@@ -14,10 +14,10 @@
     "main-game": "pages/main-game.json"
   },
   "tiles": {
-    "outdoor": "tiles/outdoor/index.json"
+    "outdoor": "tiles/outdoor.json"
   },
   "maps": {
-    "start-beach": "maps/start-beach/index.json"
+    "start-beach": "maps/start-beach.json"
   },
   "styling": [
     "game.css"

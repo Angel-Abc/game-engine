@@ -5,7 +5,7 @@
             "key": "outdoor.ocean",
             "description": "OUTDOOR.TILE-OCEAN",
             "color": "aqua",
-            "image": "waves.svg"
+            "image": "outdoor/waves.svg"
         },
         {
             "key": "outdoor.beach",

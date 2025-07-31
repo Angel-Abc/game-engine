@@ -10,6 +10,8 @@ import type { Handlers } from './data/handler'
 import { handlerLoader } from './handlerLoader'
 import type { TileSet as TileSetData } from './data/tile'
 import { tileLoader } from './tileLoader'
+import type { GameMap as MapData } from './data/map'
+import { mapLoader } from './mapLoader'
 
 export interface ILoader {
     loadPage(page: string): Promise<PageData>
@@ -20,6 +22,7 @@ export interface ILoader {
     loadLanguage(language: string): Promise<LanguageData>
     loadHandlers(path: string): Promise<Handlers>
     loadTileSet(id: string): Promise<TileSetData>
+    loadMap(id: string): Promise<MapData>
 }
 
 export class Loader implements ILoader {
@@ -31,6 +34,7 @@ export class Loader implements ILoader {
     private pages: Map<string, PageData> = new Map()
     private handlers: Map<string, Handlers> = new Map()
     private tileSets: Map<string, TileSetData> = new Map()
+    private maps: Map<string, MapData> = new Map()
 
     constructor(basePath: string = '/data') {
         this.basePath = basePath
@@ -46,6 +50,7 @@ export class Loader implements ILoader {
         this.pages.clear()
         this.handlers.clear()
         this.tileSets.clear()
+        this.maps.clear()
         this.root = await loadJsonResource(`${this.basePath}/index.json`, gameSchema)
         this.styling = this.root.styling.map(css => `${this.basePath}/${css}`)
         this.game = {
@@ -58,6 +63,7 @@ export class Loader implements ILoader {
             },
             languages: this.root.languages,
             pages: this.root.pages,
+            maps: this.root.maps,
             tiles: this.root.tiles,
             handlers: this.root.handlers
         }
@@ -88,6 +94,14 @@ export class Loader implements ILoader {
         const tileSet = await tileLoader({ basePath: this.basePath, path })
         this.tileSets.set(id, tileSet)
         return tileSet
+    }
+
+    public async loadMap(id: string): Promise<MapData> {
+        if (this.maps.has(id)) return this.maps.get(id)!
+        const path = this.game?.maps[id] ?? fatalError('Unknown map: {0}', id)
+        const map = await mapLoader({ basePath: this.basePath, path })
+        this.maps.set(id, map)
+        return map
     }
 
     public async loadHandlers(path: string): Promise<Handlers> {

@@ -8,6 +8,7 @@ const rootData = {
   'initial-data': { language: 'en', 'start-page': 'page1' },
   languages: { en: 'en.json' },
   pages: { page1: 'page1.json' },
+  maps: { start: 'start.json' },
   tiles: { outdoor: 'tiles.json' },
   styling: [],
   handlers: ['handlers.json']
@@ -30,6 +31,16 @@ const tileSetData = {
   tiles: [
     { key: 'tile1', description: 'desc', color: 'blue' }
   ]
+}
+
+const mapData = {
+  key: 'start',
+  type: 'squares-map',
+  width: 1,
+  height: 1,
+  tileSets: [],
+  tiles: [],
+  map: [] as string[][]
 }
 
 let originalFetch: typeof fetch
@@ -128,5 +139,29 @@ describe('Loader', () => {
     expect(second).toBe(first)
     const tileCalls = fetchMock.mock.calls.filter(call => String(call[0]).endsWith('/tiles.json'))
     expect(tileCalls.length).toBe(1)
+  })
+
+  it('caches loaded maps', async () => {
+    const fetchMock = vi.fn().mockImplementation(async (url: string) => {
+      if (url.endsWith('/index.json')) {
+        return { ok: true, json: vi.fn().mockResolvedValue(rootData) } as any
+      }
+      if (url.endsWith('/start.json')) {
+        return { ok: true, json: vi.fn().mockResolvedValue(mapData) } as any
+      }
+      throw new Error(`Unexpected url ${url}`)
+    })
+    globalThis.fetch = fetchMock as any
+
+    const loader = new Loader('/data')
+    await loader.loadRoot()
+
+    const first = await loader.loadMap('start')
+    const second = await loader.loadMap('start')
+
+    expect(first).toEqual(mapData)
+    expect(second).toBe(first)
+    const mapCalls = fetchMock.mock.calls.filter(call => String(call[0]).endsWith('/start.json'))
+    expect(mapCalls.length).toBe(1)
   })
 })

@@ -79,7 +79,9 @@ export class StateManager<TData extends Record<string, unknown>> implements ISta
 
                     if (isArrayMethod) {
                         return value.bind(targetObj) as unknown
-                    } fatalError('State proxy cannot contain functions. Please use a different approach for {0}', currentPath)
+                    } 
+                    
+                    fatalError('State proxy cannot contain functions. Please use a different approach for {0}', currentPath)
                 } else if (value !== null && typeof value === 'object') {
                     // create a proxy for the object
                     value = this.createStateProxy(value as Record<string, unknown>, currentPath)

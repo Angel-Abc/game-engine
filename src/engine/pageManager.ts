@@ -1,5 +1,5 @@
 import { logDebug } from '@utils/logMessage'
-import { GameEngineState, type IGameEngine } from './gameEngine'
+import { type IGameEngine } from './gameEngine'
 import { PAGE_SWITCHED_MESSAGE, SWITCH_PAGE_MESSAGE } from './messages'
 
 export interface IPageManager {
@@ -29,21 +29,18 @@ export class PageManager implements IPageManager {
         const context = this.gameEngine.StateManager.state
         if (context.data.activePage === page) return
 
-        this.gameEngine.State.value = GameEngineState.loading
-        if (context.pages[page]) {
-            context.data.activePage = page
-        } else {
+        this.gameEngine.setIsLoading()
+        if (!context.pages[page]) {
             const pageData = await this.gameEngine.Loader.loadPage(page)
             logDebug('page {0} loaded as {1}', page, pageData)
             context.pages[page] = pageData
-            context.data.activePage = page
         }
+        context.data.activePage = page
         this.gameEngine.MessageBus.postMessage({
             message: PAGE_SWITCHED_MESSAGE,
             payload: page
         })
-        this.gameEngine.State.value = GameEngineState.running
-
+        this.gameEngine.setIsRunning()
     }
 }
 

@@ -11,6 +11,8 @@ import type { Page } from '@loader/data/page'
 import type { Action } from '@loader/data/action'
 import type { CleanUp } from '@utils/types'
 import { MapManager, type IMapManager } from './mapManager'
+import type { TileSet } from '@loader/data/tile'
+import type { GameMap } from '@loader/data/map'
 
 let gameEngine: GameEngine | null = null
 function setGameEngine(engine: GameEngine): void {
@@ -33,6 +35,8 @@ export type GameEngineState = typeof GameEngineState[keyof typeof GameEngineStat
 export type ContextData = {
     language: string,
     pages: Record<string, Page>,
+    maps: Record<string, GameMap>,
+    tileSets: Record<string, TileSet>,
     data: {
         activePage: string | null,
         [key: string]: unknown
@@ -43,6 +47,8 @@ export interface IGameEngine {
     start(): Promise<void>
     cleanup(): void
     executeAction(action: Action): void
+    setIsLoading(): void
+    setIsRunning(): void
     get StateManager(): IStateManager<ContextData>
     get State(): ITrackedValue<GameEngineState>
     get TranslationService(): ITranslationService
@@ -64,6 +70,7 @@ export class GameEngine implements IGameEngine {
     private currentLanguage: string | null = null
     private state: ITrackedValue<GameEngineState>
     private handlerCleanupList: CleanUp[] = []
+    private loadCounter: number = 0
 
     constructor(loader: ILoader) {
         this.loader = loader
@@ -122,6 +129,20 @@ export class GameEngine implements IGameEngine {
         }
     }
 
+    public setIsLoading(): void {
+        if (this.loadCounter === 0) {
+            this.State.value = GameEngineState.loading
+        }
+        this.loadCounter += 1
+    }
+    
+    public setIsRunning(): void {
+        this.loadCounter -= 1
+        if (this.loadCounter === 0) {
+            this.State.value = GameEngineState.running
+        }
+    }
+
     public get StateManager(): IStateManager<ContextData> {
         if (this.stateManager === null) {
             fatalError('State manager is not initialized')
@@ -176,8 +197,11 @@ export class GameEngine implements IGameEngine {
         const contextData: ContextData = {
             language: this.loader.Game.initialData.language,
             pages: {},
+            maps: {},
+            tileSets: {},
             data: {
-                activePage: null
+                activePage: null,
+                activeMap: null
             }
         }
         this.stateManager = new StateManager<ContextData>(contextData, new ChangeTracker<ContextData>())

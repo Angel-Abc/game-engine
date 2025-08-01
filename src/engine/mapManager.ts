@@ -1,6 +1,7 @@
 import { logDebug } from '@utils/logMessage'
 import type { IGameEngine } from './gameEngine'
-import { SWITCH_MAP_MESSAGE } from './messages'
+import { MAP_SWITCHED_MESSAGE, SWITCH_MAP_MESSAGE } from './messages'
+import type { GameMap } from '@loader/data/map'
 
 export interface IMapManager {
     cleanup(): void
@@ -9,8 +10,10 @@ export interface IMapManager {
 
 export class MapManager implements IMapManager {
     private unregisterEventHandlers: (() => void)[] = []
+    private gameEngine: IGameEngine
 
-    constructor(gameEngine: IGameEngine){
+    constructor(gameEngine: IGameEngine) {
+        this.gameEngine = gameEngine
         this.unregisterEventHandlers.push(
             gameEngine.MessageBus.registerMessageListener(
                 SWITCH_MAP_MESSAGE,
@@ -24,7 +27,33 @@ export class MapManager implements IMapManager {
     }
 
     public async switchMap(map: string): Promise<void> {
-        logDebug('TODO: {0}', map)
+        const context = this.gameEngine.StateManager.state
+        if (context.data.activeMap === map) return
+
+        this.gameEngine.setIsLoading()
+        if (!context.maps[map]){
+            const mapData = await this.gameEngine.Loader.loadMap(map)
+            logDebug('map {0} loaded as {1}', map, mapData)
+            context.maps[map] = mapData
+        }
+        context.data.activeMap = map
+        await this.loadAdditionalMapData(context.maps[map])
+        this.gameEngine.MessageBus.postMessage({
+            message: MAP_SWITCHED_MESSAGE,
+            payload: map
+        })
+        this.gameEngine.setIsRunning()
+    }
+
+    private async loadAdditionalMapData(mapData: GameMap): Promise<void> {
+        const context = this.gameEngine.StateManager.state
+        for (const tileSetName of mapData.tileSets) {
+            if (!context.tileSets[tileSetName]){
+                const tileSet = await this.gameEngine.Loader.loadTileSet(tileSetName)
+                logDebug('tile set {0} loaded as {1}', tileSetName, tileSet)
+                context.tileSets[tileSetName] = tileSet
+            }
+        }
     }
 }
 

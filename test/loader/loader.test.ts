@@ -33,13 +33,23 @@ const tileSetData = {
   ]
 }
 
-const mapData = {
+const mapSchemaData = {
   key: 'start',
   type: 'squares-map',
   width: 1,
   height: 1,
   tileSets: [],
   tiles: [],
+  map: [] as string[]
+}
+
+const mapData = {
+  key: 'start',
+  type: 'squares-map',
+  width: 1,
+  height: 1,
+  tileSets: [],
+  tiles: {},
   map: [] as string[][]
 }
 
@@ -147,7 +157,7 @@ describe('Loader', () => {
         return { ok: true, json: vi.fn().mockResolvedValue(rootData) } as any
       }
       if (url.endsWith('/start.json')) {
-        return { ok: true, json: vi.fn().mockResolvedValue(mapData) } as any
+        return { ok: true, json: vi.fn().mockResolvedValue(mapSchemaData) } as any
       }
       throw new Error(`Unexpected url ${url}`)
     })

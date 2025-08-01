@@ -81,6 +81,30 @@ export const GameEditor: React.FC = () => {
     })
   }
 
+  const addPage = () => {
+    setGame((g) => {
+      if (!g) return g
+      const pages = { ...g.pages }
+      let newId = 'new-page'
+      let i = 1
+      while (Object.prototype.hasOwnProperty.call(pages, newId)) {
+        newId = `new-page-${i}`
+        i += 1
+      }
+      pages[newId] = ''
+      return { ...g, pages }
+    })
+  }
+
+  const removePage = (id: string) => {
+    setGame((g) => {
+      if (!g) return g
+      const pages = { ...g.pages }
+      delete pages[id]
+      return { ...g, pages }
+    })
+  }
+
   const handleSave = () => {
     if (!game) return
     const obj = {
@@ -194,8 +218,12 @@ export const GameEditor: React.FC = () => {
               value={path}
               onChange={(e) => updatePagePath(id, e.target.value)}
             />
+            <button type="button" onClick={() => removePage(id)}>
+              Remove
+            </button>
           </div>
         ))}
+        <button type="button" onClick={addPage}>Add Page</button>
       </div>
       <button type="button" onClick={handleSave}>
         Save

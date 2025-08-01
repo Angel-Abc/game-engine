@@ -80,9 +80,15 @@ export class MessageBus implements IMessageBus {
         }
         const promises: Promise<void>[] = []
         listeners.forEach(listener => {
-            const result = listener.handler(message)
-            if (result && typeof (result as Promise<void>).then === 'function') {
-                promises.push(result as Promise<void>)
+            try {
+                const result = listener.handler(message)
+                if (result && typeof (result as Promise<void>).then === 'function') {
+                    promises.push((result as Promise<void>).catch(err => {
+                        logWarning('Error processing listener for message {0}: {1}', message.message, err)
+                    }))
+                }
+            } catch (err) {
+                logWarning('Error processing listener for message {0}: {1}', message.message, err)
             }
         })
         if (promises.length > 0) {

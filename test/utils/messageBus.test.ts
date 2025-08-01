@@ -54,4 +54,44 @@ describe('MessageBus', () => {
     expect(results).toEqual(['first', 'second'])
     expect(onEmpty).toHaveBeenCalledTimes(1)
   })
+
+  it('continues processing when a listener throws', async () => {
+    const onEmpty = vi.fn()
+    const bus = new MessageBus(onEmpty)
+    const handler = vi.fn()
+
+    bus.registerMessageListener('bad', () => {
+      throw new Error('oops')
+    })
+    bus.registerMessageListener('good', handler)
+
+    bus.disableEmptyQueueAfterPost()
+    bus.postMessage({ message: 'bad', payload: null })
+    bus.postMessage({ message: 'good', payload: 1 })
+    bus.enableEmptyQueueAfterPost()
+
+    await new Promise(resolve => setTimeout(resolve, 0))
+
+    expect(handler).toHaveBeenCalledWith({ message: 'good', payload: 1 })
+    expect(onEmpty).toHaveBeenCalledTimes(1)
+  })
+
+  it('continues processing when an async listener rejects', async () => {
+    const onEmpty = vi.fn()
+    const bus = new MessageBus(onEmpty)
+    const handler = vi.fn()
+
+    bus.registerMessageListener('bad', async () => {
+      return Promise.reject(new Error('fail'))
+    })
+    bus.registerMessageListener('good', handler)
+
+    bus.postMessage({ message: 'bad', payload: null })
+    bus.postMessage({ message: 'good', payload: 2 })
+
+    await new Promise(resolve => setTimeout(resolve, 0))
+
+    expect(handler).toHaveBeenCalledWith({ message: 'good', payload: 2 })
+    expect(onEmpty).toHaveBeenCalledTimes(1)
+  })
 })

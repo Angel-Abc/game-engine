@@ -74,12 +74,15 @@ export class StateManager<TData extends Record<string, unknown>> implements ISta
                 if (value !== null && typeof value === 'function') {
                     const isArrayMethod =
                         Array.isArray(targetObj) &&
-                        typeof prop === 'string' &&
-                        typeof Array.prototype[prop as keyof typeof Array.prototype] === 'function'
+                        ((typeof prop === 'string' &&
+                            typeof Array.prototype[
+                                prop as keyof typeof Array.prototype
+                            ] === 'function') ||
+                            prop === Symbol.iterator)
 
                     if (isArrayMethod) {
                         return value.bind(targetObj) as unknown
-                    } 
+                    }
                     
                     fatalError('State proxy cannot contain functions. Please use a different approach for {0}', currentPath)
                 } else if (value !== null && typeof value === 'object') {

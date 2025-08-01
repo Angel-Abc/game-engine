@@ -63,6 +63,30 @@ export const GameEditor: React.FC = () => {
     })
   }
 
+  const addLanguage = () => {
+    setGame((g) => {
+      if (!g) return g
+      const languages = { ...g.languages }
+      let index = 1
+      let newId = 'new-language'
+      while (languages[newId]) {
+        newId = `new-language-${index}`
+        index += 1
+      }
+      languages[newId] = ''
+      return { ...g, languages }
+    })
+  }
+
+  const removeLanguage = (id: string) => {
+    setGame((g) => {
+      if (!g) return g
+      const languages = { ...g.languages }
+      delete languages[id]
+      return { ...g, languages }
+    })
+  }
+
   const updatePageId = (oldId: string, newId: string) => {
     setGame((g) => {
       if (!g) return g
@@ -78,6 +102,30 @@ export const GameEditor: React.FC = () => {
     setGame((g) => {
       if (!g) return g
       return { ...g, pages: { ...g.pages, [id]: path } }
+    })
+  }
+
+  const addPage = () => {
+    setGame((g) => {
+      if (!g) return g
+      const pages = { ...g.pages }
+      let newId = 'new-page'
+      let i = 1
+      while (Object.prototype.hasOwnProperty.call(pages, newId)) {
+        newId = `new-page-${i}`
+        i += 1
+      }
+      pages[newId] = ''
+      return { ...g, pages }
+    })
+  }
+
+  const removePage = (id: string) => {
+    setGame((g) => {
+      if (!g) return g
+      const pages = { ...g.pages }
+      delete pages[id]
+      return { ...g, pages }
     })
   }
 
@@ -177,8 +225,14 @@ export const GameEditor: React.FC = () => {
               value={path}
               onChange={(e) => updateLanguagePath(id, e.target.value)}
             />
+            <button type="button" onClick={() => removeLanguage(id)}>
+              Remove
+            </button>
           </div>
         ))}
+        <button type="button" onClick={addLanguage}>
+          Add Language
+        </button>
       </div>
       <div>
         <h2>Pages</h2>
@@ -194,8 +248,12 @@ export const GameEditor: React.FC = () => {
               value={path}
               onChange={(e) => updatePagePath(id, e.target.value)}
             />
+            <button type="button" onClick={() => removePage(id)}>
+              Remove
+            </button>
           </div>
         ))}
+        <button type="button" onClick={addPage}>Add Page</button>
       </div>
       <button type="button" onClick={handleSave}>
         Save

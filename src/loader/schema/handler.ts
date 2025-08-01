@@ -9,4 +9,4 @@ export const handlerSchema = z.object({
 export const handlersSchema = z.array(handlerSchema)
 
 export type Handler = z.infer<typeof handlerSchema>
-export type handlers = z.infer<typeof handlersSchema>
+export type Handlers = z.infer<typeof handlersSchema>

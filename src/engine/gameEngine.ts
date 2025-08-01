@@ -1,4 +1,4 @@
-import { fatalError } from '@utils/logMessage'
+import { fatalError, logInfo } from '@utils/logMessage'
 import { MessageBus, type IMessageBus } from '@utils/messageBus'
 import type { ILoader } from '@loader/loader'
 import { END_TURN_MESSAGE, ENGINE_STATE_CHANGED_MESSAGE, SWITCH_PAGE_MESSAGE } from './messages'
@@ -10,6 +10,7 @@ import { PageManager, type IPageManager } from './pageManager'
 import type { Page } from '@loader/data/page'
 import type { Action } from '@loader/data/action'
 import type { CleanUp } from '@utils/types'
+import { MapManager, type IMapManager } from './mapManager'
 
 let gameEngine: GameEngine | null = null
 function setGameEngine(engine: GameEngine): void {
@@ -48,6 +49,7 @@ export interface IGameEngine {
     get Loader(): ILoader
     get MessageBus(): IMessageBus
     get PageManager(): IPageManager
+    get MapManager(): IMapManager
 }
 
 export class GameEngine implements IGameEngine {
@@ -56,6 +58,7 @@ export class GameEngine implements IGameEngine {
     private stateManager: IStateManager<ContextData> | null = null
     private translationService: ITranslationService
     private pageManager: IPageManager
+    private mapManager: IMapManager
 
     private endingTurn: boolean = false
     private currentLanguage: string | null = null
@@ -81,6 +84,7 @@ export class GameEngine implements IGameEngine {
         )
         this.translationService = new TranslationService()
         this.pageManager = new PageManager(this)
+        this.mapManager = new MapManager(this)
         setGameEngine(this)
     }
 
@@ -101,6 +105,7 @@ export class GameEngine implements IGameEngine {
 
     public cleanup(): void {
         this.pageManager.cleanup()
+        this.mapManager.cleanup()
         this.cleanupHandlers()
     }
 
@@ -144,6 +149,10 @@ export class GameEngine implements IGameEngine {
         return this.pageManager
     }
 
+    public get MapManager(): IMapManager {
+        return this.mapManager
+    }
+
     private handleOnQueueEmpty(): void {
         if (this.endingTurn) {
             this.endTurn()
@@ -159,6 +168,8 @@ export class GameEngine implements IGameEngine {
 
     private endTurn(): void {
         this.stateManager?.commitTurn()
+        // TODO: Remove when game engine has implemented load and save
+        logInfo('Current state manager state: {0}', this.stateManager?.save())
     }
 
     private initStateManager(): void {

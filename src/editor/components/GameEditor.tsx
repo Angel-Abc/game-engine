@@ -3,8 +3,11 @@ import { gameSchema } from '@loader/schema/game'
 import type { Game } from '@loader/data/game'
 import { saveGame } from '../main'
 
+type LanguageEntry = { id: string; path: string }
+type PageEntry = { id: string; path: string }
+
 export const GameEditor: React.FC = () => {
-  const [game, setGame] = useState<Game | null>(null)
+  const [game, setGame] = useState<Omit<Game, 'languages' | 'pages'> & { languages: LanguageEntry[]; pages: PageEntry[] } | null>(null)
   const [styling, setStyling] = useState<string[]>([])
 
   useEffect(() => {
@@ -12,7 +15,7 @@ export const GameEditor: React.FC = () => {
       .then((r) => r.json())
       .then((data) => {
         const parsed = gameSchema.parse(data)
-        const result: Game = {
+        const result = {
           title: parsed.title,
           description: parsed.description,
           version: parsed.version,
@@ -20,8 +23,8 @@ export const GameEditor: React.FC = () => {
             language: parsed['initial-data'].language,
             startPage: parsed['initial-data']['start-page'],
           },
-          languages: { ...parsed.languages },
-          pages: { ...parsed.pages },
+          languages: Object.entries(parsed.languages).map(([id, path]) => ({ id, path })),
+          pages: Object.entries(parsed.pages).map(([id, path]) => ({ id, path })),
           maps: { ...parsed.maps },
           tiles: { ...parsed.tiles },
           handlers: [...parsed.handlers],
@@ -35,8 +38,8 @@ export const GameEditor: React.FC = () => {
           description: '',
           version: '',
           initialData: { language: '', startPage: '' },
-          languages: {},
-          pages: {},
+          languages: [],
+          pages: [],
           maps: {},
           tiles: {},
           handlers: [],
@@ -45,40 +48,56 @@ export const GameEditor: React.FC = () => {
       })
   }, [])
 
-  const updateLanguageId = (oldId: string, newId: string) => {
+  const updateLanguageId = (index: number, newId: string) => {
     setGame((g) => {
       if (!g) return g
-      const languages = { ...g.languages }
-      const path = languages[oldId]
-      delete languages[oldId]
-      languages[newId] = path
+      const languages = [...g.languages]
+      languages[index] = { ...languages[index], id: newId }
       return { ...g, languages }
     })
   }
 
-  const updateLanguagePath = (id: string, path: string) => {
+  const updateLanguagePath = (index: number, path: string) => {
     setGame((g) => {
       if (!g) return g
-      return { ...g, languages: { ...g.languages, [id]: path } }
+      const languages = [...g.languages]
+      languages[index] = { ...languages[index], path }
+      return { ...g, languages }
     })
   }
 
-  const updatePageId = (oldId: string, newId: string) => {
+  const updatePageId = (index: number, newId: string) => {
     setGame((g) => {
       if (!g) return g
-      const pages = { ...g.pages }
-      const path = pages[oldId]
-      delete pages[oldId]
-      pages[newId] = path
+      const pages = [...g.pages]
+      pages[index] = { ...pages[index], id: newId }
       return { ...g, pages }
     })
   }
 
-  const updatePagePath = (id: string, path: string) => {
+  const updatePagePath = (index: number, path: string) => {
     setGame((g) => {
       if (!g) return g
-      return { ...g, pages: { ...g.pages, [id]: path } }
+      const pages = [...g.pages]
+      pages[index] = { ...pages[index], path }
+      return { ...g, pages }
     })
+  }
+
+  const addLanguage = () => {
+    setGame((g) => (g ? { ...g, languages: [...g.languages, { id: '', path: '' }] } : g))
+  }
+
+  const removeLanguage = (index: number) => {
+    setGame((g) => (g ? { ...g, languages: g.languages.filter((_, i) => i !== index) } : g))
+  }
+
+  const addPage = () => {
+    setGame((g) => (g ? { ...g, pages: [...g.pages, { id: '', path: '' }] } : g))
+  }
+
+  const removePage = (index: number) => {
+    setGame((g) => (g ? { ...g, pages: g.pages.filter((_, i) => i !== index) } : g))
   }
 
   const handleSave = () => {
@@ -91,8 +110,8 @@ export const GameEditor: React.FC = () => {
         language: game.initialData.language,
         'start-page': game.initialData.startPage,
       },
-      languages: game.languages,
-      pages: game.pages,
+      languages: Object.fromEntries(game.languages.map((l) => [l.id, l.path])),
+      pages: Object.fromEntries(game.pages.map((p) => [p.id, p.path])),
       maps: game.maps,
       tiles: game.tiles,
       styling,
@@ -165,37 +184,49 @@ export const GameEditor: React.FC = () => {
       </div>
       <div>
         <h2>Languages</h2>
-        {Object.entries(game.languages).map(([id, path]) => (
-          <div key={id}>
+        {game.languages.map(({ id, path }, i) => (
+          <div key={i}>
             <input
               type="text"
               value={id}
-              onChange={(e) => updateLanguageId(id, e.target.value)}
+              onChange={(e) => updateLanguageId(i, e.target.value)}
             />
             <input
               type="text"
               value={path}
-              onChange={(e) => updateLanguagePath(id, e.target.value)}
+              onChange={(e) => updateLanguagePath(i, e.target.value)}
             />
+            <button type="button" onClick={() => removeLanguage(i)}>
+              Remove
+            </button>
           </div>
         ))}
+        <button type="button" onClick={addLanguage}>
+          Add Language
+        </button>
       </div>
       <div>
         <h2>Pages</h2>
-        {Object.entries(game.pages).map(([id, path]) => (
-          <div key={id}>
+        {game.pages.map(({ id, path }, i) => (
+          <div key={i}>
             <input
               type="text"
               value={id}
-              onChange={(e) => updatePageId(id, e.target.value)}
+              onChange={(e) => updatePageId(i, e.target.value)}
             />
             <input
               type="text"
               value={path}
-              onChange={(e) => updatePagePath(id, e.target.value)}
+              onChange={(e) => updatePagePath(i, e.target.value)}
             />
+            <button type="button" onClick={() => removePage(i)}>
+              Remove
+            </button>
           </div>
         ))}
+        <button type="button" onClick={addPage}>
+          Add Page
+        </button>
       </div>
       <button type="button" onClick={handleSave}>
         Save

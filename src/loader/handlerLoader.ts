@@ -1,6 +1,6 @@
 import { loadJsonResource } from '@utils/loadJsonResource'
 import type { Handlers, Handler } from './data/handler'
-import { handlersSchema, type handlers as SchemaHandlers, type Handler as SchemaHandler } from './schema/handler'
+import { handlersSchema, type Handlers as SchemaHandlers, type Handler as SchemaHandler } from './schema/handler'
 import type { Action as ActionData } from './data/action'
 import type { Action } from './schema/action'
 import { fatalError } from '@utils/logMessage'

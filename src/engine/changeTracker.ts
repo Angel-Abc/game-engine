@@ -1,6 +1,6 @@
 import { setValueAtPath } from '@utils/objectPath'
 
-export type Primitive = string | number | boolean | null
+export type Primitive = string | number | boolean | null | Record<string, unknown> | unknown[]
 
 export type ChangeInfo = {
     path: string,

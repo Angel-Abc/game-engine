@@ -90,15 +90,19 @@ export class StateManager<TData extends Record<string, unknown>> implements ISta
             set: (targetObj: Record<string, unknown>, prop: string | symbol, value: unknown, receiver: unknown) => {
                 const currentPath = path ? `${path}.${String(prop)}` : String(prop)
 
-                // if the value is an object, create a proxy for it
+                const oldValue: unknown = Reflect.get(targetObj, prop, receiver as object)
+
                 if (value !== null && typeof value === 'object') {
                     value = this.createStateProxy(value as Record<string, unknown>, currentPath)
-                    const result = Reflect.set(targetObj, prop, value, receiver as object)
-                    return result
                 }
-                const oldValue: unknown = Reflect.get(targetObj, prop, receiver as object)
+
                 const result = Reflect.set(targetObj, prop, value, receiver as object)
-                if (oldValue === null || oldValue === undefined || typeof oldValue === 'string' || typeof oldValue === 'number' || typeof oldValue === 'boolean') {
+
+                if (value !== null && typeof value === 'object') {
+                    const oldClone = oldValue === undefined ? null : JSON.parse(JSON.stringify(oldValue))
+                    const newClone = JSON.parse(JSON.stringify(value))
+                    this.changeTracker.trackChange({ path: currentPath, newValue: newClone as Primitive, oldValue: oldClone as Primitive })
+                } else if (oldValue === null || oldValue === undefined || typeof oldValue === 'string' || typeof oldValue === 'number' || typeof oldValue === 'boolean') {
                     this.changeTracker.trackChange({ path: currentPath, newValue: value as Primitive, oldValue: (oldValue ?? null) as Primitive })
                 }
                 return result

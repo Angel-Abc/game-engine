@@ -35,4 +35,24 @@ describe('StateManager', () => {
     manager2.rollbackTurn()
     expect(manager2.state.count).toBe(1)
   })
+
+  it('tracks object assignments and rollbacks nested changes', () => {
+    interface ObjData extends Record<string, unknown> { player: { id: string } | null }
+
+    const tracker = new ChangeTracker<ObjData>()
+    const manager = new StateManager<ObjData>({ player: null }, tracker)
+
+    manager.state.player = { id: 'p1' }
+    manager.commitTurn()
+    const save = manager.save()
+
+    const tracker2 = new ChangeTracker<ObjData>()
+    const manager2 = new StateManager<ObjData>({ player: null }, tracker2)
+    manager2.load(save)
+    expect(manager2.state.player).toEqual({ id: 'p1' })
+
+    manager2.state.player!.id = 'p2'
+    manager2.rollbackTurn()
+    expect(manager2.state.player).toEqual({ id: 'p1' })
+  })
 })

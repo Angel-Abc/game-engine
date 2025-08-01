@@ -8,11 +8,9 @@ export interface IMapManager {
 }
 
 export class MapManager implements IMapManager {
-    private gameEngine: IGameEngine
     private unregisterEventHandlers: (() => void)[] = []
 
     constructor(gameEngine: IGameEngine){
-        this.gameEngine = gameEngine
         this.unregisterEventHandlers.push(
             gameEngine.MessageBus.registerMessageListener(
                 SWITCH_MAP_MESSAGE,

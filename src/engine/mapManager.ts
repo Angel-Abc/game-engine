@@ -24,6 +24,7 @@ export class MapManager implements IMapManager {
 
     public cleanup(): void {
         this.unregisterEventHandlers.forEach(unregister => unregister())
+        this.unregisterEventHandlers = []
     }
 
     public async switchMap(map: string): Promise<void> {

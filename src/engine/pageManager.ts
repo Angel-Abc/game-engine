@@ -23,6 +23,7 @@ export class PageManager implements IPageManager {
 
     public cleanup(): void {
         this.unregisterEventHandlers.forEach(unregister => unregister())
+        this.unregisterEventHandlers = []
     }
 
     public async switchPage(page: string): Promise<void> {

@@ -14,13 +14,25 @@ function createTestEngine() {
     registerMessageListener: vi.fn().mockReturnValue(() => {}),
     postMessage: vi.fn()
   }
-  const stateManager = new StateManager<ContextData>({ language: 'en', pages: {}, data: { activePage: null } }, new ChangeTracker<ContextData>())
+  const stateManager = new StateManager<ContextData>({
+    language: 'en',
+    pages: {},
+    maps: {},
+    tileSets: {},
+    data: { activePage: null }
+  }, new ChangeTracker<ContextData>())
   const state = new TrackedValue<GameEngineState>('state', GameEngineState.init)
 
   const engine: IGameEngine = {
     async start() {},
     cleanup() {},
     executeAction: vi.fn(),
+    setIsLoading() {
+      state.value = GameEngineState.loading
+    },
+    setIsRunning() {
+      state.value = GameEngineState.running
+    },
     get StateManager() { return stateManager },
     get State() { return state },
     get TranslationService() { return {} as any },

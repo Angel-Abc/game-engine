@@ -24,5 +24,11 @@
   ],
   "handlers": [
     "handlers/system.json"
+  ],
+  "virtual-keys": [
+    "inputs/virtual-keys.json"
+  ],
+  "virtual-inputs": [
+    "inputs/virtual-inputs.json"
   ]
 }

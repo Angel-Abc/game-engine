@@ -65,7 +65,9 @@ export class Loader implements ILoader {
             pages: this.root.pages,
             maps: this.root.maps,
             tiles: this.root.tiles,
-            handlers: this.root.handlers
+            handlers: this.root.handlers,
+            virtualKeys: this.root['virtual-keys'],
+            virtualInputs: this.root['virtual-inputs']
         }
     }
 

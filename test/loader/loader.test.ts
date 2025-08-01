@@ -11,7 +11,9 @@ const rootData = {
   maps: { start: 'start.json' },
   tiles: { outdoor: 'tiles.json' },
   styling: [],
-  handlers: ['handlers.json']
+  handlers: ['handlers.json'],
+  'virtual-keys': ['virtual-keys.json'],
+  'virtual-inputs': ['virtual-inputs.json']
 }
 
 const pageData = {

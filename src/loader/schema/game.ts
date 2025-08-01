@@ -15,6 +15,8 @@ export const gameSchema = z.object({
     maps: z.record(z.string(), z.string()),
     tiles: z.record(z.string(), z.string()),
     styling: z.array(z.string()),
-    handlers: z.array(z.string())
+    handlers: z.array(z.string()),
+    'virtual-keys': z.array(z.string()),
+    'virtual-inputs': z.array(z.string())
 })
 export type Game = z.infer<typeof gameSchema>

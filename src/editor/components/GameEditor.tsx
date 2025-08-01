@@ -25,6 +25,8 @@ export const GameEditor: React.FC = () => {
           maps: { ...parsed.maps },
           tiles: { ...parsed.tiles },
           handlers: [...parsed.handlers],
+          virtualKeys: [...parsed['virtual-keys']],
+          virtualInputs: [...parsed['virtual-inputs']],
         }
         setGame(result)
         setStyling(parsed.styling)
@@ -40,6 +42,8 @@ export const GameEditor: React.FC = () => {
           maps: {},
           tiles: {},
           handlers: [],
+          virtualKeys: [],
+          virtualInputs: [],
         })
         setStyling([])
       })
@@ -67,9 +71,9 @@ export const GameEditor: React.FC = () => {
     setGame((g) => {
       if (!g) return g
       const languages = { ...g.languages }
+      let newId = ''
       let index = 1
-      let newId = 'new-language'
-      while (languages[newId]) {
+      while (Object.prototype.hasOwnProperty.call(languages, newId)) {
         newId = `new-language-${index}`
         index += 1
       }
@@ -109,7 +113,7 @@ export const GameEditor: React.FC = () => {
     setGame((g) => {
       if (!g) return g
       const pages = { ...g.pages }
-      let newId = 'new-page'
+      let newId = ''
       let i = 1
       while (Object.prototype.hasOwnProperty.call(pages, newId)) {
         newId = `new-page-${i}`

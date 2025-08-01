@@ -15,6 +15,11 @@
 
     --ge-map-viewport-width: 9;
     --ge-map-viewport-height: 9;
+    --ge-map-area-width: 20;
+    --ge-map-area-height: 20;
+    --ge-map-position-top: 0;
+    --ge-map-position-left: 0;
+    --ge-map-tile-color: white;
 
     --ge-image-path: ''
 }

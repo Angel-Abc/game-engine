@@ -51,7 +51,8 @@ export class MapManager implements IMapManager {
             if (!context.tileSets[tileSetName]){
                 const tileSet = await this.gameEngine.Loader.loadTileSet(tileSetName)
                 logDebug('tile set {0} loaded as {1}', tileSetName, tileSet)
-                context.tileSets[tileSetName] = tileSet
+                context.tileSets[tileSetName] = true
+                tileSet.tiles.forEach(tile => context.tiles[tile.key] = tile)
             }
         }
     }

@@ -13,13 +13,15 @@ export async function mapLoader(context: Context): Promise<MapData> {
 }
 
 function getMap(map: SchemaSquaresMap): MapData {
+    const tiles: Record<string, MapTileData> = {}
+    map.tiles.forEach(tile => tiles[tile.key] = getMapTile(tile))
     return {
         key: map.key,
         type: 'squares-map',
         width: map.width,
         height: map.height,
         tileSets: map.tileSets,
-        tiles: map.tiles.map(getMapTile),
+        tiles: tiles,
         map: map.map.map(row => row.split(',')),
     }
 }

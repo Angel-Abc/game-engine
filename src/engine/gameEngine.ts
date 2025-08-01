@@ -11,7 +11,7 @@ import type { Page } from '@loader/data/page'
 import type { Action } from '@loader/data/action'
 import type { CleanUp } from '@utils/types'
 import { MapManager, type IMapManager } from './mapManager'
-import type { TileSet } from '@loader/data/tile'
+import type { Tile } from '@loader/data/tile'
 import type { GameMap } from '@loader/data/map'
 
 let gameEngine: GameEngine | null = null
@@ -36,9 +36,11 @@ export type ContextData = {
     language: string,
     pages: Record<string, Page>,
     maps: Record<string, GameMap>,
-    tileSets: Record<string, TileSet>,
+    tiles: Record<string, Tile>,
+    tileSets: Record<string, boolean>,
     data: {
-        activePage: string | null,
+        activePage: string | null
+        activeMap: string | null
         [key: string]: unknown
     }
 }
@@ -135,7 +137,7 @@ export class GameEngine implements IGameEngine {
         }
         this.loadCounter += 1
     }
-    
+
     public setIsRunning(): void {
         this.loadCounter -= 1
         if (this.loadCounter === 0) {
@@ -199,6 +201,7 @@ export class GameEngine implements IGameEngine {
             pages: {},
             maps: {},
             tileSets: {},
+            tiles: {},
             data: {
                 activePage: null,
                 activeMap: null

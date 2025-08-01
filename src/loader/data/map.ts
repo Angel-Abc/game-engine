@@ -9,7 +9,7 @@ export interface SquaresMap {
     width: number
     height: number
     tileSets: string[]
-    tiles: MapTile[]
+    tiles: Record<string, MapTile>
     map: string[][]
 }
 

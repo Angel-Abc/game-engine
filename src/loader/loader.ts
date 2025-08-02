@@ -4,6 +4,7 @@ import { languageSchema, type Language } from './schema/language'
 import { fatalError, logDebug } from '@utils/logMessage'
 import { type Game as GameData } from './data/game'
 import { type Language as LanguageData } from './data/language'
+import { mapLanguage } from './mappers/language'
 import { type Page as PageData } from './data/page'
 import { pageLoader } from './pageLoader'
 import type { Handlers } from './data/handler'
@@ -91,10 +92,7 @@ export class Loader implements ILoader {
             const path = this.game?.languages[language]
             if (!path) fatalError('Language {0} was not found!', language)
             const schemaData = await loadJsonResource<Language>(`${this.basePath}/${path}`, languageSchema)
-            return {
-                id: schemaData.id,
-                translations: { ...schemaData.translations }
-            }
+            return mapLanguage(schemaData)
         })
     }
 

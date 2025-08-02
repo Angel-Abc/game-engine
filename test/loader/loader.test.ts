@@ -16,6 +16,16 @@ const rootData = {
   'virtual-inputs': ['virtual-inputs.json']
 }
 
+const languageSchemaData = {
+  id: 'en',
+  translations: { greeting: 'Hello' }
+}
+
+const languageData = {
+  id: 'en',
+  translations: { greeting: 'Hello' }
+}
+
 const pageData = {
   id: 'page1',
   screen: { type: 'grid', width: 1, height: 1, components: [] },
@@ -115,6 +125,30 @@ describe('Loader', () => {
     await loader.loadRoot()
 
     await expect(loader.loadPage('missing')).rejects.toThrow()
+  })
+
+  it('caches loaded languages', async () => {
+    const fetchMock = vi.fn().mockImplementation(async (url: string) => {
+      if (url.endsWith('/index.json')) {
+        return { ok: true, json: vi.fn().mockResolvedValue(rootData) } as any
+      }
+      if (url.endsWith('/en.json')) {
+        return { ok: true, json: vi.fn().mockResolvedValue(languageSchemaData) } as any
+      }
+      throw new Error(`Unexpected url ${url}`)
+    })
+    globalThis.fetch = fetchMock as any
+
+    const loader = new Loader('/data')
+    await loader.loadRoot()
+
+    const first = await loader.loadLanguage('en')
+    const second = await loader.loadLanguage('en')
+
+    expect(first).toEqual(languageData)
+    expect(second).toBe(first)
+    const languageCalls = fetchMock.mock.calls.filter(call => String(call[0]).endsWith('/en.json'))
+    expect(languageCalls.length).toBe(1)
   })
 
   it('caches loaded handlers', async () => {

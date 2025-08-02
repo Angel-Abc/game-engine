@@ -46,6 +46,13 @@ export class Loader implements ILoader {
         this.basePath = basePath
     }
 
+    private async loadWithCache<T>(cache: Map<string, T>, key: string, loader: () => Promise<T>): Promise<T> {
+        if (cache.has(key)) return cache.get(key)!
+        const result = await loader()
+        cache.set(key, result)
+        return result
+    }
+
     public async loadRoot(): Promise<void> {
         await this.reset()
         logDebug('Root loaded: {0}', this.root)
@@ -80,59 +87,48 @@ export class Loader implements ILoader {
     }
 
     public async loadLanguage(language: string): Promise<LanguageData> {
-        if (this.languages.has(language)) return this.languages.get(language)!
-        const path = this.game?.languages[language]
-        if (!path) fatalError('Language {0} was not found!', language)
-        const schemaData = await loadJsonResource<Language>(`${this.basePath}/${path}`, languageSchema)
-        const result: LanguageData = {
-            id: schemaData.id,
-            translations: { ...schemaData.translations }
-        }
-        this.languages.set(language, result)
-        return result
+        return this.loadWithCache(this.languages, language, async () => {
+            const path = this.game?.languages[language]
+            if (!path) fatalError('Language {0} was not found!', language)
+            const schemaData = await loadJsonResource<Language>(`${this.basePath}/${path}`, languageSchema)
+            return {
+                id: schemaData.id,
+                translations: { ...schemaData.translations }
+            }
+        })
     }
 
     public async loadPage(page: string): Promise<PageData> {
-        if (this.pages.has(page)) return this.pages.get(page)!
-        const path = this.game?.pages[page] ?? fatalError('Unknown page: {0}', page)
-        return pageLoader({basePath: this.basePath, path}, result => this.pages.set(page, result))
+        return this.loadWithCache(this.pages, page, async () => {
+            const path = this.game?.pages[page] ?? fatalError('Unknown page: {0}', page)
+            return pageLoader({ basePath: this.basePath, path })
+        })
     }
 
     public async loadTileSet(id: string): Promise<TileSetData> {
-        if (this.tileSets.has(id)) return this.tileSets.get(id)!
-        const path = this.game?.tiles[id] ?? fatalError('Unknown tile set: {0}', id)
-        const tileSet = await tileLoader({ basePath: this.basePath, path })
-        this.tileSets.set(id, tileSet)
-        return tileSet
+        return this.loadWithCache(this.tileSets, id, async () => {
+            const path = this.game?.tiles[id] ?? fatalError('Unknown tile set: {0}', id)
+            return tileLoader({ basePath: this.basePath, path })
+        })
     }
 
     public async loadMap(id: string): Promise<MapData> {
-        if (this.maps.has(id)) return this.maps.get(id)!
-        const path = this.game?.maps[id] ?? fatalError('Unknown map: {0}', id)
-        const map = await mapLoader({ basePath: this.basePath, path })
-        this.maps.set(id, map)
-        return map
+        return this.loadWithCache(this.maps, id, async () => {
+            const path = this.game?.maps[id] ?? fatalError('Unknown map: {0}', id)
+            return mapLoader({ basePath: this.basePath, path })
+        })
     }
 
     public async loadHandlers(path: string): Promise<Handlers> {
-        if (this.handlers.has(path)) return this.handlers.get(path)!
-        const handlers = await handlerLoader(this.basePath, path)
-        this.handlers.set(path, handlers)
-        return handlers
+        return this.loadWithCache(this.handlers, path, () => handlerLoader(this.basePath, path))
     }
 
     public async loadVirtualKeys(path: string): Promise<VirtualKeysData> {
-        if (this.virtualKeys.has(path)) return this.virtualKeys.get(path)!
-        const keys = await virtualKeysLoader(this.basePath, path)
-        this.virtualKeys.set(path, keys)
-        return keys
+        return this.loadWithCache(this.virtualKeys, path, () => virtualKeysLoader(this.basePath, path))
     }
 
     public async loadVirtualInputs(path: string): Promise<VirtualInputsData> {
-        if (this.virtualInputs.has(path)) return this.virtualInputs.get(path)!
-        const inputs = await virtualInputsLoader(this.basePath, path)
-        this.virtualInputs.set(path, inputs)
-        return inputs
+        return this.loadWithCache(this.virtualInputs, path, () => virtualInputsLoader(this.basePath, path))
     }
 
     public get Game(): GameData {

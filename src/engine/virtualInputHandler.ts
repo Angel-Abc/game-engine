@@ -17,7 +17,9 @@ export class VirtualInputHandler implements IVirtualInputHandler {
     constructor(gameEngine: IGameEngine) {
         this.gameEngine = gameEngine
         this.keydownEventHandler = (event: KeyboardEvent) => { this.onKeydownEvent(event.code, event.altKey, event.ctrlKey, event.shiftKey) }
-        document.addEventListener('keydown', this.keydownEventHandler)
+        if (typeof document !== 'undefined') {
+            document.addEventListener('keydown', this.keydownEventHandler)
+        }
     }
 
     public async load(): Promise<void> {
@@ -63,6 +65,8 @@ export class VirtualInputHandler implements IVirtualInputHandler {
     }
 
     public cleanup(): void {
-        document.removeEventListener('keydown', this.keydownEventHandler)
+        if (typeof document !== 'undefined') {
+            document.removeEventListener('keydown', this.keydownEventHandler)
+        }
     }
 }

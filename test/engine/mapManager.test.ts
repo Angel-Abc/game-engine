@@ -43,6 +43,7 @@ function createTestEngine() {
     async start() {},
     cleanup() {},
     executeAction: vi.fn(),
+    resolveCondition: vi.fn().mockReturnValue(true),
     setIsLoading() { state.value = GameEngineState.loading },
     setIsRunning() { state.value = GameEngineState.running },
     get StateManager() { return stateManager },
@@ -52,7 +53,8 @@ function createTestEngine() {
     get MessageBus() { return messageBus as any },
     get PageManager(): IPageManager { return {} as IPageManager },
     get MapManager() { return {} as any },
-    get InputManager() { return {} as any }
+    get InputManager() { return {} as any },
+    get ScriptRunner() { return {} as any }
   }
 
   const mapManager = new MapManager(engine)

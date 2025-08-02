@@ -1,4 +1,4 @@
-import { fatalError, logDebug, logInfo } from '@utils/logMessage'
+import { fatalError, logDebug } from '@utils/logMessage'
 import { MessageBus, type IMessageBus } from '@utils/messageBus'
 import type { ILoader } from '@loader/loader'
 import { END_TURN_MESSAGE, ENGINE_STATE_CHANGED_MESSAGE, POSITION_CHANGED_MESSAGE, SWITCH_PAGE_MESSAGE } from './messages'
@@ -243,7 +243,7 @@ export class GameEngine implements IGameEngine {
             this.stateManager.commitTurn()
             this.inputManager.update()
             // TODO: Remove when game engine has implemented load and save
-            logInfo('Current state manager state: {0}', this.stateManager?.save())
+            // logInfo('Current state manager state: {0}', this.stateManager?.save())
         }
     }
 

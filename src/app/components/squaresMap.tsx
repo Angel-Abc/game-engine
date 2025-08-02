@@ -46,8 +46,8 @@ export const SquaresMap: React.FC<SquaresMapProps> = ({ component }): React.JSX.
     const gameMap: GameMap | null = activeMap !== null ? engine.StateManager.state.maps[activeMap] : null
     if (!gameMap) return (<></>)
 
-    const deltaX = Math.floor(gameMap.width / 2)
-    const deltaY = Math.floor(gameMap.height / 2)
+    const deltaX = Math.floor(component.mapSize.columns / 2)
+    const deltaY = Math.floor(component.mapSize.rows / 2)
 
     const style: CSSCustomProperties = {
         '--ge-map-viewport-width': component.mapSize.columns.toString(),
@@ -70,7 +70,7 @@ export const SquaresMap: React.FC<SquaresMapProps> = ({ component }): React.JSX.
                                 <Tile
                                     key={key}
                                     tile={tile}
-                                    isPlayerPosition={false}
+                                    isPlayerPosition={pos.x === columnIndex && pos.y === rowIndex}
                                />
                             )
                         })

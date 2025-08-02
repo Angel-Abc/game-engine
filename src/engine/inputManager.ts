@@ -10,6 +10,7 @@ export interface IInputManager {
 export class InputManager implements IInputManager {
     private unregisterEventHandlers: (() => void)[] = []
     private gameEngine: IGameEngine
+    private currentPage: string | null = null
 
     constructor(gameEngine: IGameEngine) {
         this.gameEngine = gameEngine
@@ -31,6 +32,9 @@ export class InputManager implements IInputManager {
     }
 
     private checkSources(): boolean {
+        if (this.currentPage === this.gameEngine.StateManager.state.data.activePage) {
+            return false
+        }
         logWarning('Method not implemented.')
         return false
     }

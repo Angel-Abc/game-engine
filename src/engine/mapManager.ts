@@ -29,7 +29,7 @@ export class MapManager implements IMapManager {
 
     public async switchMap(map: string): Promise<void> {
         const context = this.gameEngine.StateManager.state
-        if (context.data.activeMap === map) return
+        if (context.data.location.mapName === map) return
 
         this.gameEngine.setIsLoading()
         if (!context.maps[map]){
@@ -37,7 +37,9 @@ export class MapManager implements IMapManager {
             logDebug('map {0} loaded as {1}', map, mapData)
             context.maps[map] = mapData
         }
-        context.data.activeMap = map
+        context.data.location.mapName = map
+        context.data.location.mapSize.width = context.maps[map].width
+        context.data.location.mapSize.height = context.maps[map].height
         await this.loadAdditionalMapData(context.maps[map])
         this.gameEngine.MessageBus.postMessage({
             message: MAP_SWITCHED_MESSAGE,

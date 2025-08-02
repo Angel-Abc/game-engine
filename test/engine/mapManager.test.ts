@@ -35,7 +35,20 @@ function createTestEngine() {
     maps: {},
     tiles: {},
     tileSets: {},
-    data: { activePage: null, activeMap: null }
+    data: { 
+      activePage: null, 
+      location: {
+        mapName: null,
+        mapSize: {
+          width: 0,
+          height: 0
+        },
+        position: {
+          x: 0,
+          y: 0
+        }
+      }
+    }
   }, new ChangeTracker<ContextData>())
   const state = new TrackedValue<GameEngineState>('state', GameEngineState.init)
 

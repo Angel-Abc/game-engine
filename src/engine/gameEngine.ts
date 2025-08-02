@@ -1,7 +1,7 @@
-import { fatalError, logInfo } from '@utils/logMessage'
+import { fatalError, logDebug, logInfo } from '@utils/logMessage'
 import { MessageBus, type IMessageBus } from '@utils/messageBus'
 import type { ILoader } from '@loader/loader'
-import { END_TURN_MESSAGE, ENGINE_STATE_CHANGED_MESSAGE, SWITCH_PAGE_MESSAGE } from './messages'
+import { END_TURN_MESSAGE, ENGINE_STATE_CHANGED_MESSAGE, POSITION_CHANGED_MESSAGE, SWITCH_PAGE_MESSAGE } from './messages'
 import { StateManager, type IStateManager } from './stateManager'
 import { ChangeTracker } from './changeTracker'
 import { TrackedValue, type ITrackedValue } from '@utils/trackedState'
@@ -36,6 +36,8 @@ export const GameEngineState = {
 } as const
 export type GameEngineState = typeof GameEngineState[keyof typeof GameEngineState]
 
+
+
 export type ContextData = {
     language: string,
     pages: Record<string, Page>,
@@ -44,7 +46,17 @@ export type ContextData = {
     tileSets: Record<string, boolean>,
     data: {
         activePage: string | null
-        activeMap: string | null
+        location: {
+            mapName: string | null
+            position: {
+                x: number
+                y: number
+            },
+            mapSize: {
+                width: number
+                height: number
+            }
+        }
         [key: string]: unknown
     }
 }
@@ -244,7 +256,17 @@ export class GameEngine implements IGameEngine {
             tiles: {},
             data: {
                 activePage: null,
-                activeMap: null
+                location: {
+                    mapName: null,
+                    position: {
+                        x: 5,
+                        y: 5
+                    },
+                    mapSize: {
+                        width: 10,
+                        height: 10
+                    }
+                }
             }
         }
         this.stateManager = new StateManager<ContextData>(contextData, new ChangeTracker<ContextData>())
@@ -277,7 +299,16 @@ export class GameEngine implements IGameEngine {
 
     private createScriptContext(): ScriptContext {
         const context: ScriptContext = {
-            state: this.StateManager.state
+            state: this.StateManager.state,
+            setPosition: (x: number, y: number) => {
+                this.StateManager.state.data.location.position = { x, y }
+                this.messageBus.postMessage({
+                    message: POSITION_CHANGED_MESSAGE,
+                    payload: { x, y },
+                })
+                logDebug('Position set to x: {0}, y: {1}', x, y)
+            }
+
         }
         return context
     }

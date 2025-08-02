@@ -6,16 +6,15 @@ export interface IScriptRunner {
 }
 
 export type ScriptContext = {
-    state: ContextData
+    state: ContextData,
+    setPosition: (x: number, y: number) => void
 }
 
 export class ScriptRunner implements IScriptRunner {
     public run<T>(script: string, context: ScriptContext): T {
         const data = context.state.data
-        // eslint-disable-next-line @typescript-eslint/no-implied-eval
         const scriptFunction = new Function('context', 'data', script)
         try {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
             return scriptFunction(context, data) as T
         } catch (error) {
             const message = error instanceof Error ? error.message : String(error)

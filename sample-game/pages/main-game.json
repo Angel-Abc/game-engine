@@ -31,15 +31,15 @@
             "description": "NAVIGATE.DESCRIPTION_MOVE_NORTH",
             "visible": {
                 "type": "script",
-                "script": "return !data.inDialog"
+                "script": "return true"
             },
             "enabled": {
                 "type": "script",
-                "script": "return (data.position.y > 0)"
+                "script": "return (data.location.position.y > 0)"
             },
             "action": {
                 "type": "script",
-                "script": "context.setPosition(data.position.x, data.position.y - 1)"
+                "script": "context.setPosition(data.location.position.x, data.location.position.y - 1)"
             }
         },
         {
@@ -50,15 +50,15 @@
             "description": "NAVIGATE.DESCRIPTION_MOVE_SOUTH",
             "visible": {
                 "type": "script",
-                "script": "return !data.inDialog"
+                "script": "return true"
             },
             "enabled": {
                 "type": "script",
-                "script": "return (data.position.y < (data.currentMap.height - 1))"
+                "script": "return (data.location.position.y < (data.location.mapSize.height - 1))"
             },
             "action": {
                 "type": "script",
-                "script": "context.setPosition(data.position.x, data.position.y + 1)"
+                "script": "context.setPosition(data.location.position.x, data.location.position.y + 1)"
             }
         },
         {
@@ -73,11 +73,11 @@
             },
             "enabled": {
                 "type": "script",
-                "script": "return (data.position.x > 0)"
+                "script": "return (data.location.position.x > 0)"
             },
             "action": {
                 "type": "script",
-                "script": "context.setPosition(data.position.x - 1, data.position.y)"
+                "script": "context.setPosition(data.location.position.x - 1, data.location.position.y)"
             }
         },
         {
@@ -92,11 +92,11 @@
             },
             "enabled": {
                 "type": "script",
-                "script": "return (data.position.x < (data.currentMap.width - 1))"
+                "script": "return (data.location.position.x < (data.location.mapSize.width - 1))"
             },
             "action": {
                 "type": "script",
-                "script": "context.setPosition(data.position.x + 1, data.position.y)"
+                "script": "context.setPosition(data.location.position.x + 1, data.location.position.y)"
             }
         }
     ]

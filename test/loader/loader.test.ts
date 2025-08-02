@@ -18,7 +18,8 @@ const rootData = {
 
 const pageData = {
   id: 'page1',
-  screen: { type: 'grid', width: 1, height: 1, components: [] }
+  screen: { type: 'grid', width: 1, height: 1, components: [] },
+  inputs: []
 }
 
 const handlersData = [
@@ -42,7 +43,7 @@ const mapSchemaData = {
   height: 1,
   tileSets: [],
   tiles: [],
-  map: [] as string[]
+  map: [] as string[],
 }
 
 const mapData = {

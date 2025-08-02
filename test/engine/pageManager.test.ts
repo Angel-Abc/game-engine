@@ -40,7 +40,8 @@ function createTestEngine() {
     get Loader() { return loader as any },
     get MessageBus() { return messageBus as any },
     get PageManager(): IPageManager { return {} as IPageManager },
-    get MapManager() { return {} as any }
+    get MapManager() { return {} as any },
+    get InputManager() { return {} as any }
   }
 
   const pageManager = new PageManager(engine)

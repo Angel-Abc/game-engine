@@ -12,6 +12,8 @@ import type { TileSet as TileSetData } from './data/tile'
 import { tileLoader } from './tileLoader'
 import type { GameMap as MapData } from './data/map'
 import { mapLoader } from './mapLoader'
+import type { VirtualKeys as VirtualKeysData, VirtualInputs as VirtualInputsData } from './data/inputs'
+import { virtualKeysLoader, virtualInputsLoader } from './inputsLoader'
 
 export interface ILoader {
     loadPage(page: string): Promise<PageData>
@@ -23,6 +25,8 @@ export interface ILoader {
     loadHandlers(path: string): Promise<Handlers>
     loadTileSet(id: string): Promise<TileSetData>
     loadMap(id: string): Promise<MapData>
+    loadVirtualKeys(path: string): Promise<VirtualKeysData>
+    loadVirtualInputs(path: string): Promise<VirtualInputsData>
 }
 
 export class Loader implements ILoader {
@@ -35,6 +39,8 @@ export class Loader implements ILoader {
     private handlers: Map<string, Handlers> = new Map()
     private tileSets: Map<string, TileSetData> = new Map()
     private maps: Map<string, MapData> = new Map()
+    private virtualKeys: Map<string, VirtualKeysData> = new Map()
+    private virtualInputs: Map<string, VirtualInputsData> = new Map()
 
     constructor(basePath: string = '/data') {
         this.basePath = basePath
@@ -51,6 +57,8 @@ export class Loader implements ILoader {
         this.handlers.clear()
         this.tileSets.clear()
         this.maps.clear()
+        this.virtualKeys.clear()
+        this.virtualInputs.clear()
         this.root = await loadJsonResource(`${this.basePath}/index.json`, gameSchema)
         this.styling = this.root.styling.map(css => `${this.basePath}/${css}`)
         this.game = {
@@ -111,6 +119,20 @@ export class Loader implements ILoader {
         const handlers = await handlerLoader(this.basePath, path)
         this.handlers.set(path, handlers)
         return handlers
+    }
+
+    public async loadVirtualKeys(path: string): Promise<VirtualKeysData> {
+        if (this.virtualKeys.has(path)) return this.virtualKeys.get(path)!
+        const keys = await virtualKeysLoader(this.basePath, path)
+        this.virtualKeys.set(path, keys)
+        return keys
+    }
+
+    public async loadVirtualInputs(path: string): Promise<VirtualInputsData> {
+        if (this.virtualInputs.has(path)) return this.virtualInputs.get(path)!
+        const inputs = await virtualInputsLoader(this.basePath, path)
+        this.virtualInputs.set(path, inputs)
+        return inputs
     }
 
     public get Game(): GameData {

@@ -14,14 +14,12 @@ interface Context {
     path: string
 }
 
-export async function pageLoader(context: Context, update: (page: PageData) => void): Promise<PageData> {
+export async function pageLoader(context: Context): Promise<PageData> {
     const schemaData = await loadJsonResource<Page>(`${context.basePath}/${context.path}`, pageSchema)
-    const result: PageData = {
+    return {
         id: schemaData.id,
         screen: getScreenData(context, schemaData.screen),
     }
-    update(result)
-    return result
 }
 
 function getScreenData(context: Context, screen: Screen): ScreenData {

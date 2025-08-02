@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { gameSchema } from '@loader/schema/game'
 import type { Game } from '@loader/data/game'
 import { saveGame } from '../main'
+import { LanguageList } from './LanguageList'
+import { PageList } from './PageList'
 
 export const GameEditor: React.FC = () => {
   const [game, setGame] = useState<Game | null>(null)
@@ -157,8 +159,8 @@ export const GameEditor: React.FC = () => {
   if (!game) return <div>Loading...</div>
 
   return (
-    <div>
-      <div>
+    <section className="editor">
+      <fieldset className="editor-section">
         <label>
           Title:
           <input
@@ -167,8 +169,6 @@ export const GameEditor: React.FC = () => {
             onChange={(e) => setGame({ ...game, title: e.target.value })}
           />
         </label>
-      </div>
-      <div>
         <label>
           Description:
           <textarea
@@ -176,8 +176,6 @@ export const GameEditor: React.FC = () => {
             onChange={(e) => setGame({ ...game, description: e.target.value })}
           />
         </label>
-      </div>
-      <div>
         <label>
           Version:
           <input
@@ -186,8 +184,8 @@ export const GameEditor: React.FC = () => {
             onChange={(e) => setGame({ ...game, version: e.target.value })}
           />
         </label>
-      </div>
-      <div>
+      </fieldset>
+      <fieldset className="editor-section">
         <label>
           Initial Language:
           <input
@@ -214,55 +212,25 @@ export const GameEditor: React.FC = () => {
             }
           />
         </label>
-      </div>
-      <div>
-        <h2>Languages</h2>
-        {Object.entries(game.languages).map(([id, path]) => (
-          <div key={id}>
-            <input
-              type="text"
-              value={id}
-              onChange={(e) => updateLanguageId(id, e.target.value)}
-            />
-            <input
-              type="text"
-              value={path}
-              onChange={(e) => updateLanguagePath(id, e.target.value)}
-            />
-            <button type="button" onClick={() => removeLanguage(id)}>
-              Remove
-            </button>
-          </div>
-        ))}
-        <button type="button" onClick={addLanguage}>
-          Add Language
-        </button>
-      </div>
-      <div>
-        <h2>Pages</h2>
-        {Object.entries(game.pages).map(([id, path]) => (
-          <div key={id}>
-            <input
-              type="text"
-              value={id}
-              onChange={(e) => updatePageId(id, e.target.value)}
-            />
-            <input
-              type="text"
-              value={path}
-              onChange={(e) => updatePagePath(id, e.target.value)}
-            />
-            <button type="button" onClick={() => removePage(id)}>
-              Remove
-            </button>
-          </div>
-        ))}
-        <button type="button" onClick={addPage}>Add Page</button>
-      </div>
+      </fieldset>
+      <LanguageList
+        languages={game.languages}
+        updateLanguageId={updateLanguageId}
+        updateLanguagePath={updateLanguagePath}
+        addLanguage={addLanguage}
+        removeLanguage={removeLanguage}
+      />
+      <PageList
+        pages={game.pages}
+        updatePageId={updatePageId}
+        updatePagePath={updatePagePath}
+        addPage={addPage}
+        removePage={removePage}
+      />
       <button type="button" onClick={handleSave}>
         Save
       </button>
-    </div>
+    </section>
   )
 }
 

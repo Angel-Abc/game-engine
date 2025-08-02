@@ -1,0 +1,32 @@
+@import "../style/reset.css";
+@import "../style/variables.css";
+
+body {
+    font-size: var(--ge-font-size);
+    font-family: var(--ge-font-family);
+    background-color: var(--ge-background-color);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--ge-font-size) * 0.5);
+    padding: calc(var(--ge-font-size) * 0.5);
+}
+
+#app {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--ge-font-size) * 0.5);
+}
+
+label {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--ge-font-size) * 0.25);
+}
+
+button {
+    align-self: flex-start;
+    padding: calc(var(--ge-font-size) * 0.25) calc(var(--ge-font-size) * 0.5);
+    cursor: pointer;
+}

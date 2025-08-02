@@ -40,7 +40,7 @@ export function mapInputs(inputs: Input[]): InputData[] {
 
 export function mapInput(input: Input): InputData {
     return {
-        virtualInput: input.vitualInput,
+        virtualInput: input.virtualInput,
         preferredRow: input.prefferedRow,
         preferredCol: input.prefferedCol,
         label: input.label,

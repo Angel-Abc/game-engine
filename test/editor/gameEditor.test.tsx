@@ -45,14 +45,11 @@ describe('GameEditor', () => {
     })
 
     const languagesSection = Array.from(container.querySelectorAll('h2'))
-      .find((h) => h.textContent === 'Languages')!.parentElement as HTMLDivElement
+      .find((h) => h.textContent === 'Languages')!.parentElement as HTMLElement
     const pagesSection = Array.from(container.querySelectorAll('h2'))
-      .find((h) => h.textContent === 'Pages')!.parentElement as HTMLDivElement
-    const languageEntries = Array.from(languagesSection.children).filter((c) => c.tagName === 'DIV')
-    const pageEntries = Array.from(pagesSection.children).filter((c) => c.tagName === 'DIV')
-
-    expect(languageEntries.length).toBe(0)
-    expect(pageEntries.length).toBe(0)
+      .find((h) => h.textContent === 'Pages')!.parentElement as HTMLElement
+    expect(languagesSection.querySelectorAll('fieldset').length).toBe(0)
+    expect(pagesSection.querySelectorAll('fieldset').length).toBe(0)
 
     const addLanguage = Array.from(languagesSection.querySelectorAll('button')).find((b) => b.textContent?.includes('Add Language'))!
     const addPage = Array.from(pagesSection.querySelectorAll('button')).find((b) => b.textContent?.includes('Add Page'))!
@@ -63,14 +60,11 @@ describe('GameEditor', () => {
       await flushPromises()
     })
 
-    const languageEntriesAfter = Array.from(languagesSection.children).filter((c) => c.tagName === 'DIV')
-    const pageEntriesAfter = Array.from(pagesSection.children).filter((c) => c.tagName === 'DIV')
+    expect(languagesSection.querySelectorAll('fieldset').length).toBe(1)
+    expect(pagesSection.querySelectorAll('fieldset').length).toBe(1)
 
-    expect(languageEntriesAfter.length).toBe(1)
-    expect(pageEntriesAfter.length).toBe(1)
-
-    const languageInputs = languagesSection.querySelectorAll('div input')
-    const pageInputs = pagesSection.querySelectorAll('div input')
+    const languageInputs = languagesSection.querySelectorAll('fieldset input')
+    const pageInputs = pagesSection.querySelectorAll('fieldset input')
     expect((languageInputs[0] as HTMLInputElement).value).toBe('')
     expect((languageInputs[1] as HTMLInputElement).value).toBe('')
     expect((pageInputs[0] as HTMLInputElement).value).toBe('')
@@ -103,14 +97,11 @@ describe('GameEditor', () => {
     })
 
     const languagesSection = Array.from(container.querySelectorAll('h2'))
-      .find((h) => h.textContent === 'Languages')!.parentElement as HTMLDivElement
+      .find((h) => h.textContent === 'Languages')!.parentElement as HTMLElement
     const pagesSection = Array.from(container.querySelectorAll('h2'))
-      .find((h) => h.textContent === 'Pages')!.parentElement as HTMLDivElement
-    let languageEntries = Array.from(languagesSection.children).filter((c) => c.tagName === 'DIV')
-    let pageEntries = Array.from(pagesSection.children).filter((c) => c.tagName === 'DIV')
-
-    expect(languageEntries.length).toBe(1)
-    expect(pageEntries.length).toBe(1)
+      .find((h) => h.textContent === 'Pages')!.parentElement as HTMLElement
+    expect(languagesSection.querySelectorAll('fieldset').length).toBe(1)
+    expect(pagesSection.querySelectorAll('fieldset').length).toBe(1)
 
     const removeLang = Array.from(languagesSection.querySelectorAll('button')).find((b) => b.textContent === 'Remove')!
     const removePage = Array.from(pagesSection.querySelectorAll('button')).find((b) => b.textContent === 'Remove')!
@@ -121,10 +112,7 @@ describe('GameEditor', () => {
       await flushPromises()
     })
 
-    languageEntries = Array.from(languagesSection.children).filter((c) => c.tagName === 'DIV')
-    pageEntries = Array.from(pagesSection.children).filter((c) => c.tagName === 'DIV')
-
-    expect(languageEntries.length).toBe(0)
-    expect(pageEntries.length).toBe(0)
+    expect(languagesSection.querySelectorAll('fieldset').length).toBe(0)
+    expect(pagesSection.querySelectorAll('fieldset').length).toBe(0)
   })
 })

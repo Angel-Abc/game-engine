@@ -14,6 +14,7 @@ import type { GameMap as MapData } from './data/map'
 import { mapLoader } from './mapLoader'
 import type { VirtualKeys as VirtualKeysData, VirtualInputs as VirtualInputsData } from './data/inputs'
 import { virtualKeysLoader, virtualInputsLoader } from './inputsLoader'
+import { mapGame } from './mappers/game'
 
 export interface ILoader {
     loadPage(page: string): Promise<PageData>
@@ -67,23 +68,9 @@ export class Loader implements ILoader {
         this.virtualKeys.clear()
         this.virtualInputs.clear()
         this.root = await loadJsonResource(`${this.basePath}/index.json`, gameSchema)
-        this.styling = this.root.styling.map(css => `${this.basePath}/${css}`)
-        this.game = {
-            title: this.root.title,
-            description: this.root.description,
-            version: this.root.version,
-            initialData: {
-                language: this.root['initial-data'].language,
-                startPage: this.root['initial-data']['start-page']
-            },
-            languages: this.root.languages,
-            pages: this.root.pages,
-            maps: this.root.maps,
-            tiles: this.root.tiles,
-            handlers: this.root.handlers,
-            virtualKeys: this.root['virtual-keys'],
-            virtualInputs: this.root['virtual-inputs']
-        }
+        const { game, styling } = mapGame(this.root, this.basePath)
+        this.game = game
+        this.styling = styling
     }
 
     public async loadLanguage(language: string): Promise<LanguageData> {

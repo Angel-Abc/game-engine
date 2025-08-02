@@ -15,6 +15,8 @@ import type { Tile } from '@loader/data/tile'
 import type { GameMap } from '@loader/data/map'
 import { VirtualInputHandler, type IVirtualInputHandler } from './virtualInputHandler'
 import { InputManager, type IInputManager } from './inputManager'
+import { ScriptRunner, type IScriptRunner, type ScriptContext } from './scriptRunner'
+import type { Condition } from '@loader/data/condition'
 
 let gameEngine: GameEngine | null = null
 function setGameEngine(engine: GameEngine): void {
@@ -51,6 +53,7 @@ export interface IGameEngine {
     start(): Promise<void>
     cleanup(): void
     executeAction(action: Action): void
+    resolveCondition(condition: Condition | null): boolean
     setIsLoading(): void
     setIsRunning(): void
     get StateManager(): IStateManager<ContextData>
@@ -61,6 +64,7 @@ export interface IGameEngine {
     get PageManager(): IPageManager
     get MapManager(): IMapManager
     get InputManager(): IInputManager
+    get ScriptRunner(): IScriptRunner
 }
 
 export class GameEngine implements IGameEngine {
@@ -72,6 +76,7 @@ export class GameEngine implements IGameEngine {
     private mapManager: IMapManager
     private virtualInputHandler: IVirtualInputHandler
     private inputManager: IInputManager
+    private scriptRunner: IScriptRunner
 
     private endingTurn: boolean = false
     private currentLanguage: string | null = null
@@ -101,6 +106,7 @@ export class GameEngine implements IGameEngine {
         this.mapManager = new MapManager(this)
         this.virtualInputHandler = new VirtualInputHandler(this)
         this.inputManager = new InputManager(this)
+        this.scriptRunner = new ScriptRunner()
         setGameEngine(this)
     }
 
@@ -135,8 +141,19 @@ export class GameEngine implements IGameEngine {
                     payload: action.payload
                 })
                 break
-            default:
-                fatalError('Unsupported action type')
+            case 'script': {
+                this.scriptRunner.run<void>(action.script, this.createScriptContext())
+                break
+            }
+        }
+    }
+
+    public resolveCondition(condition: Condition | null): boolean {
+        if (condition === null) return true
+        switch (condition.type) {
+            case 'script': {
+                return this.scriptRunner.run<boolean>(condition.script, this.createScriptContext())
+            }
         }
     }
 
@@ -192,6 +209,10 @@ export class GameEngine implements IGameEngine {
         return this.inputManager
     }
 
+    public get ScriptRunner(): IScriptRunner {
+        return this.scriptRunner
+    }
+
     private handleOnQueueEmpty(): void {
         if (this.endingTurn) {
             this.endTurn()
@@ -206,10 +227,12 @@ export class GameEngine implements IGameEngine {
     }
 
     private endTurn(): void {
-        this.stateManager?.commitTurn()
-        this.inputManager.update()
-        // TODO: Remove when game engine has implemented load and save
-        logInfo('Current state manager state: {0}', this.stateManager?.save())
+        if (this.stateManager !== null) {
+            this.stateManager.commitTurn()
+            this.inputManager.update()
+            // TODO: Remove when game engine has implemented load and save
+            logInfo('Current state manager state: {0}', this.stateManager?.save())
+        }
     }
 
     private initStateManager(): void {
@@ -251,4 +274,12 @@ export class GameEngine implements IGameEngine {
             })
         }
     }
+
+    private createScriptContext(): ScriptContext {
+        const context: ScriptContext = {
+            state: this.StateManager.state
+        }
+        return context
+    }
+
 }

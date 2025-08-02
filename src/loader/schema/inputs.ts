@@ -3,7 +3,7 @@ import { conditionSchema } from './condition'
 import { actionSchema } from './action'
 
 export const inputSchema = z.object({
-    vitualInput: z.string(),
+    virtualInput: z.string(),
     prefferedRow: z.int().nonnegative().optional(),
     prefferedCol: z.int().nonnegative().optional(),
     label: z.string(),

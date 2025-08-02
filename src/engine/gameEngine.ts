@@ -137,14 +137,17 @@ export class GameEngine implements IGameEngine {
     }
 
     public setIsLoading(): void {
-        if (this.loadCounter === 0) {
+        this.loadCounter += 1
+        if (this.loadCounter === 1) {
             this.State.value = GameEngineState.loading
         }
-        this.loadCounter += 1
     }
 
     public setIsRunning(): void {
         this.loadCounter -= 1
+        if (this.loadCounter < 0) {
+            fatalError('loadCounter cannot be negative')
+        }
         if (this.loadCounter === 0) {
             this.State.value = GameEngineState.running
         }

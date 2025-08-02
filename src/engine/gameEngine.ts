@@ -14,6 +14,7 @@ import { MapManager, type IMapManager } from './mapManager'
 import type { Tile } from '@loader/data/tile'
 import type { GameMap } from '@loader/data/map'
 import { VirtualInputHandler, type IVirtualInputHandler } from './virtualInputHandler'
+import { InputManager, type IInputManager } from './inputManager'
 
 let gameEngine: GameEngine | null = null
 function setGameEngine(engine: GameEngine): void {
@@ -59,6 +60,7 @@ export interface IGameEngine {
     get MessageBus(): IMessageBus
     get PageManager(): IPageManager
     get MapManager(): IMapManager
+    get InputManager(): IInputManager
 }
 
 export class GameEngine implements IGameEngine {
@@ -69,6 +71,7 @@ export class GameEngine implements IGameEngine {
     private pageManager: IPageManager
     private mapManager: IMapManager
     private virtualInputHandler: IVirtualInputHandler
+    private inputManager: IInputManager
 
     private endingTurn: boolean = false
     private currentLanguage: string | null = null
@@ -97,6 +100,7 @@ export class GameEngine implements IGameEngine {
         this.pageManager = new PageManager(this)
         this.mapManager = new MapManager(this)
         this.virtualInputHandler = new VirtualInputHandler(this)
+        this.inputManager = new InputManager(this)
         setGameEngine(this)
     }
 
@@ -179,6 +183,10 @@ export class GameEngine implements IGameEngine {
 
     public get MapManager(): IMapManager {
         return this.mapManager
+    }
+
+    public get InputManager(): IInputManager {
+        return this.inputManager
     }
 
     private handleOnQueueEmpty(): void {

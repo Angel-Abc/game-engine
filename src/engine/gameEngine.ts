@@ -13,6 +13,7 @@ import type { CleanUp } from '@utils/types'
 import { MapManager, type IMapManager } from './mapManager'
 import type { Tile } from '@loader/data/tile'
 import type { GameMap } from '@loader/data/map'
+import { VirtualInputHandler, type IVirtualInputHandler } from './virtualInputHandler'
 
 let gameEngine: GameEngine | null = null
 function setGameEngine(engine: GameEngine): void {
@@ -67,6 +68,7 @@ export class GameEngine implements IGameEngine {
     private translationService: ITranslationService
     private pageManager: IPageManager
     private mapManager: IMapManager
+    private virtualInputHandler: IVirtualInputHandler
 
     private endingTurn: boolean = false
     private currentLanguage: string | null = null
@@ -94,6 +96,7 @@ export class GameEngine implements IGameEngine {
         this.translationService = new TranslationService()
         this.pageManager = new PageManager(this)
         this.mapManager = new MapManager(this)
+        this.virtualInputHandler = new VirtualInputHandler(this)
         setGameEngine(this)
     }
 
@@ -101,6 +104,7 @@ export class GameEngine implements IGameEngine {
         this.state.value = GameEngineState.loading
         await this.loader.reset()
         await this.registerGameHandlers()
+        await this.virtualInputHandler.load()
         this.initStateManager()
         const language = (this.currentLanguage ?? this.stateManager?.state.language) ?? fatalError('No language set!')
         this.currentLanguage = language
@@ -115,6 +119,7 @@ export class GameEngine implements IGameEngine {
     public cleanup(): void {
         this.pageManager.cleanup()
         this.mapManager.cleanup()
+        this.virtualInputHandler.cleanup()
         this.cleanupHandlers()
     }
 

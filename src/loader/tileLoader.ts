@@ -1,6 +1,7 @@
 import { loadJsonResource } from '@utils/loadJsonResource'
-import type { TileSet as TileSetData, Tile as TileData } from './data/tile'
-import { tileSetSchema, type TileSet as SchemaTileSet, type Tile as SchemaTile } from './schema/tile'
+import type { TileSet as TileSetData } from './data/tile'
+import { tileSetSchema, type TileSet as SchemaTileSet } from './schema/tile'
+import { mapTile } from './mappers/tile'
 
 function getDirectory(path: string): string {
     const idx = path.lastIndexOf('/')
@@ -19,15 +20,6 @@ export async function tileLoader(context: Context): Promise<TileSetData> {
     const prefix = dir ? `${context.basePath}/${dir}` : context.basePath
     return {
         id: schemaData.id,
-        tiles: schemaData.tiles.map(t => getTile(prefix, t))
-    }
-}
-
-function getTile(prefix: string, tile: SchemaTile): TileData {
-    return {
-        key: tile.key,
-        description: tile.description,
-        color: tile.color,
-        image: tile.image ? `${prefix}/${tile.image}` : undefined
+        tiles: schemaData.tiles.map(t => mapTile(prefix, t))
     }
 }

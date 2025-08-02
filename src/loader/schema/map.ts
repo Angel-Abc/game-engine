@@ -8,8 +8,8 @@ export const mapTileSchema = z.object({
 export const squaresMapSchema = z.object({
     key: z.string(),
     type: z.literal('squares-map'),
-    width: z.number(),
-    height: z.number(),
+    width: z.int().positive(),
+    height: z.int().positive(),
     tileSets: z.array(z.string()),
     tiles: z.array(mapTileSchema),
     map: z.array(z.string()),

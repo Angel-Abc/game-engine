@@ -1,11 +1,12 @@
 import { z } from 'zod'
 import { componentSchema } from './component'
+import { inputSchema } from './inputs'
 
 const gridScreenPositionSchema = z.object({
-    top: z.number(),
-    left: z.number(),
-    right: z.number(),
-    bottom: z.number()
+    top: z.int().nonnegative(),
+    left: z.int().nonnegative(),
+    right: z.int().nonnegative(),
+    bottom: z.int().nonnegative()
 })
 
 const gridScreenItemSchema = z.object({
@@ -15,8 +16,8 @@ const gridScreenItemSchema = z.object({
 
 const gridScreenSchema = z.object({
     type: z.literal('grid'),
-    width: z.number(),
-    height: z.number(),
+    width: z.int().positive(),
+    height: z.int().positive(),
     components: z.array(gridScreenItemSchema),
 })
 const screenSchema = z.discriminatedUnion('type', [gridScreenSchema])
@@ -24,6 +25,7 @@ const screenSchema = z.discriminatedUnion('type', [gridScreenSchema])
 export const pageSchema = z.object({
     id: z.string(),
     screen: screenSchema,
+    inputs: z.array(inputSchema)
 })
 
 export type Page = z.infer<typeof pageSchema>

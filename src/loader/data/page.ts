@@ -1,4 +1,5 @@
 import type { Component } from './component'
+import type { Input } from './inputs'
 
 export interface GridScreenPosition {
     top: number
@@ -23,4 +24,5 @@ export type Screen = GridScreen
 export type Page = {
     id: string
     screen: Screen
+    inputs: Input[]
 }

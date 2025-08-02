@@ -1,4 +1,17 @@
 import { z } from 'zod'
+import { conditionSchema } from './condition'
+import { actionSchema } from './action'
+
+export const inputSchema = z.object({
+    vitualInput: z.string(),
+    prefferedRow: z.int().nonnegative().optional(),
+    prefferedCol: z.int().nonnegative().optional(),
+    label: z.string(),
+    description: z.string(),
+    visible: conditionSchema,
+    enabled: conditionSchema,
+    action: actionSchema  
+})
 
 export const virtualKeySchema = z.object({
     virtualKey: z.string(),
@@ -18,3 +31,4 @@ export const virtualInputsSchema = z.array(virtualInputSchema)
 
 export type VirtualKeys = z.infer<typeof virtualKeysSchema>
 export type VirtualInputs = z.infer<typeof virtualInputsSchema>
+export type Input = z.infer<typeof inputSchema>

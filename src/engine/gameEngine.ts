@@ -207,6 +207,7 @@ export class GameEngine implements IGameEngine {
 
     private endTurn(): void {
         this.stateManager?.commitTurn()
+        this.inputManager.update()
         // TODO: Remove when game engine has implemented load and save
         logInfo('Current state manager state: {0}', this.stateManager?.save())
     }

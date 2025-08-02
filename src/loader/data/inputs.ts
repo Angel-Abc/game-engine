@@ -1,3 +1,6 @@
+import type { Action } from './action'
+import type { Condition } from './condition'
+
 export interface VirtualKey {
     virtualKey: string
     keyCode: string
@@ -13,3 +16,14 @@ export interface VirtualInput {
     label: string
 }
 export type VirtualInputs = VirtualInput[]
+
+export interface Input {
+    virtualInput: string
+    preferredRow?: number
+    preferredCol?: number
+    label: string
+    description: string
+    visible: Condition
+    enabled: Condition
+    action: Action
+}

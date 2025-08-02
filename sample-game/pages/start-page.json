@@ -1,5 +1,6 @@
 {
     "id": "start-screen",
+    "inputs": [],
     "screen": {
         "type": "grid",
         "width": 24,

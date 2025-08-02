@@ -14,8 +14,8 @@ const imageComponentSchema = z.object({
 const squaresMapComponentSchema = z.object({
     type: z.literal('squares-map'),
     mapSize: z.object({
-        rows: z.number(),
-        columns: z.number()
+        rows: z.int().positive(),
+        columns: z.int().positive()
     })
 })
 

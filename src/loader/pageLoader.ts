@@ -8,6 +8,7 @@ import { type Component } from './data/component'
 import { type Button } from './schema/button'
 import { type Action } from './schema/action'
 import { fatalError } from '@utils/logMessage'
+import { mapInputs } from './mappers/input'
 
 interface Context {
     basePath: string
@@ -19,6 +20,7 @@ export async function pageLoader(context: Context): Promise<PageData> {
     return {
         id: schemaData.id,
         screen: getScreenData(context, schemaData.screen),
+        inputs: mapInputs(schemaData.inputs)
     }
 }
 

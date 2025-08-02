@@ -19,8 +19,85 @@
                         "columns": 13
                     }
                 }
-
             }
         ]
-    }
+    },
+    "inputs": [
+        {
+            "virtualInput": "VI_UP",
+            "preferredRow": 1,
+            "preferredCol": 1,
+            "label": "NAVIGATE.LABEL_MOVE_NORTH",
+            "description": "NAVIGATE.DESCRIPTION_MOVE_NORTH",
+            "visible": {
+                "type": "script",
+                "script": "return !data.inDialog"
+            },
+            "enabled": {
+                "type": "script",
+                "script": "return (data.position.y > 0)"
+            },
+            "action": {
+                "type": "script",
+                "script": "context.setPosition(data.position.x, data.position.y - 1)"
+            }
+        },
+        {
+            "virtualInput": "VI_DOWN",
+            "preferredRow": 2,
+            "preferredCol": 1,
+            "label": "NAVIGATE.LABEL_MOVE_SOUTH",
+            "description": "NAVIGATE.DESCRIPTION_MOVE_SOUTH",
+            "visible": {
+                "type": "script",
+                "script": "return !data.inDialog"
+            },
+            "enabled": {
+                "type": "script",
+                "script": "return (data.position.y < (data.currentMap.height - 1))"
+            },
+            "action": {
+                "type": "script",
+                "script": "context.setPosition(data.position.x, data.position.y + 1)"
+            }
+        },
+        {
+            "virtualInput": "VI_LEFT",
+            "preferredRow": 2,
+            "preferredCol": 0,
+            "label": "NAVIGATE.LABEL_MOVE_WEST",
+            "description": "NAVIGATE.DESCRIPTION_MOVE_WEST",
+            "visible": {
+                "type": "script",
+                "script": "return !data.inDialog"
+            },
+            "enabled": {
+                "type": "script",
+                "script": "return (data.position.x > 0)"
+            },
+            "action": {
+                "type": "script",
+                "script": "context.setPosition(data.position.x - 1, data.position.y)"
+            }
+        },
+        {
+            "virtualInput": "VI_RIGHT",
+            "preferredRow": 2,
+            "preferredCol": 2,
+            "label": "NAVIGATE.LABEL_MOVE_EAST",
+            "description": "NAVIGATE.DESCRIPTION_MOVE_EAST",
+            "visible": {
+                "type": "script",
+                "script": "return !data.inDialog"
+            },
+            "enabled": {
+                "type": "script",
+                "script": "return (data.position.x < (data.currentMap.width - 1))"
+            },
+            "action": {
+                "type": "script",
+                "script": "context.setPosition(data.position.x + 1, data.position.y)"
+            }
+        }
+    ]
 }

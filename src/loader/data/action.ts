@@ -4,4 +4,9 @@ export interface PostMessageAction {
     payload: number | string | Record<string, unknown>
 }
 
-export type Action = PostMessageAction
+export interface ScriptAction {
+    type: 'script'
+    script: string
+}
+
+export type Action = PostMessageAction | ScriptAction

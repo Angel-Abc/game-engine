@@ -30,5 +30,7 @@ export const virtualInputSchema = z.object({
 export const virtualInputsSchema = z.array(virtualInputSchema)
 
 export type VirtualKeys = z.infer<typeof virtualKeysSchema>
+export type VirtualKey = z.infer<typeof virtualKeySchema>
 export type VirtualInputs = z.infer<typeof virtualInputsSchema>
+export type VirtualInput = z.infer<typeof virtualInputSchema>
 export type Input = z.infer<typeof inputSchema>

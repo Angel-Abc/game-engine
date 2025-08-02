@@ -55,6 +55,17 @@ const mapData = {
   map: [] as string[][]
 }
 
+const virtualKeysSchemaData = [
+  { virtualKey: 'VK_A', keyCode: 'KeyA' }
+]
+const virtualKeysData = [
+  { virtualKey: 'VK_A', keyCode: 'KeyA', shift: false, ctrl: false, alt: false }
+]
+
+const virtualInputsData = [
+  { virtualInput: 'VI_LEFT', virtualKeys: ['VK_A'], label: 'A' }
+]
+
 let originalFetch: typeof fetch
 
 beforeEach(() => {
@@ -175,5 +186,53 @@ describe('Loader', () => {
     expect(second).toBe(first)
     const mapCalls = fetchMock.mock.calls.filter(call => String(call[0]).endsWith('/start.json'))
     expect(mapCalls.length).toBe(1)
+  })
+
+  it('caches loaded virtual keys', async () => {
+    const fetchMock = vi.fn().mockImplementation(async (url: string) => {
+      if (url.endsWith('/index.json')) {
+        return { ok: true, json: vi.fn().mockResolvedValue(rootData) } as any
+      }
+      if (url.endsWith('/virtual-keys.json')) {
+        return { ok: true, json: vi.fn().mockResolvedValue(virtualKeysSchemaData) } as any
+      }
+      throw new Error(`Unexpected url ${url}`)
+    })
+    globalThis.fetch = fetchMock as any
+
+    const loader = new Loader('/data')
+    await loader.loadRoot()
+
+    const first = await loader.loadVirtualKeys('virtual-keys.json')
+    const second = await loader.loadVirtualKeys('virtual-keys.json')
+
+    expect(first).toEqual(virtualKeysData)
+    expect(second).toBe(first)
+    const keyCalls = fetchMock.mock.calls.filter(call => String(call[0]).endsWith('/virtual-keys.json'))
+    expect(keyCalls.length).toBe(1)
+  })
+
+  it('caches loaded virtual inputs', async () => {
+    const fetchMock = vi.fn().mockImplementation(async (url: string) => {
+      if (url.endsWith('/index.json')) {
+        return { ok: true, json: vi.fn().mockResolvedValue(rootData) } as any
+      }
+      if (url.endsWith('/virtual-inputs.json')) {
+        return { ok: true, json: vi.fn().mockResolvedValue(virtualInputsData) } as any
+      }
+      throw new Error(`Unexpected url ${url}`)
+    })
+    globalThis.fetch = fetchMock as any
+
+    const loader = new Loader('/data')
+    await loader.loadRoot()
+
+    const first = await loader.loadVirtualInputs('virtual-inputs.json')
+    const second = await loader.loadVirtualInputs('virtual-inputs.json')
+
+    expect(first).toEqual(virtualInputsData)
+    expect(second).toBe(first)
+    const inputCalls = fetchMock.mock.calls.filter(call => String(call[0]).endsWith('/virtual-inputs.json'))
+    expect(inputCalls.length).toBe(1)
   })
 })

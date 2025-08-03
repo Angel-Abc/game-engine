@@ -6,6 +6,10 @@ import { LanguageList } from './LanguageList'
 import { PageList } from './PageList'
 import { MapList } from './MapList'
 import { TileList } from './TileList'
+import { StylingList } from './StylingList'
+import { HandlerList } from './HandlerList'
+import { VirtualKeyList } from './VirtualKeyList'
+import { VirtualInputList } from './VirtualInputList'
 
 export const GameEditor: React.FC = () => {
   const [game, setGame] = useState<Game | null>(null)
@@ -221,6 +225,91 @@ export const GameEditor: React.FC = () => {
     })
   }
 
+  const updateStyling = (index: number, value: string) => {
+    setStyling((s) => {
+      const arr = [...s]
+      arr[index] = value
+      return arr
+    })
+  }
+
+  const addStyling = () => {
+    setStyling((s) => [...s, ''])
+  }
+
+  const removeStyling = (index: number) => {
+    setStyling((s) => s.filter((_, i) => i !== index))
+  }
+
+  const updateHandler = (index: number, value: string) => {
+    setGame((g) => {
+      if (!g) return g
+      const handlers = [...g.handlers]
+      handlers[index] = value
+      return { ...g, handlers }
+    })
+  }
+
+  const addHandler = () => {
+    setGame((g) => {
+      if (!g) return g
+      return { ...g, handlers: [...g.handlers, ''] }
+    })
+  }
+
+  const removeHandler = (index: number) => {
+    setGame((g) => {
+      if (!g) return g
+      return { ...g, handlers: g.handlers.filter((_, i) => i !== index) }
+    })
+  }
+
+  const updateVirtualKey = (index: number, value: string) => {
+    setGame((g) => {
+      if (!g) return g
+      const virtualKeys = [...g.virtualKeys]
+      virtualKeys[index] = value
+      return { ...g, virtualKeys }
+    })
+  }
+
+  const addVirtualKey = () => {
+    setGame((g) => {
+      if (!g) return g
+      return { ...g, virtualKeys: [...g.virtualKeys, ''] }
+    })
+  }
+
+  const removeVirtualKey = (index: number) => {
+    setGame((g) => {
+      if (!g) return g
+      return { ...g, virtualKeys: g.virtualKeys.filter((_, i) => i !== index) }
+    })
+  }
+
+  const updateVirtualInput = (index: number, value: string) => {
+    setGame((g) => {
+      if (!g) return g
+      const virtualInputs = [...g.virtualInputs]
+      virtualInputs[index] = value
+      return { ...g, virtualInputs }
+    })
+  }
+
+  const addVirtualInput = () => {
+    setGame((g) => {
+      if (!g) return g
+      return { ...g, virtualInputs: [...g.virtualInputs, ''] }
+    })
+  }
+
+  const removeVirtualInput = (index: number) => {
+    setGame((g) => {
+      if (!g) return g
+      return { ...g, virtualInputs: g.virtualInputs.filter((_, i) => i !== index) }
+    })
+  }
+
   const handleSave = () => {
     if (!game) return
     const obj = {
@@ -237,6 +326,8 @@ export const GameEditor: React.FC = () => {
       tiles: game.tiles,
       styling,
       handlers: game.handlers,
+      'virtual-keys': game.virtualKeys,
+      'virtual-inputs': game.virtualInputs,
     }
     const json = JSON.stringify(obj, null, 2)
     void saveGame(json)
@@ -326,6 +417,30 @@ export const GameEditor: React.FC = () => {
         updateTilePath={updateTilePath}
         addTile={addTile}
         removeTile={removeTile}
+      />
+      <StylingList
+        styling={styling}
+        updateStyling={updateStyling}
+        addStyling={addStyling}
+        removeStyling={removeStyling}
+      />
+      <HandlerList
+        handlers={game.handlers}
+        updateHandler={updateHandler}
+        addHandler={addHandler}
+        removeHandler={removeHandler}
+      />
+      <VirtualKeyList
+        virtualKeys={game.virtualKeys}
+        updateVirtualKey={updateVirtualKey}
+        addVirtualKey={addVirtualKey}
+        removeVirtualKey={removeVirtualKey}
+      />
+      <VirtualInputList
+        virtualInputs={game.virtualInputs}
+        updateVirtualInput={updateVirtualInput}
+        addVirtualInput={addVirtualInput}
+        removeVirtualInput={removeVirtualInput}
       />
       <button type="button" onClick={handleSave}>
         Save

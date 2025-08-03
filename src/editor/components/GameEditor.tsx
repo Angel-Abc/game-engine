@@ -221,7 +221,11 @@ export const GameEditor: React.FC = () => {
       </fieldset>
       <LanguageList languages={game.languages} {...languageActions} />
       <PageList pages={game.pages} {...pageActions} />
-      <MapList maps={game.maps} {...mapActions} />
+      <MapList
+        maps={game.maps}
+        tiles={Object.keys(game.tiles)}
+        {...mapActions}
+      />
       <TileList tiles={game.tiles} {...tileActions} />
       <StylingList styling={styling} {...stylingActions} />
       <HandlerList handlers={game.handlers} {...handlerActions} />

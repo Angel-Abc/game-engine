@@ -85,7 +85,7 @@ describe('GameEditor', () => {
     expect((pageInputs[0] as HTMLInputElement).value).toBe('new-page-1')
     expect((pageInputs[1] as HTMLInputElement).value).toBe('')
     expect((mapInputs[0] as HTMLInputElement).value).toBe('new-map-1')
-    expect((mapInputs[1] as HTMLInputElement).value).toBe('')
+    expect(mapInputs.length).toBe(1)
     expect((tileInputs[0] as HTMLInputElement).value).toBe('new-tile-1')
     expect((tileInputs[1] as HTMLInputElement).value).toBe('')
   })

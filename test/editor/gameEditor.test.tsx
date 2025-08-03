@@ -34,7 +34,9 @@ describe('GameEditor', () => {
       'virtual-keys': [],
       'virtual-inputs': []
     }
-    const fetchMock = vi.fn().mockResolvedValue({ json: vi.fn().mockResolvedValue(data) })
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue({ ok: true, json: vi.fn().mockResolvedValue(data) })
     ;(globalThis as { fetch: typeof fetch }).fetch = fetchMock as unknown as typeof fetch
 
     const container = document.createElement('div')
@@ -78,13 +80,13 @@ describe('GameEditor', () => {
     const pageInputs = pagesSection.querySelectorAll('fieldset input')
     const mapInputs = mapsSection.querySelectorAll('fieldset input')
     const tileInputs = tilesSection.querySelectorAll('fieldset input')
-    expect((languageInputs[0] as HTMLInputElement).value).toBe('')
+    expect((languageInputs[0] as HTMLInputElement).value).toBe('new-language-1')
     expect((languageInputs[1] as HTMLInputElement).value).toBe('')
-    expect((pageInputs[0] as HTMLInputElement).value).toBe('')
+    expect((pageInputs[0] as HTMLInputElement).value).toBe('new-page-1')
     expect((pageInputs[1] as HTMLInputElement).value).toBe('')
-    expect((mapInputs[0] as HTMLInputElement).value).toBe('')
+    expect((mapInputs[0] as HTMLInputElement).value).toBe('new-map-1')
     expect((mapInputs[1] as HTMLInputElement).value).toBe('')
-    expect((tileInputs[0] as HTMLInputElement).value).toBe('')
+    expect((tileInputs[0] as HTMLInputElement).value).toBe('new-tile-1')
     expect((tileInputs[1] as HTMLInputElement).value).toBe('')
   })
 
@@ -103,7 +105,9 @@ describe('GameEditor', () => {
       'virtual-keys': [],
       'virtual-inputs': []
     }
-    const fetchMock = vi.fn().mockResolvedValue({ json: vi.fn().mockResolvedValue(data) })
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue({ ok: true, json: vi.fn().mockResolvedValue(data) })
     ;(globalThis as { fetch: typeof fetch }).fetch = fetchMock as unknown as typeof fetch
 
     const container = document.createElement('div')
@@ -162,7 +166,7 @@ describe('GameEditor', () => {
     let resolveSave: (value: Response) => void = () => {}
     const fetchMock = vi
       .fn()
-      .mockResolvedValueOnce({ json: vi.fn().mockResolvedValue(data) } as unknown as Response)
+      .mockResolvedValueOnce({ ok: true, json: vi.fn().mockResolvedValue(data) } as unknown as Response)
       .mockImplementationOnce(
         () =>
           new Promise<Response>((resolve) => {

@@ -10,17 +10,43 @@ import { StylingList } from './StylingList'
 import { HandlerList } from './HandlerList'
 import { VirtualKeyList } from './VirtualKeyList'
 import { VirtualInputList } from './VirtualInputList'
+import { useEditableList } from './useEditableList'
 
 export const GameEditor: React.FC = () => {
   const [game, setGame] = useState<Game | null>(null)
   const [styling, setStyling] = useState<string[]>([])
   const [statusMessage, setStatusMessage] = useState('')
   const [saving, setSaving] = useState(false)
-
+  const [loadError, setLoadError] = useState('')
   useEffect(() => {
-    fetch('/api/game')
-      .then((r) => r.json())
-      .then((data) => {
+    const controller = new AbortController()
+
+    const load = async () => {
+      try {
+        const response = await fetch('/api/game', {
+          signal: controller.signal,
+        })
+
+        if (!response.ok) {
+          setLoadError('Failed to load game data.')
+          setGame({
+            title: '',
+            description: '',
+            version: '',
+            initialData: { language: '', startPage: '' },
+            languages: {},
+            pages: {},
+            maps: {},
+            tiles: {},
+            handlers: [],
+            virtualKeys: [],
+            virtualInputs: [],
+          })
+          setStyling([])
+          return
+        }
+
+        const data = await response.json()
         const parsed = gameSchema.parse(data)
         const result: Game = {
           title: parsed.title,
@@ -40,8 +66,9 @@ export const GameEditor: React.FC = () => {
         }
         setGame(result)
         setStyling(parsed.styling)
-      })
-      .catch(() => {
+      } catch (err) {
+        if ((err as Error).name === 'AbortError') return
+        setLoadError('Failed to load game data.')
         setGame({
           title: '',
           description: '',
@@ -56,261 +83,58 @@ export const GameEditor: React.FC = () => {
           virtualInputs: [],
         })
         setStyling([])
-      })
+      }
+    }
+
+    load()
+    return () => controller.abort()
   }, [])
+  const setMap = <K extends 'languages' | 'pages' | 'maps' | 'tiles'>(key: K) =>
+    (updater: React.SetStateAction<Record<string, string>>) =>
+      setGame((g) => {
+        if (!g) return g
+        const value =
+          typeof updater === 'function' ? updater(g[key]) : updater
+        return { ...g, [key]: value }
+      })
 
-  const updateLanguageId = (oldId: string, newId: string) => {
+  const setArray = <
+    K extends 'handlers' | 'virtualKeys' | 'virtualInputs'
+  >(key: K) => (updater: React.SetStateAction<string[]>) =>
     setGame((g) => {
       if (!g) return g
-      const languages = { ...g.languages }
-      const path = languages[oldId]
-      delete languages[oldId]
-      languages[newId] = path
-      return { ...g, languages }
+      const value =
+        typeof updater === 'function' ? updater(g[key]) : updater
+      return { ...g, [key]: value }
     })
-  }
 
-  const updateLanguagePath = (id: string, path: string) => {
-    setGame((g) => {
-      if (!g) return g
-      return { ...g, languages: { ...g.languages, [id]: path } }
-    })
-  }
+  const languageActions = useEditableList(setMap('languages'), {
+    type: 'map',
+    prefix: 'language',
+  })
+  const pageActions = useEditableList(setMap('pages'), {
+    type: 'map',
+    prefix: 'page',
+  })
+  const mapActions = useEditableList(setMap('maps'), {
+    type: 'map',
+    prefix: 'map',
+  })
+  const tileActions = useEditableList(setMap('tiles'), {
+    type: 'map',
+    prefix: 'tile',
+  })
 
-  const addLanguage = () => {
-    setGame((g) => {
-      if (!g) return g
-      const languages = { ...g.languages }
-      let newId = ''
-      let index = 1
-      while (Object.prototype.hasOwnProperty.call(languages, newId)) {
-        newId = `new-language-${index}`
-        index += 1
-      }
-      languages[newId] = ''
-      return { ...g, languages }
-    })
-  }
-
-  const removeLanguage = (id: string) => {
-    setGame((g) => {
-      if (!g) return g
-      const languages = { ...g.languages }
-      delete languages[id]
-      return { ...g, languages }
-    })
-  }
-
-  const updatePageId = (oldId: string, newId: string) => {
-    setGame((g) => {
-      if (!g) return g
-      const pages = { ...g.pages }
-      const path = pages[oldId]
-      delete pages[oldId]
-      pages[newId] = path
-      return { ...g, pages }
-    })
-  }
-
-  const updatePagePath = (id: string, path: string) => {
-    setGame((g) => {
-      if (!g) return g
-      return { ...g, pages: { ...g.pages, [id]: path } }
-    })
-  }
-
-  const addPage = () => {
-    setGame((g) => {
-      if (!g) return g
-      const pages = { ...g.pages }
-      let newId = ''
-      let i = 1
-      while (Object.prototype.hasOwnProperty.call(pages, newId)) {
-        newId = `new-page-${i}`
-        i += 1
-      }
-      pages[newId] = ''
-      return { ...g, pages }
-    })
-  }
-
-  const removePage = (id: string) => {
-    setGame((g) => {
-      if (!g) return g
-      const pages = { ...g.pages }
-      delete pages[id]
-      return { ...g, pages }
-    })
-  }
-
-  const updateMapId = (oldId: string, newId: string) => {
-    setGame((g) => {
-      if (!g) return g
-      const maps = { ...g.maps }
-      const path = maps[oldId]
-      delete maps[oldId]
-      maps[newId] = path
-      return { ...g, maps }
-    })
-  }
-
-  const updateMapPath = (id: string, path: string) => {
-    setGame((g) => {
-      if (!g) return g
-      return { ...g, maps: { ...g.maps, [id]: path } }
-    })
-  }
-
-  const addMap = () => {
-    setGame((g) => {
-      if (!g) return g
-      const maps = { ...g.maps }
-      let newId = ''
-      let i = 1
-      while (Object.prototype.hasOwnProperty.call(maps, newId)) {
-        newId = `new-map-${i}`
-        i += 1
-      }
-      maps[newId] = ''
-      return { ...g, maps }
-    })
-  }
-
-  const removeMap = (id: string) => {
-    setGame((g) => {
-      if (!g) return g
-      const maps = { ...g.maps }
-      delete maps[id]
-      return { ...g, maps }
-    })
-  }
-
-  const updateTileId = (oldId: string, newId: string) => {
-    setGame((g) => {
-      if (!g) return g
-      const tiles = { ...g.tiles }
-      const path = tiles[oldId]
-      delete tiles[oldId]
-      tiles[newId] = path
-      return { ...g, tiles }
-    })
-  }
-
-  const updateTilePath = (id: string, path: string) => {
-    setGame((g) => {
-      if (!g) return g
-      return { ...g, tiles: { ...g.tiles, [id]: path } }
-    })
-  }
-
-  const addTile = () => {
-    setGame((g) => {
-      if (!g) return g
-      const tiles = { ...g.tiles }
-      let newId = ''
-      let i = 1
-      while (Object.prototype.hasOwnProperty.call(tiles, newId)) {
-        newId = `new-tile-${i}`
-        i += 1
-      }
-      tiles[newId] = ''
-      return { ...g, tiles }
-    })
-  }
-
-  const removeTile = (id: string) => {
-    setGame((g) => {
-      if (!g) return g
-      const tiles = { ...g.tiles }
-      delete tiles[id]
-      return { ...g, tiles }
-    })
-  }
-
-  const updateStyling = (index: number, value: string) => {
-    setStyling((s) => {
-      const arr = [...s]
-      arr[index] = value
-      return arr
-    })
-  }
-
-  const addStyling = () => {
-    setStyling((s) => [...s, ''])
-  }
-
-  const removeStyling = (index: number) => {
-    setStyling((s) => s.filter((_, i) => i !== index))
-  }
-
-  const updateHandler = (index: number, value: string) => {
-    setGame((g) => {
-      if (!g) return g
-      const handlers = [...g.handlers]
-      handlers[index] = value
-      return { ...g, handlers }
-    })
-  }
-
-  const addHandler = () => {
-    setGame((g) => {
-      if (!g) return g
-      return { ...g, handlers: [...g.handlers, ''] }
-    })
-  }
-
-  const removeHandler = (index: number) => {
-    setGame((g) => {
-      if (!g) return g
-      return { ...g, handlers: g.handlers.filter((_, i) => i !== index) }
-    })
-  }
-
-  const updateVirtualKey = (index: number, value: string) => {
-    setGame((g) => {
-      if (!g) return g
-      const virtualKeys = [...g.virtualKeys]
-      virtualKeys[index] = value
-      return { ...g, virtualKeys }
-    })
-  }
-
-  const addVirtualKey = () => {
-    setGame((g) => {
-      if (!g) return g
-      return { ...g, virtualKeys: [...g.virtualKeys, ''] }
-    })
-  }
-
-  const removeVirtualKey = (index: number) => {
-    setGame((g) => {
-      if (!g) return g
-      return { ...g, virtualKeys: g.virtualKeys.filter((_, i) => i !== index) }
-    })
-  }
-
-  const updateVirtualInput = (index: number, value: string) => {
-    setGame((g) => {
-      if (!g) return g
-      const virtualInputs = [...g.virtualInputs]
-      virtualInputs[index] = value
-      return { ...g, virtualInputs }
-    })
-  }
-
-  const addVirtualInput = () => {
-    setGame((g) => {
-      if (!g) return g
-      return { ...g, virtualInputs: [...g.virtualInputs, ''] }
-    })
-  }
-
-  const removeVirtualInput = (index: number) => {
-    setGame((g) => {
-      if (!g) return g
-      return { ...g, virtualInputs: g.virtualInputs.filter((_, i) => i !== index) }
-    })
-  }
+  const stylingActions = useEditableList(setStyling, { type: 'array' })
+  const handlerActions = useEditableList(setArray('handlers'), {
+    type: 'array',
+  })
+  const virtualKeyActions = useEditableList(setArray('virtualKeys'), {
+    type: 'array',
+  })
+  const virtualInputActions = useEditableList(setArray('virtualInputs'), {
+    type: 'array',
+  })
 
   const handleSave = async () => {
     if (!game) return
@@ -395,61 +219,21 @@ export const GameEditor: React.FC = () => {
           />
         </label>
       </fieldset>
-      <LanguageList
-        languages={game.languages}
-        updateLanguageId={updateLanguageId}
-        updateLanguagePath={updateLanguagePath}
-        addLanguage={addLanguage}
-        removeLanguage={removeLanguage}
-      />
-      <PageList
-        pages={game.pages}
-        updatePageId={updatePageId}
-        updatePagePath={updatePagePath}
-        addPage={addPage}
-        removePage={removePage}
-      />
-      <MapList
-        maps={game.maps}
-        updateMapId={updateMapId}
-        updateMapPath={updateMapPath}
-        addMap={addMap}
-        removeMap={removeMap}
-      />
-      <TileList
-        tiles={game.tiles}
-        updateTileId={updateTileId}
-        updateTilePath={updateTilePath}
-        addTile={addTile}
-        removeTile={removeTile}
-      />
-      <StylingList
-        styling={styling}
-        updateStyling={updateStyling}
-        addStyling={addStyling}
-        removeStyling={removeStyling}
-      />
-      <HandlerList
-        handlers={game.handlers}
-        updateHandler={updateHandler}
-        addHandler={addHandler}
-        removeHandler={removeHandler}
-      />
-      <VirtualKeyList
-        virtualKeys={game.virtualKeys}
-        updateVirtualKey={updateVirtualKey}
-        addVirtualKey={addVirtualKey}
-        removeVirtualKey={removeVirtualKey}
-      />
+      <LanguageList languages={game.languages} {...languageActions} />
+      <PageList pages={game.pages} {...pageActions} />
+      <MapList maps={game.maps} {...mapActions} />
+      <TileList tiles={game.tiles} {...tileActions} />
+      <StylingList styling={styling} {...stylingActions} />
+      <HandlerList handlers={game.handlers} {...handlerActions} />
+      <VirtualKeyList virtualKeys={game.virtualKeys} {...virtualKeyActions} />
       <VirtualInputList
         virtualInputs={game.virtualInputs}
-        updateVirtualInput={updateVirtualInput}
-        addVirtualInput={addVirtualInput}
-        removeVirtualInput={removeVirtualInput}
+        {...virtualInputActions}
       />
       <button type="button" onClick={handleSave} disabled={saving}>
         Save
       </button>
+      {loadError && <p>{loadError}</p>}
       {statusMessage && <p>{statusMessage}</p>}
     </section>
   )

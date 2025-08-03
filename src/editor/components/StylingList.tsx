@@ -1,17 +1,15 @@
 import type React from 'react'
+import type { EditableArrayActions } from './useEditableList'
 
-interface StylingListProps {
+interface StylingListProps extends EditableArrayActions {
   styling: string[]
-  updateStyling: (index: number, value: string) => void
-  addStyling: () => void
-  removeStyling: (index: number) => void
 }
 
 export const StylingList: React.FC<StylingListProps> = ({
   styling,
-  updateStyling,
-  addStyling,
-  removeStyling,
+  updateItem,
+  addItem,
+  removeItem,
 }) => (
   <section className="editor-section editor-list">
     <h2>Styling</h2>
@@ -20,14 +18,14 @@ export const StylingList: React.FC<StylingListProps> = ({
         <input
           type="text"
           value={path}
-          onChange={(e) => updateStyling(index, e.target.value)}
+          onChange={(e) => updateItem(index, e.target.value)}
         />
-        <button type="button" onClick={() => removeStyling(index)}>
+        <button type="button" onClick={() => removeItem(index)}>
           Remove
         </button>
       </fieldset>
     ))}
-    <button type="button" onClick={addStyling}>
+    <button type="button" onClick={addItem}>
       Add Styling
     </button>
   </section>

@@ -1,19 +1,16 @@
 import type React from 'react'
+import type { EditableMapActions } from './useEditableList'
 
-interface TileListProps {
+interface TileListProps extends EditableMapActions {
   tiles: Record<string, string>
-  updateTileId: (oldId: string, newId: string) => void
-  updateTilePath: (id: string, path: string) => void
-  addTile: () => void
-  removeTile: (id: string) => void
 }
 
 export const TileList: React.FC<TileListProps> = ({
   tiles,
-  updateTileId,
-  updateTilePath,
-  addTile,
-  removeTile,
+  updateId,
+  updateItem,
+  addItem,
+  removeItem,
 }) => (
   <section className="editor-section editor-list">
     <h2>Tiles</h2>
@@ -22,19 +19,19 @@ export const TileList: React.FC<TileListProps> = ({
         <input
           type="text"
           value={id}
-          onChange={(e) => updateTileId(id, e.target.value)}
+          onChange={(e) => updateId(id, e.target.value)}
         />
         <input
           type="text"
           value={path}
-          onChange={(e) => updateTilePath(id, e.target.value)}
+          onChange={(e) => updateItem(id, e.target.value)}
         />
-        <button type="button" onClick={() => removeTile(id)}>
+        <button type="button" onClick={() => removeItem(id)}>
           Remove
         </button>
       </fieldset>
     ))}
-    <button type="button" onClick={addTile}>
+    <button type="button" onClick={addItem}>
       Add Tile
     </button>
   </section>

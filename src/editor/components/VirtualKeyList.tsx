@@ -1,17 +1,15 @@
 import type React from 'react'
+import type { EditableArrayActions } from './useEditableList'
 
-interface VirtualKeyListProps {
+interface VirtualKeyListProps extends EditableArrayActions {
   virtualKeys: string[]
-  updateVirtualKey: (index: number, value: string) => void
-  addVirtualKey: () => void
-  removeVirtualKey: (index: number) => void
 }
 
 export const VirtualKeyList: React.FC<VirtualKeyListProps> = ({
   virtualKeys,
-  updateVirtualKey,
-  addVirtualKey,
-  removeVirtualKey,
+  updateItem,
+  addItem,
+  removeItem,
 }) => (
   <section className="editor-section editor-list">
     <h2>Virtual Keys</h2>
@@ -20,14 +18,14 @@ export const VirtualKeyList: React.FC<VirtualKeyListProps> = ({
         <input
           type="text"
           value={key}
-          onChange={(e) => updateVirtualKey(index, e.target.value)}
+          onChange={(e) => updateItem(index, e.target.value)}
         />
-        <button type="button" onClick={() => removeVirtualKey(index)}>
+        <button type="button" onClick={() => removeItem(index)}>
           Remove
         </button>
       </fieldset>
     ))}
-    <button type="button" onClick={addVirtualKey}>
+    <button type="button" onClick={addItem}>
       Add Virtual Key
     </button>
   </section>

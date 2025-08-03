@@ -77,6 +77,22 @@ export function mapComponent(context: Context, component: Component): ComponentD
                     height: component.matrixSize.height
                 }
             }
+        case 'inventory':
+            return {
+                type: 'inventory'
+            }
+        case 'context':
+            return {
+                type: 'context'
+            }
+        case 'character':
+            return {
+                type: 'character'
+            }
+        case 'output':
+            return {
+                type: 'output'
+            }
     }
 }
 

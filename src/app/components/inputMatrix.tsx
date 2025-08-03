@@ -2,11 +2,11 @@ import type { CSSCustomProperties } from '@app/types'
 import { getGameEngine } from '@engine/gameEngine'
 import type { MatrixInputItem } from '@engine/inputManager'
 import { INPUTHANDLER_INPUTS_CHANGED, VIRTUAL_INPUT_MESSAGE } from '@engine/messages'
-import type { inputMatrixComponent } from '@loader/data/component'
+import type { InputMatrixComponent } from '@loader/data/component'
 import { useEffect, useState } from 'react'
 
 export type InputMatrixProps = {
-    component: inputMatrixComponent
+    component: InputMatrixComponent
 }
 
 export const InputMatrix: React.FC<InputMatrixProps> = ({ component }): React.JSX.Element => {

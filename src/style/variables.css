@@ -15,6 +15,8 @@
     --ge-grid-item-left: 0;
     --ge-grid-item-right: 11;
     --ge-grid-item-bottom: 11;
+    --ge-grid-border-width: calc(0.04 * 1vw);
+    --ge-grid-border-color: var(--ge-font-color);
 
     --ge-map-viewport-width: 9;
     --ge-map-viewport-height: 9;

@@ -25,14 +25,35 @@ interface MatrixSize {
     height: number
 }
 
-export interface inputMatrixComponent {
+export interface InputMatrixComponent {
     type: 'input-matrix',
     matrixSize: MatrixSize
+}
+
+export interface InventoryComponent {
+    type: 'inventory'
+}
+
+export interface ContextComponent {
+    type: 'context'
+}
+
+export interface CharacterComponent {
+    type: 'character'
+}
+
+export interface OutputComponent {
+    type: 'output'
 }
 
 export type Component =
     GameMenuComponent |
     ImageComponent |
     SquaresMapComponent |
-    inputMatrixComponent
+    InputMatrixComponent |
+    InventoryComponent |
+    ContextComponent |
+    CharacterComponent |
+    OutputComponent
+
 

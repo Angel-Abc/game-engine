@@ -27,11 +27,31 @@ const inputMatrxComponentSchema = z.object({
     })
 })
 
+const inventoryComponentSchema = z.object({
+    type: z.literal('inventory')
+})
+
+const contextComponentSchema = z.object({
+    type: z.literal('context')
+})
+
+const characterComponentSchema = z.object({
+    type: z.literal('character')
+})
+
+const outputComponentSchema = z.object({
+    type: z.literal('output')
+})
+
 export const componentSchema = z.discriminatedUnion('type', [
     gameMenuComponentSchema, 
     imageComponentSchema, 
     squaresMapComponentSchema,
-    inputMatrxComponentSchema
+    inputMatrxComponentSchema,
+    inventoryComponentSchema,
+    contextComponentSchema,
+    characterComponentSchema,
+    outputComponentSchema
 ])
 
 export type Component = z.infer<typeof componentSchema>

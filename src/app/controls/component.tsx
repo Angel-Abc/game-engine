@@ -18,5 +18,7 @@ export const Component:React.FC<ComponentProps> = ({ component }): React.JSX.Ele
             return <SquaresMap component={component} />
         case 'input-matrix':
             return <InputMatrix component={component} />
+        default:
+            return <div>TODO: {component.type}</div>
     }
 }

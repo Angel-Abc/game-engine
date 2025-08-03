@@ -22,6 +22,7 @@ body {
     display: grid;
     grid-column: var(--ge-grid-item-left) / calc(var(--ge-grid-item-right) + 1);
     grid-row: var(--ge-grid-item-top) / calc(var(--ge-grid-item-bottom) + 1);
+    border: solid var(--ge-grid-border-width) var(--ge-grid-border-color);
 }
 
 .game-menu {
@@ -69,7 +70,6 @@ body {
         position: relative;
         overflow: hidden;
         border-radius: calc(var(--tile-outer-size) * 0.2);
-        outline: solid 2px #808080;
         width: var(--viewport-width);
         height: var(--viewport-height);
 

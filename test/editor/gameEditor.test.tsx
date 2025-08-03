@@ -143,4 +143,57 @@ describe('GameEditor', () => {
     expect(mapsSection.querySelectorAll('fieldset').length).toBe(0)
     expect(tilesSection.querySelectorAll('fieldset').length).toBe(0)
   })
+
+  it('displays status message and disables save button while saving', async () => {
+    const data = {
+      title: '',
+      description: '',
+      version: '',
+      'initial-data': { language: '', 'start-page': '' },
+      languages: {},
+      pages: {},
+      maps: {},
+      tiles: {},
+      styling: [],
+      handlers: [],
+      'virtual-keys': [],
+      'virtual-inputs': [],
+    }
+    let resolveSave: (value: Response) => void = () => {}
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({ json: vi.fn().mockResolvedValue(data) } as unknown as Response)
+      .mockImplementationOnce(
+        () =>
+          new Promise<Response>((resolve) => {
+            resolveSave = resolve
+          }),
+      )
+    ;(globalThis as { fetch: typeof fetch }).fetch = fetchMock as unknown as typeof fetch
+
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+    await act(async () => {
+      createRoot(container).render(<GameEditor />)
+      await flushPromises()
+    })
+
+    const saveButton = Array.from(container.querySelectorAll('button')).find(
+      (b) => b.textContent === 'Save',
+    ) as HTMLButtonElement
+
+    await act(async () => {
+      saveButton.click()
+    })
+
+    expect(saveButton.disabled).toBe(true)
+
+    await act(async () => {
+      resolveSave({ ok: true } as Response)
+      await flushPromises()
+    })
+
+    expect(saveButton.disabled).toBe(false)
+    expect(container.textContent).toContain('Saved')
+  })
 })

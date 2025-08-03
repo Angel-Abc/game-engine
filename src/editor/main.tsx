@@ -5,13 +5,11 @@ import './editor.css'
 export async function saveGame(
   json: string,
   fetchFn: typeof fetch = fetch,
-  alertFn: (msg: string) => void = alert,
-) {
+): Promise<string> {
   try {
     JSON.parse(json)
   } catch {
-    alertFn('Invalid JSON')
-    return
+    return 'Invalid JSON'
   }
   let response: Response
   try {
@@ -21,15 +19,13 @@ export async function saveGame(
       body: json,
     })
   } catch (e) {
-    alertFn((e as Error).message)
-    return
+    return (e as Error).message
   }
   if (response.ok) {
-    alertFn('Saved')
-  } else {
-    const error = await response.text()
-    alertFn(error)
+    return 'Saved'
   }
+  const error = await response.text()
+  return error
 }
 
 function EditorApp() {

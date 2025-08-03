@@ -10,7 +10,7 @@ export const gameSchema = z.object({
     description: z.string(),
     version: z.string(),
     'initial-data': initialDataSchema,
-    languages: z.record(z.string(), z.string()),
+    languages: z.record(z.string(), z.array(z.string())),
     pages: z.record(z.string(), z.string()),
     maps: z.record(z.string(), z.string()),
     tiles: z.record(z.string(), z.string()),

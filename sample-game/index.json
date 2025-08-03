@@ -7,7 +7,10 @@
     "start-page": "start-page"
   },
   "languages": {
-    "en": "languages/en.json"
+    "en": [
+      "languages/en/system.json",
+      "languages/en/tiles.json"
+    ]
   },
   "pages": {
     "start-page": "pages/start-page.json",
@@ -18,6 +21,9 @@
   },
   "maps": {
     "start-beach": "maps/start-beach.json"
+  },
+  "dialogs": {
+    "start-beach.start-dialog": "dialogs/start-beach/start-dialog.json"
   },
   "styling": [
     "game.css"

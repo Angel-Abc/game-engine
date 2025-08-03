@@ -1,7 +1,7 @@
 import { loadJsonResource } from '@utils/loadJsonResource'
 import { gameSchema, type Game } from './schema/game'
 import { languageSchema, type Language } from './schema/language'
-import { fatalError, logDebug } from '@utils/logMessage'
+import { fatalError, logDebug, logWarning } from '@utils/logMessage'
 import { type Game as GameData } from './data/game'
 import { type Language as LanguageData } from './data/language'
 import { mapLanguage } from './mappers/language'
@@ -76,10 +76,20 @@ export class Loader implements ILoader {
 
     public async loadLanguage(language: string): Promise<LanguageData> {
         return this.loadWithCache(this.languages, language, async () => {
-            const path = this.game?.languages[language]
-            if (!path) fatalError('Language {0} was not found!', language)
-            const schemaData = await loadJsonResource<Language>(`${this.basePath}/${path}`, languageSchema)
-            return mapLanguage(schemaData)
+            const paths = this.game?.languages[language]
+            if (!paths) fatalError('Language {0} was not found!', language)
+            const result: LanguageData = {
+                id: '',
+                translations: {}
+            }
+            for (const path of paths) {
+                const schemaData = await loadJsonResource<Language>(`${this.basePath}/${path}`, languageSchema)
+                const languageData = mapLanguage(schemaData) 
+                if (result.id === '') result.id = languageData.id
+                if (result.id !== languageData.id) logWarning('Unexpected language match {0} !== {1}', result.id, languageData.id)
+                result.translations = { ...result.translations, ...languageData.translations }
+            }
+            return result
         })
     }
 

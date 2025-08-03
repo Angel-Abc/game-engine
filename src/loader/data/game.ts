@@ -8,7 +8,7 @@ export type Game = {
     description: string
     version: string
     initialData: InitialData
-    languages: Record<string, string>
+    languages: Record<string, string[]>
     pages: Record<string, string>
     maps: Record<string, string>
     tiles: Record<string, string>

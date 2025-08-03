@@ -1,16 +1,10 @@
 {
     "id": "English",
-    "translations":{
+    "translations": {
         "MENU.START-GAME": "Start Game",
         "MENU.LOAD-GAME": "Load Game",
         "MENU.SETTINGS": "Settings",
         "MENU.EXIT-GAME": "Exit Game",
-        "OUTDOOR.TILE-OCEAN": "Ocean. Waves and water.",
-        "OUTDOOR.TILE-BEACH": "Beach. Yellow sand.",
-        "OUTDOOR.TILE-DUNE": "Sand dunes.",
-        "OUTDOOR.TILE-FOREST": "Forest. Large green trees.",
-        "OUTDOOR.TILE-ROAD": "Cobblestones all the way.",
-        "OUTDOOR.TILE-GRASS": "Fields of green grass.",
         "NAVIGATE.LABEL_MOVE_NORTH": "Move North",
         "NAVIGATE.DESCRIPTION_MOVE_NORTH": "Move one step north on the map.",
         "NAVIGATE.LABEL_MOVE_SOUTH": "Move South",
@@ -20,5 +14,4 @@
         "NAVIGATE.LABEL_MOVE_EAST": "Move East",
         "NAVIGATE.DESCRIPTION_MOVE_EAST": "Move one step east on the map."
     }
-    
 }

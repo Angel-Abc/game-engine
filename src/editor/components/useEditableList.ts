@@ -21,10 +21,10 @@ export function useEditableList(
   setValue: React.Dispatch<React.SetStateAction<string[]>>,
   options: { type: 'array' }
 ): EditableArrayActions
-export function useEditableList(
-  setValue: React.Dispatch<
-    React.SetStateAction<Record<string, string> | string[]>
-  >,
+export function useEditableList<
+  T extends Record<string, string> | string[]
+>(
+  setValue: React.Dispatch<React.SetStateAction<T>>,
   options: { type: 'map'; prefix: string } | { type: 'array' }
 ): EditableMapActions | EditableArrayActions {
   if (options.type === 'map') {

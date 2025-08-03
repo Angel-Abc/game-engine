@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
 
-export interface EditableMapActions {
+export interface EditableMapActions<T = string> {
   updateId: (oldId: string, newId: string) => void
-  updateItem: (id: string, value: string) => void
+  updateItem: (id: string, value: T) => void
   addItem: () => void
   removeItem: (id: string) => void
 }
@@ -13,23 +13,23 @@ export interface EditableArrayActions {
   removeItem: (index: number) => void
 }
 
-export function useEditableList(
-  setValue: React.Dispatch<React.SetStateAction<Record<string, string>>>,
-  options: { type: 'map'; prefix: string }
-): EditableMapActions
+export function useEditableList<V>(
+  setValue: React.Dispatch<React.SetStateAction<Record<string, V>>>,
+  options: { type: 'map'; prefix: string; empty: V }
+): EditableMapActions<V>
 export function useEditableList(
   setValue: React.Dispatch<React.SetStateAction<string[]>>,
   options: { type: 'array' }
 ): EditableArrayActions
-export function useEditableList<
-  T extends Record<string, string> | string[]
->(
-  setValue: React.Dispatch<React.SetStateAction<T>>,
-  options: { type: 'map'; prefix: string } | { type: 'array' }
-): EditableMapActions | EditableArrayActions {
+export function useEditableList<V>(
+  setValue:
+    | React.Dispatch<React.SetStateAction<Record<string, V>>>
+    | React.Dispatch<React.SetStateAction<string[]>>,
+  options: { type: 'map'; prefix: string; empty: V } | { type: 'array' },
+): EditableMapActions<V> | EditableArrayActions {
   if (options.type === 'map') {
     const dispatch = setValue as React.Dispatch<
-      React.SetStateAction<Record<string, string>>
+      React.SetStateAction<Record<string, V>>
     >
     const updateId = useCallback(
       (oldId: string, newId: string) => {
@@ -45,7 +45,7 @@ export function useEditableList<
     )
 
     const updateItem = useCallback(
-      (id: string, value: string) => {
+      (id: string, value: V) => {
         dispatch((curr) => ({ ...curr, [id]: value }))
       },
       [dispatch]
@@ -60,10 +60,10 @@ export function useEditableList<
           newId = `new-${options.prefix}-${i}`
           i += 1
         }
-        map[newId] = ''
+        map[newId] = options.empty
         return map
       })
-    }, [dispatch, options.prefix])
+    }, [dispatch, options.prefix, options.empty])
 
     const removeItem = useCallback(
       (id: string) => {

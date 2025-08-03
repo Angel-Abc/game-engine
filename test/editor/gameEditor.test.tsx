@@ -96,7 +96,7 @@ describe('GameEditor', () => {
       description: '',
       version: '',
       'initial-data': { language: '', 'start-page': '' },
-      languages: { en: 'en.json' },
+      languages: { en: ['en.json'] },
       pages: { start: 'start.json' },
       maps: { world: 'world.json' },
       tiles: { grass: 'grass.json' },

@@ -1,6 +1,10 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { Screen } from '@app/controls/screen'
 import type { Screen as ScreenData } from '@loader/data/page'
+
+vi.mock('@engine/gameEngine', () => ({
+  getGameEngine: () => ({ resolveCondition: () => true }),
+}))
 
 describe('Screen', () => {
   it('applies grid position variables to components', () => {

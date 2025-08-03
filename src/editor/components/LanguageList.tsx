@@ -1,19 +1,16 @@
 import type React from 'react'
+import type { EditableMapActions } from './useEditableList'
 
-interface LanguageListProps {
+interface LanguageListProps extends EditableMapActions {
   languages: Record<string, string>
-  updateLanguageId: (oldId: string, newId: string) => void
-  updateLanguagePath: (id: string, path: string) => void
-  addLanguage: () => void
-  removeLanguage: (id: string) => void
 }
 
 export const LanguageList: React.FC<LanguageListProps> = ({
   languages,
-  updateLanguageId,
-  updateLanguagePath,
-  addLanguage,
-  removeLanguage,
+  updateId,
+  updateItem,
+  addItem,
+  removeItem,
 }) => (
   <section className="editor-section editor-list">
     <h2>Languages</h2>
@@ -22,19 +19,19 @@ export const LanguageList: React.FC<LanguageListProps> = ({
         <input
           type="text"
           value={id}
-          onChange={(e) => updateLanguageId(id, e.target.value)}
+          onChange={(e) => updateId(id, e.target.value)}
         />
         <input
           type="text"
           value={path}
-          onChange={(e) => updateLanguagePath(id, e.target.value)}
+          onChange={(e) => updateItem(id, e.target.value)}
         />
-        <button type="button" onClick={() => removeLanguage(id)}>
+        <button type="button" onClick={() => removeItem(id)}>
           Remove
         </button>
       </fieldset>
     ))}
-    <button type="button" onClick={addLanguage}>
+    <button type="button" onClick={addItem}>
       Add Language
     </button>
   </section>

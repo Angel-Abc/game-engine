@@ -1,19 +1,16 @@
 import type React from 'react'
+import type { EditableMapActions } from './useEditableList'
 
-interface MapListProps {
+interface MapListProps extends EditableMapActions {
   maps: Record<string, string>
-  updateMapId: (oldId: string, newId: string) => void
-  updateMapPath: (id: string, path: string) => void
-  addMap: () => void
-  removeMap: (id: string) => void
 }
 
 export const MapList: React.FC<MapListProps> = ({
   maps,
-  updateMapId,
-  updateMapPath,
-  addMap,
-  removeMap,
+  updateId,
+  updateItem,
+  addItem,
+  removeItem,
 }) => (
   <section className="editor-section editor-list">
     <h2>Maps</h2>
@@ -22,19 +19,19 @@ export const MapList: React.FC<MapListProps> = ({
         <input
           type="text"
           value={id}
-          onChange={(e) => updateMapId(id, e.target.value)}
+          onChange={(e) => updateId(id, e.target.value)}
         />
         <input
           type="text"
           value={path}
-          onChange={(e) => updateMapPath(id, e.target.value)}
+          onChange={(e) => updateItem(id, e.target.value)}
         />
-        <button type="button" onClick={() => removeMap(id)}>
+        <button type="button" onClick={() => removeItem(id)}>
           Remove
         </button>
       </fieldset>
     ))}
-    <button type="button" onClick={addMap}>
+    <button type="button" onClick={addItem}>
       Add Map
     </button>
   </section>

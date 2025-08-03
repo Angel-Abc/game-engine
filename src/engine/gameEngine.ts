@@ -77,6 +77,7 @@ export interface IGameEngine {
     get MapManager(): IMapManager
     get InputManager(): IInputManager
     get ScriptRunner(): IScriptRunner
+    get VirtualInputHandler(): IVirtualInputHandler
 }
 
 export class GameEngine implements IGameEngine {
@@ -223,6 +224,10 @@ export class GameEngine implements IGameEngine {
 
     public get ScriptRunner(): IScriptRunner {
         return this.scriptRunner
+    }
+
+    public get VirtualInputHandler(): IVirtualInputHandler {
+        return this.virtualInputHandler
     }
 
     private handleOnQueueEmpty(): void {

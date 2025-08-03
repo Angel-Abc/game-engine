@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { componentSchema } from './component'
 import { inputSchema } from './inputs'
+import { conditionSchema } from './condition'
 
 const gridScreenPositionSchema = z.object({
     top: z.int().nonnegative(),
@@ -11,7 +12,8 @@ const gridScreenPositionSchema = z.object({
 
 const gridScreenItemSchema = z.object({
     position: gridScreenPositionSchema,
-    component: componentSchema    
+    component: componentSchema,
+    condition: conditionSchema.optional()
 })
 
 const gridScreenSchema = z.object({

@@ -10,7 +10,15 @@
         "OUTDOOR.TILE-DUNE": "Sand dunes.",
         "OUTDOOR.TILE-FOREST": "Forest. Large green trees.",
         "OUTDOOR.TILE-ROAD": "Cobblestones all the way.",
-        "OUTDOOR.TILE-GRASS": "Fields of green grass."
+        "OUTDOOR.TILE-GRASS": "Fields of green grass.",
+        "NAVIGATE.LABEL_MOVE_NORTH": "Move North",
+        "NAVIGATE.DESCRIPTION_MOVE_NORTH": "Move one step north on the map.",
+        "NAVIGATE.LABEL_MOVE_SOUTH": "Move South",
+        "NAVIGATE.DESCRIPTION_MOVE_SOUTH": "Move one step south on the map.",
+        "NAVIGATE.LABEL_MOVE_WEST": "Move West",
+        "NAVIGATE.DESCRIPTION_MOVE_WEST": "Move one step west on the map.",
+        "NAVIGATE.LABEL_MOVE_EAST": "Move East",
+        "NAVIGATE.DESCRIPTION_MOVE_EAST": "Move one step east on the map."
     }
     
 }

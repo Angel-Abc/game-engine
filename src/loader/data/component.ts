@@ -20,8 +20,19 @@ export interface SquaresMapComponent {
     mapSize: MapSize
 }
 
+interface MatrixSize {
+    rows: number
+    columns: number
+}
+
+export interface inputMatrixComponent {
+    type: 'input-matrix',
+    matrixSize: MatrixSize
+}
+
 export type Component =
     GameMenuComponent |
     ImageComponent |
-    SquaresMapComponent
+    SquaresMapComponent |
+    inputMatrixComponent
 

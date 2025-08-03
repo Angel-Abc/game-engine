@@ -1,4 +1,5 @@
 import type { Component } from './component'
+import type { Condition } from './condition'
 import type { Input } from './inputs'
 
 export interface GridScreenPosition {
@@ -11,6 +12,7 @@ export interface GridScreenPosition {
 export interface GridScreenItem {
     position: GridScreenPosition
     component: Component
+    condition?: Condition
 }
 
 export interface GridScreen {

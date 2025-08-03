@@ -6,6 +6,7 @@ import { type Component } from '@loader/schema/component'
 import { type Button } from '@loader/schema/button'
 import { mapAction } from './action'
 
+
 interface Context {
     basePath: string
 }
@@ -34,7 +35,8 @@ export function mapGridScreenComponent(context: Context, item: GridScreenItem): 
             right: item.position.right,
             bottom: item.position.bottom
         },
-        component: mapComponent(context, item.component)
+        component: mapComponent(context, item.component),
+        condition: item.condition
     }
 }
 
@@ -56,6 +58,14 @@ export function mapComponent(context: Context, component: Component): ComponentD
                 mapSize: {
                     rows: component.mapSize.rows,
                     columns: component.mapSize.columns
+                }
+            }
+        case 'input-matrix':
+            return {
+                type: 'input-matrix',
+                matrixSize: {
+                    rows: component.matrixSize.rows,
+                    columns: component.matrixSize.columns
                 }
             }
     }

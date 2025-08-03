@@ -19,6 +19,21 @@
                         "columns": 13
                     }
                 }
+            },
+            {
+                "position": {
+                    "top": 18,
+                    "left": 6,
+                    "right": 17,
+                    "bottom": 23
+                },
+                "component": {
+                    "type": "input-matrix",
+                    "matrixSize": {
+                        "rows": 4,
+                        "columns": 5
+                    }
+                }
             }
         ]
     },

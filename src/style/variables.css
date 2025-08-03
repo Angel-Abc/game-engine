@@ -24,5 +24,8 @@
     --ge-map-position-left: 0;
     --ge-map-tile-color: white;
 
+    --ge-input-matrix-width: 5;
+    --ge-input-matrix-height: 4;
+    
     --ge-image-path: ''
 }

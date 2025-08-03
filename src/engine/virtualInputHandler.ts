@@ -6,6 +6,7 @@ import type { IGameEngine } from './gameEngine'
 export interface IVirtualInputHandler {
     cleanup(): void
     load(): Promise<void>
+    getVirtualInput(virtualInput: string): VirtualInput | null
 }
 
 export class VirtualInputHandler implements IVirtualInputHandler {
@@ -41,6 +42,10 @@ export class VirtualInputHandler implements IVirtualInputHandler {
                 })
             })
         }
+    }
+
+    public getVirtualInput(virtualInput: string): VirtualInput | null {
+        return this.virtualInputs.get(virtualInput) ?? null
     }
 
     private createKey(code: string, alt: boolean, ctrl: boolean, shift: boolean): string {

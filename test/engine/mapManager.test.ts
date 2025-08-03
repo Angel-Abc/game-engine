@@ -68,6 +68,7 @@ function createTestEngine() {
     get MapManager() { return {} as any },
     get InputManager() { return {} as any },
     get ScriptRunner() { return {} as any },
+    get VirtualInputHandler() { return {} as any },
 
   }
 

@@ -4,6 +4,8 @@ import type { Game } from '@loader/data/game'
 import { saveGame } from '../main'
 import { LanguageList } from './LanguageList'
 import { PageList } from './PageList'
+import { MapList } from './MapList'
+import { TileList } from './TileList'
 
 export const GameEditor: React.FC = () => {
   const [game, setGame] = useState<Game | null>(null)
@@ -135,6 +137,90 @@ export const GameEditor: React.FC = () => {
     })
   }
 
+  const updateMapId = (oldId: string, newId: string) => {
+    setGame((g) => {
+      if (!g) return g
+      const maps = { ...g.maps }
+      const path = maps[oldId]
+      delete maps[oldId]
+      maps[newId] = path
+      return { ...g, maps }
+    })
+  }
+
+  const updateMapPath = (id: string, path: string) => {
+    setGame((g) => {
+      if (!g) return g
+      return { ...g, maps: { ...g.maps, [id]: path } }
+    })
+  }
+
+  const addMap = () => {
+    setGame((g) => {
+      if (!g) return g
+      const maps = { ...g.maps }
+      let newId = ''
+      let i = 1
+      while (Object.prototype.hasOwnProperty.call(maps, newId)) {
+        newId = `new-map-${i}`
+        i += 1
+      }
+      maps[newId] = ''
+      return { ...g, maps }
+    })
+  }
+
+  const removeMap = (id: string) => {
+    setGame((g) => {
+      if (!g) return g
+      const maps = { ...g.maps }
+      delete maps[id]
+      return { ...g, maps }
+    })
+  }
+
+  const updateTileId = (oldId: string, newId: string) => {
+    setGame((g) => {
+      if (!g) return g
+      const tiles = { ...g.tiles }
+      const path = tiles[oldId]
+      delete tiles[oldId]
+      tiles[newId] = path
+      return { ...g, tiles }
+    })
+  }
+
+  const updateTilePath = (id: string, path: string) => {
+    setGame((g) => {
+      if (!g) return g
+      return { ...g, tiles: { ...g.tiles, [id]: path } }
+    })
+  }
+
+  const addTile = () => {
+    setGame((g) => {
+      if (!g) return g
+      const tiles = { ...g.tiles }
+      let newId = ''
+      let i = 1
+      while (Object.prototype.hasOwnProperty.call(tiles, newId)) {
+        newId = `new-tile-${i}`
+        i += 1
+      }
+      tiles[newId] = ''
+      return { ...g, tiles }
+    })
+  }
+
+  const removeTile = (id: string) => {
+    setGame((g) => {
+      if (!g) return g
+      const tiles = { ...g.tiles }
+      delete tiles[id]
+      return { ...g, tiles }
+    })
+  }
+
   const handleSave = () => {
     if (!game) return
     const obj = {
@@ -226,6 +312,20 @@ export const GameEditor: React.FC = () => {
         updatePagePath={updatePagePath}
         addPage={addPage}
         removePage={removePage}
+      />
+      <MapList
+        maps={game.maps}
+        updateMapId={updateMapId}
+        updateMapPath={updateMapPath}
+        addMap={addMap}
+        removeMap={removeMap}
+      />
+      <TileList
+        tiles={game.tiles}
+        updateTileId={updateTileId}
+        updateTilePath={updateTilePath}
+        addTile={addTile}
+        removeTile={removeTile}
       />
       <button type="button" onClick={handleSave}>
         Save

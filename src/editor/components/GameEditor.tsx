@@ -6,6 +6,7 @@ import { LanguageList } from './LanguageList'
 import { PageList } from './PageList'
 import { MapList } from './MapList'
 import { TileList } from './TileList'
+import { DialogList } from './DialogList'
 import { StylingList } from './StylingList'
 import { HandlerList } from './HandlerList'
 import { VirtualKeyList } from './VirtualKeyList'
@@ -101,7 +102,7 @@ export const GameEditor: React.FC = () => {
       return { ...g, languages: value }
     })
 
-  const setMap = <K extends 'pages' | 'maps' | 'tiles'>(key: K) =>
+  const setMap = <K extends 'pages' | 'maps' | 'tiles' | 'dialogs'>(key: K) =>
     (updater: React.SetStateAction<Record<string, string>>) =>
       setGame((g) => {
         if (!g) return g
@@ -140,6 +141,11 @@ export const GameEditor: React.FC = () => {
     prefix: 'tile',
     empty: '',
   })
+  const dialogActions = useEditableList(setMap('dialogs'), {
+    type: 'map',
+    prefix: 'dialog',
+    empty: '',
+  })
 
   const stylingActions = useEditableList(setStyling, { type: 'array' })
   const handlerActions = useEditableList(setArray('handlers'), {
@@ -166,6 +172,7 @@ export const GameEditor: React.FC = () => {
       pages: game.pages,
       maps: game.maps,
       tiles: game.tiles,
+      dialogs: game.dialogs,
       styling,
       handlers: game.handlers,
       'virtual-keys': game.virtualKeys,
@@ -239,6 +246,7 @@ export const GameEditor: React.FC = () => {
       <PageList pages={game.pages} {...pageActions} />
       <MapList maps={game.maps} {...mapActions} />
       <TileList tiles={game.tiles} {...tileActions} />
+      <DialogList dialogs={game.dialogs} {...dialogActions} />
       <StylingList styling={styling} {...stylingActions} />
       <HandlerList handlers={game.handlers} {...handlerActions} />
       <VirtualKeyList virtualKeys={game.virtualKeys} {...virtualKeyActions} />

@@ -19,7 +19,7 @@ beforeAll(() => {
 })
 
 describe('GameEditor', () => {
-  it('adds entries for languages, pages, maps, and tiles', async () => {
+  it('adds entries for languages, pages, maps, tiles, and dialogs', async () => {
     const data = {
       title: '',
       description: '',
@@ -29,6 +29,7 @@ describe('GameEditor', () => {
       pages: {},
       maps: {},
       tiles: {},
+      dialogs: {},
       styling: [],
       handlers: [],
       'virtual-keys': [],
@@ -54,32 +55,39 @@ describe('GameEditor', () => {
       .find((h) => h.textContent === 'Maps')!.parentElement as HTMLElement
     const tilesSection = Array.from(container.querySelectorAll('h2'))
       .find((h) => h.textContent === 'Tiles')!.parentElement as HTMLElement
+    const dialogsSection = Array.from(container.querySelectorAll('h2'))
+      .find((h) => h.textContent === 'Dialogs')!.parentElement as HTMLElement
     expect(languagesSection.querySelectorAll('fieldset').length).toBe(0)
     expect(pagesSection.querySelectorAll('fieldset').length).toBe(0)
     expect(mapsSection.querySelectorAll('fieldset').length).toBe(0)
     expect(tilesSection.querySelectorAll('fieldset').length).toBe(0)
+    expect(dialogsSection.querySelectorAll('fieldset').length).toBe(0)
 
     const addLanguage = Array.from(languagesSection.querySelectorAll('button')).find((b) => b.textContent?.includes('Add Language'))!
     const addPage = Array.from(pagesSection.querySelectorAll('button')).find((b) => b.textContent?.includes('Add Page'))!
     const addMap = Array.from(mapsSection.querySelectorAll('button')).find((b) => b.textContent?.includes('Add Map'))!
     const addTile = Array.from(tilesSection.querySelectorAll('button')).find((b) => b.textContent?.includes('Add Tile'))!
+    const addDialog = Array.from(dialogsSection.querySelectorAll('button')).find((b) => b.textContent?.includes('Add Dialog'))!
 
     await act(async () => {
       addLanguage.click()
       addPage.click()
       addMap.click()
       addTile.click()
+      addDialog.click()
       await flushPromises()
     })
     expect(languagesSection.querySelectorAll('fieldset').length).toBe(1)
     expect(pagesSection.querySelectorAll('fieldset').length).toBe(1)
     expect(mapsSection.querySelectorAll('fieldset').length).toBe(1)
     expect(tilesSection.querySelectorAll('fieldset').length).toBe(1)
+    expect(dialogsSection.querySelectorAll('fieldset').length).toBe(1)
 
     const languageInputs = languagesSection.querySelectorAll('fieldset input')
     const pageInputs = pagesSection.querySelectorAll('fieldset input')
     const mapInputs = mapsSection.querySelectorAll('fieldset input')
     const tileInputs = tilesSection.querySelectorAll('fieldset input')
+    const dialogInputs = dialogsSection.querySelectorAll('fieldset input')
     expect((languageInputs[0] as HTMLInputElement).value).toBe('new-language-1')
     expect((languageInputs[1] as HTMLInputElement).value).toBe('')
     expect((pageInputs[0] as HTMLInputElement).value).toBe('new-page-1')
@@ -88,6 +96,8 @@ describe('GameEditor', () => {
     expect((mapInputs[1] as HTMLInputElement).value).toBe('')
     expect((tileInputs[0] as HTMLInputElement).value).toBe('new-tile-1')
     expect((tileInputs[1] as HTMLInputElement).value).toBe('')
+    expect((dialogInputs[0] as HTMLInputElement).value).toBe('new-dialog-1')
+    expect((dialogInputs[1] as HTMLInputElement).value).toBe('')
   })
 
   it('removes entries when clicking remove', async () => {
@@ -100,6 +110,7 @@ describe('GameEditor', () => {
       pages: { start: 'start.json' },
       maps: { world: 'world.json' },
       tiles: { grass: 'grass.json' },
+      dialogs: { intro: 'intro.json' },
       styling: [],
       handlers: [],
       'virtual-keys': [],
@@ -125,27 +136,33 @@ describe('GameEditor', () => {
       .find((h) => h.textContent === 'Maps')!.parentElement as HTMLElement
     const tilesSection = Array.from(container.querySelectorAll('h2'))
       .find((h) => h.textContent === 'Tiles')!.parentElement as HTMLElement
+    const dialogsSection = Array.from(container.querySelectorAll('h2'))
+      .find((h) => h.textContent === 'Dialogs')!.parentElement as HTMLElement
     expect(languagesSection.querySelectorAll('fieldset').length).toBe(1)
     expect(pagesSection.querySelectorAll('fieldset').length).toBe(1)
     expect(mapsSection.querySelectorAll('fieldset').length).toBe(1)
     expect(tilesSection.querySelectorAll('fieldset').length).toBe(1)
+    expect(dialogsSection.querySelectorAll('fieldset').length).toBe(1)
 
     const removeLang = Array.from(languagesSection.querySelectorAll('button')).find((b) => b.textContent === 'Remove')!
     const removePage = Array.from(pagesSection.querySelectorAll('button')).find((b) => b.textContent === 'Remove')!
     const removeMap = Array.from(mapsSection.querySelectorAll('button')).find((b) => b.textContent === 'Remove')!
     const removeTile = Array.from(tilesSection.querySelectorAll('button')).find((b) => b.textContent === 'Remove')!
+    const removeDialog = Array.from(dialogsSection.querySelectorAll('button')).find((b) => b.textContent === 'Remove')!
 
     await act(async () => {
       removeLang.click()
       removePage.click()
       removeMap.click()
       removeTile.click()
+      removeDialog.click()
       await flushPromises()
     })
     expect(languagesSection.querySelectorAll('fieldset').length).toBe(0)
     expect(pagesSection.querySelectorAll('fieldset').length).toBe(0)
     expect(mapsSection.querySelectorAll('fieldset').length).toBe(0)
     expect(tilesSection.querySelectorAll('fieldset').length).toBe(0)
+    expect(dialogsSection.querySelectorAll('fieldset').length).toBe(0)
   })
 
   it('displays status message and disables save button while saving', async () => {
@@ -158,6 +175,7 @@ describe('GameEditor', () => {
       pages: {},
       maps: {},
       tiles: {},
+      dialogs: {},
       styling: [],
       handlers: [],
       'virtual-keys': [],

@@ -264,8 +264,8 @@ export class GameEngine implements IGameEngine {
                 location: {
                     mapName: null,
                     position: {
-                        x: 5,
-                        y: 5
+                        x: 9,
+                        y: 6
                     },
                     mapSize: {
                         width: 10,

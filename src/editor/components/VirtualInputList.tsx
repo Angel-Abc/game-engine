@@ -1,17 +1,15 @@
 import type React from 'react'
+import type { EditableArrayActions } from './useEditableList'
 
-interface VirtualInputListProps {
+interface VirtualInputListProps extends EditableArrayActions {
   virtualInputs: string[]
-  updateVirtualInput: (index: number, value: string) => void
-  addVirtualInput: () => void
-  removeVirtualInput: (index: number) => void
 }
 
 export const VirtualInputList: React.FC<VirtualInputListProps> = ({
   virtualInputs,
-  updateVirtualInput,
-  addVirtualInput,
-  removeVirtualInput,
+  updateItem,
+  addItem,
+  removeItem,
 }) => (
   <section className="editor-section editor-list">
     <h2>Virtual Inputs</h2>
@@ -20,14 +18,14 @@ export const VirtualInputList: React.FC<VirtualInputListProps> = ({
         <input
           type="text"
           value={input}
-          onChange={(e) => updateVirtualInput(index, e.target.value)}
+          onChange={(e) => updateItem(index, e.target.value)}
         />
-        <button type="button" onClick={() => removeVirtualInput(index)}>
+        <button type="button" onClick={() => removeItem(index)}>
           Remove
         </button>
       </fieldset>
     ))}
-    <button type="button" onClick={addVirtualInput}>
+    <button type="button" onClick={addItem}>
       Add Virtual Input
     </button>
   </section>

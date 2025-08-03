@@ -1,17 +1,15 @@
 import type React from 'react'
+import type { EditableArrayActions } from './useEditableList'
 
-interface HandlerListProps {
+interface HandlerListProps extends EditableArrayActions {
   handlers: string[]
-  updateHandler: (index: number, value: string) => void
-  addHandler: () => void
-  removeHandler: (index: number) => void
 }
 
 export const HandlerList: React.FC<HandlerListProps> = ({
   handlers,
-  updateHandler,
-  addHandler,
-  removeHandler,
+  updateItem,
+  addItem,
+  removeItem,
 }) => (
   <section className="editor-section editor-list">
     <h2>Handlers</h2>
@@ -20,14 +18,14 @@ export const HandlerList: React.FC<HandlerListProps> = ({
         <input
           type="text"
           value={handler}
-          onChange={(e) => updateHandler(index, e.target.value)}
+          onChange={(e) => updateItem(index, e.target.value)}
         />
-        <button type="button" onClick={() => removeHandler(index)}>
+        <button type="button" onClick={() => removeItem(index)}>
           Remove
         </button>
       </fieldset>
     ))}
-    <button type="button" onClick={addHandler}>
+    <button type="button" onClick={addItem}>
       Add Handler
     </button>
   </section>

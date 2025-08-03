@@ -12,6 +12,7 @@ export interface IVirtualInputHandler {
 export class VirtualInputHandler implements IVirtualInputHandler {
     private keydownEventHandler: (event: KeyboardEvent) => void
     private virtualKeys: Map<string, VirtualKey> = new Map<string, VirtualKey>()
+    private virtualInputsByVirtualKey: Map<string, VirtualInput> = new Map<string, VirtualInput>()
     private virtualInputs: Map<string, VirtualInput> = new Map<string, VirtualInput>()
     private gameEngine: IGameEngine
 
@@ -33,12 +34,14 @@ export class VirtualInputHandler implements IVirtualInputHandler {
             })
         }
 
+        this.virtualInputsByVirtualKey.clear()
         this.virtualInputs.clear()
         for (const path of this.gameEngine.Loader.Game.virtualInputs) {
             const virtualInputs = await this.gameEngine.Loader.loadVirtualInputs(path)
             virtualInputs.forEach(virtualInput => {
+                this.virtualInputs.set(virtualInput.virtualInput, virtualInput)
                 virtualInput.virtualKeys.forEach(virtualKey => {
-                    this.virtualInputs.set(virtualKey, virtualInput)
+                    this.virtualInputsByVirtualKey.set(virtualKey, virtualInput)
                 })
             })
         }
@@ -57,7 +60,7 @@ export class VirtualInputHandler implements IVirtualInputHandler {
         const virtualKey = this.virtualKeys.get(key)
         if (virtualKey) {
             logDebug('Virtual key: {0}', virtualKey.virtualKey)
-            const virtualInput = this.virtualInputs.get(virtualKey.virtualKey)
+            const virtualInput = this.virtualInputsByVirtualKey.get(virtualKey.virtualKey)
             if (virtualInput) {
                 this.gameEngine.MessageBus.postMessage({
                     message: VIRTUAL_INPUT_MESSAGE,

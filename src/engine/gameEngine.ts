@@ -1,7 +1,7 @@
 import { fatalError, logDebug } from '@utils/logMessage'
 import { MessageBus, type IMessageBus } from '@utils/messageBus'
 import type { ILoader } from '@loader/loader'
-import { END_TURN_MESSAGE, ENGINE_STATE_CHANGED_MESSAGE, POSITION_CHANGED_MESSAGE, SWITCH_PAGE_MESSAGE } from './messages'
+import { END_TURN_MESSAGE, ENGINE_STATE_CHANGED_MESSAGE, MAP_SWITCHED_MESSAGE, POSITION_CHANGED_MESSAGE, SWITCH_PAGE_MESSAGE } from './messages'
 import { StateManager, type IStateManager } from './stateManager'
 import { ChangeTracker } from './changeTracker'
 import { TrackedValue, type ITrackedValue } from '@utils/trackedState'
@@ -280,6 +280,7 @@ export class GameEngine implements IGameEngine {
     private initializeMessageListeners(): void {
         this.messageBus.registerNotificationMessage(END_TURN_MESSAGE)
         this.messageBus.registerNotificationMessage(ENGINE_STATE_CHANGED_MESSAGE)
+        this.messageBus.registerNotificationMessage(MAP_SWITCHED_MESSAGE)
     }
 
     private cleanupHandlers() {

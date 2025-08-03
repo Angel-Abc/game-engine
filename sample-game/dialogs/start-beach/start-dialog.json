@@ -1,4 +1,15 @@
 {
-    "id": "start-beach.start-dialog"
-
+    "id": "start-beach.start-dialog",
+    "default-behavior": {
+        "can-move": false
+    },
+    "dialogs": [
+        {
+            "id": "intro",
+            "message": "START-BEACH.START-DIALOG.INTRO.MESSAGE",
+            "behavior": {
+                "can-move": true
+            }
+        }
+    ]
 }

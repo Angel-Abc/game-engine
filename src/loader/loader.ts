@@ -16,6 +16,7 @@ import { mapLoader } from './mapLoader'
 import type { VirtualKeys as VirtualKeysData, VirtualInputs as VirtualInputsData } from './data/inputs'
 import { virtualKeysLoader, virtualInputsLoader } from './inputsLoader'
 import { mapGame } from './mappers/game'
+import type { DialogSet } from './data/dialog'
 
 export interface ILoader {
     loadPage(page: string): Promise<PageData>
@@ -27,6 +28,7 @@ export interface ILoader {
     loadHandlers(path: string): Promise<Handlers>
     loadTileSet(id: string): Promise<TileSetData>
     loadMap(id: string): Promise<MapData>
+    loadDialog(id: string): Promise<DialogSet>
     loadVirtualKeys(path: string): Promise<VirtualKeysData>
     loadVirtualInputs(path: string): Promise<VirtualInputsData>
 }
@@ -40,6 +42,7 @@ export class Loader implements ILoader {
     private pages: Map<string, PageData> = new Map()
     private handlers: Map<string, Handlers> = new Map()
     private tileSets: Map<string, TileSetData> = new Map()
+    private dialogs: Map<string, DialogSet> = new Map()
     private maps: Map<string, MapData> = new Map()
     private virtualKeys: Map<string, VirtualKeysData> = new Map()
     private virtualInputs: Map<string, VirtualInputsData> = new Map()
@@ -84,7 +87,7 @@ export class Loader implements ILoader {
             }
             for (const path of paths) {
                 const schemaData = await loadJsonResource<Language>(`${this.basePath}/${path}`, languageSchema)
-                const languageData = mapLanguage(schemaData) 
+                const languageData = mapLanguage(schemaData)
                 if (result.id === '') result.id = languageData.id
                 if (result.id !== languageData.id) logWarning('Unexpected language match {0} !== {1}', result.id, languageData.id)
                 result.translations = { ...result.translations, ...languageData.translations }
@@ -111,6 +114,13 @@ export class Loader implements ILoader {
         return this.loadWithCache(this.maps, id, async () => {
             const path = this.game?.maps[id] ?? fatalError('Unknown map: {0}', id)
             return mapLoader({ basePath: this.basePath, path })
+        })
+    }
+
+    public async loadDialog(id: string): Promise<DialogSet> {
+        return this.loadWithCache(this.dialogs, id, async () => {
+            const path = this.game?.dialogs[id] ?? fatalError('Unknown dialog: {0}', id)
+            return dialogLoader({ basePath: this.basePath, path })
         })
     }
 

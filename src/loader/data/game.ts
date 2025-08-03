@@ -12,6 +12,7 @@ export type Game = {
     pages: Record<string, string>
     maps: Record<string, string>
     tiles: Record<string, string>
+    dialogs: Record<string, string>
     handlers: string[],
     virtualKeys: string[],
     virtualInputs: string[]

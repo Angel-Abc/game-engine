@@ -9,7 +9,8 @@
   "languages": {
     "en": [
       "languages/en/system.json",
-      "languages/en/tiles.json"
+      "languages/en/tiles.json",
+      "languages/en/start-beach.json"
     ]
   },
   "pages": {

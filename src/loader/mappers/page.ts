@@ -1,14 +1,23 @@
-import type { Screen as ScreenData, GridScreenItem as GridScreenItemData } from '@loader/data/page'
+import type { Screen as ScreenData, GridScreenItem as GridScreenItemData, Page as PageData } from '@loader/data/page'
 import type { Component as ComponentData } from '@loader/data/component'
 import type { Button as ButtonData } from '@loader/data/button'
-import { type Screen, type GridScreenItem } from '@loader/schema/page'
+import { type Screen, type GridScreenItem, type Page } from '@loader/schema/page'
 import { type Component } from '@loader/schema/component'
 import { type Button } from '@loader/schema/button'
 import { mapAction } from './action'
+import { mapInputs } from './input'
 
 
 interface Context {
     basePath: string
+}
+
+export function mapPage(context: Context,page: Page): PageData {
+    return {
+        id: page.id,
+        screen: mapScreen(context, page.screen),
+        inputs: mapInputs(page.inputs)
+    }
 }
 
 export function mapScreen(context: Context, screen: Screen): ScreenData {

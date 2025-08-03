@@ -1,6 +1,7 @@
 import { loadJsonResource } from '@utils/loadJsonResource'
-import type { GameMap as MapData, MapTile as MapTileData } from './data/map'
-import { squaresMapSchema, type SquaresMap as SchemaSquaresMap, type MapTile as SchemaMapTile } from './schema/map'
+import type { GameMap as MapData } from './data/map'
+import { squaresMapSchema, type SquaresMap as SchemaSquaresMap } from './schema/map'
+import { mapGameMap } from './mappers/map'
 
 interface Context {
     basePath: string
@@ -9,26 +10,6 @@ interface Context {
 
 export async function mapLoader(context: Context): Promise<MapData> {
     const schemaData = await loadJsonResource<SchemaSquaresMap>(`${context.basePath}/${context.path}`, squaresMapSchema)
-    return getMap(schemaData)
+    return mapGameMap(schemaData)
 }
 
-function getMap(map: SchemaSquaresMap): MapData {
-    const tiles: Record<string, MapTileData> = {}
-    map.tiles.forEach(tile => tiles[tile.key] = getMapTile(tile))
-    return {
-        key: map.key,
-        type: 'squares-map',
-        width: map.width,
-        height: map.height,
-        tileSets: map.tileSets,
-        tiles: tiles,
-        map: map.map.map(row => row.split(',')),
-    }
-}
-
-function getMapTile(tile: SchemaMapTile): MapTileData {
-    return {
-        key: tile.key,
-        tile: tile.tile,
-    }
-}

@@ -10,13 +10,13 @@
                     "top": 0,
                     "left": 18,
                     "right": 23,
-                    "bottom": 7
+                    "bottom": 11
                 },
                 "component": {
                     "type": "squares-map",
                     "mapSize": {
-                        "rows": 9,
-                        "columns": 13
+                        "rows": 11,
+                        "columns": 11
                     }
                 }
             },

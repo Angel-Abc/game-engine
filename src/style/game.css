@@ -69,7 +69,7 @@ body {
         position: relative;
         overflow: hidden;
         border-radius: calc(var(--tile-outer-size) * 0.2);
-        outline: solid 4px #808080;
+        outline: solid 2px #808080;
         width: var(--viewport-width);
         height: var(--viewport-height);
 

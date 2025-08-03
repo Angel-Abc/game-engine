@@ -6,7 +6,7 @@ const rootData = {
   description: 'test',
   version: '0.0.1',
   'initial-data': { language: 'en', 'start-page': 'page1' },
-  languages: { en: 'en.json' },
+  languages: { en: ['en.json'] },
   pages: { page1: 'page1.json' },
   maps: { start: 'start.json' },
   tiles: { outdoor: 'tiles.json' },

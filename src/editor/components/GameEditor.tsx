@@ -89,7 +89,16 @@ export const GameEditor: React.FC = () => {
     load()
     return () => controller.abort()
   }, [])
-  const setMap = <K extends 'languages' | 'pages' | 'maps' | 'tiles'>(key: K) =>
+  const setLanguageMap = (
+    updater: React.SetStateAction<Record<string, string[]>>,
+  ) =>
+    setGame((g) => {
+      if (!g) return g
+      const value = typeof updater === 'function' ? updater(g.languages) : updater
+      return { ...g, languages: value }
+    })
+
+  const setMap = <K extends 'pages' | 'maps' | 'tiles'>(key: K) =>
     (updater: React.SetStateAction<Record<string, string>>) =>
       setGame((g) => {
         if (!g) return g
@@ -108,21 +117,25 @@ export const GameEditor: React.FC = () => {
       return { ...g, [key]: value }
     })
 
-  const languageActions = useEditableList(setMap('languages'), {
+  const languageActions = useEditableList<string[]>(setLanguageMap, {
     type: 'map',
     prefix: 'language',
+    empty: [],
   })
   const pageActions = useEditableList(setMap('pages'), {
     type: 'map',
     prefix: 'page',
+    empty: '',
   })
   const mapActions = useEditableList(setMap('maps'), {
     type: 'map',
     prefix: 'map',
+    empty: '',
   })
   const tileActions = useEditableList(setMap('tiles'), {
     type: 'map',
     prefix: 'tile',
+    empty: '',
   })
 
   const stylingActions = useEditableList(setStyling, { type: 'array' })

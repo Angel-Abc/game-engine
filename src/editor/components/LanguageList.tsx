@@ -1,8 +1,8 @@
 import type React from 'react'
 import type { EditableMapActions } from './useEditableList'
 
-interface LanguageListProps extends EditableMapActions {
-  languages: Record<string, string>
+interface LanguageListProps extends EditableMapActions<string[]> {
+  languages: Record<string, string[]>
 }
 
 export const LanguageList: React.FC<LanguageListProps> = ({
@@ -14,7 +14,7 @@ export const LanguageList: React.FC<LanguageListProps> = ({
 }) => (
   <section className="editor-section editor-list">
     <h2>Languages</h2>
-    {Object.entries(languages).map(([id, path]) => (
+    {Object.entries(languages).map(([id, paths]) => (
       <fieldset key={id} className="editor-list-item">
         <input
           type="text"
@@ -23,8 +23,16 @@ export const LanguageList: React.FC<LanguageListProps> = ({
         />
         <input
           type="text"
-          value={path}
-          onChange={(e) => updateItem(id, e.target.value)}
+          value={paths.join(', ')}
+          onChange={(e) =>
+            updateItem(
+              id,
+              e.target.value
+                .split(',')
+                .map((p) => p.trim())
+                .filter((p) => p.length > 0),
+            )
+          }
         />
         <button type="button" onClick={() => removeItem(id)}>
           Remove

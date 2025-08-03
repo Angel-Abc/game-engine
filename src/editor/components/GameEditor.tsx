@@ -17,11 +17,36 @@ export const GameEditor: React.FC = () => {
   const [styling, setStyling] = useState<string[]>([])
   const [statusMessage, setStatusMessage] = useState('')
   const [saving, setSaving] = useState(false)
-
+  const [loadError, setLoadError] = useState('')
   useEffect(() => {
-    fetch('/api/game')
-      .then((r) => r.json())
-      .then((data) => {
+    const controller = new AbortController()
+
+    const load = async () => {
+      try {
+        const response = await fetch('/api/game', {
+          signal: controller.signal,
+        })
+
+        if (!response.ok) {
+          setLoadError('Failed to load game data.')
+          setGame({
+            title: '',
+            description: '',
+            version: '',
+            initialData: { language: '', startPage: '' },
+            languages: {},
+            pages: {},
+            maps: {},
+            tiles: {},
+            handlers: [],
+            virtualKeys: [],
+            virtualInputs: [],
+          })
+          setStyling([])
+          return
+        }
+
+        const data = await response.json()
         const parsed = gameSchema.parse(data)
         const result: Game = {
           title: parsed.title,
@@ -41,8 +66,9 @@ export const GameEditor: React.FC = () => {
         }
         setGame(result)
         setStyling(parsed.styling)
-      })
-      .catch(() => {
+      } catch (err) {
+        if ((err as Error).name === 'AbortError') return
+        setLoadError('Failed to load game data.')
         setGame({
           title: '',
           description: '',
@@ -57,7 +83,11 @@ export const GameEditor: React.FC = () => {
           virtualInputs: [],
         })
         setStyling([])
-      })
+      }
+    }
+
+    load()
+    return () => controller.abort()
   }, [])
   const setMap = <K extends 'languages' | 'pages' | 'maps' | 'tiles'>(key: K) =>
     (updater: React.SetStateAction<Record<string, string>>) =>
@@ -203,6 +233,7 @@ export const GameEditor: React.FC = () => {
       <button type="button" onClick={handleSave} disabled={saving}>
         Save
       </button>
+      {loadError && <p>{loadError}</p>}
       {statusMessage && <p>{statusMessage}</p>}
     </section>
   )

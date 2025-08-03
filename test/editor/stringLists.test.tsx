@@ -34,7 +34,9 @@ describe('GameEditor string lists', () => {
       'virtual-keys': [],
       'virtual-inputs': [],
     }
-    const fetchMock = vi.fn().mockResolvedValue({ json: vi.fn().mockResolvedValue(data) })
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue({ ok: true, json: vi.fn().mockResolvedValue(data) })
     ;(globalThis as { fetch: typeof fetch }).fetch = fetchMock as unknown as typeof fetch
 
     const container = document.createElement('div')
@@ -102,7 +104,9 @@ describe('GameEditor string lists', () => {
       'virtual-keys': ['A'],
       'virtual-inputs': ['input'],
     }
-    const fetchMock = vi.fn().mockResolvedValue({ json: vi.fn().mockResolvedValue(data) })
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue({ ok: true, json: vi.fn().mockResolvedValue(data) })
     ;(globalThis as { fetch: typeof fetch }).fetch = fetchMock as unknown as typeof fetch
 
     const container = document.createElement('div')

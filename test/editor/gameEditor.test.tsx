@@ -34,7 +34,9 @@ describe('GameEditor', () => {
       'virtual-keys': [],
       'virtual-inputs': []
     }
-    const fetchMock = vi.fn().mockResolvedValue({ json: vi.fn().mockResolvedValue(data) })
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue({ ok: true, json: vi.fn().mockResolvedValue(data) })
     ;(globalThis as { fetch: typeof fetch }).fetch = fetchMock as unknown as typeof fetch
 
     const container = document.createElement('div')
@@ -103,7 +105,9 @@ describe('GameEditor', () => {
       'virtual-keys': [],
       'virtual-inputs': []
     }
-    const fetchMock = vi.fn().mockResolvedValue({ json: vi.fn().mockResolvedValue(data) })
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue({ ok: true, json: vi.fn().mockResolvedValue(data) })
     ;(globalThis as { fetch: typeof fetch }).fetch = fetchMock as unknown as typeof fetch
 
     const container = document.createElement('div')
@@ -162,7 +166,7 @@ describe('GameEditor', () => {
     let resolveSave: (value: Response) => void = () => {}
     const fetchMock = vi
       .fn()
-      .mockResolvedValueOnce({ json: vi.fn().mockResolvedValue(data) } as unknown as Response)
+      .mockResolvedValueOnce({ ok: true, json: vi.fn().mockResolvedValue(data) } as unknown as Response)
       .mockImplementationOnce(
         () =>
           new Promise<Response>((resolve) => {

@@ -14,6 +14,8 @@ import { VirtualInputList } from './VirtualInputList'
 export const GameEditor: React.FC = () => {
   const [game, setGame] = useState<Game | null>(null)
   const [styling, setStyling] = useState<string[]>([])
+  const [statusMessage, setStatusMessage] = useState('')
+  const [saving, setSaving] = useState(false)
 
   useEffect(() => {
     fetch('/api/game')
@@ -310,7 +312,7 @@ export const GameEditor: React.FC = () => {
     })
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!game) return
     const obj = {
       title: game.title,
@@ -330,7 +332,10 @@ export const GameEditor: React.FC = () => {
       'virtual-inputs': game.virtualInputs,
     }
     const json = JSON.stringify(obj, null, 2)
-    void saveGame(json)
+    setSaving(true)
+    const message = await saveGame(json)
+    setStatusMessage(message)
+    setSaving(false)
   }
 
   if (!game) return <div>Loading...</div>
@@ -442,9 +447,10 @@ export const GameEditor: React.FC = () => {
         addVirtualInput={addVirtualInput}
         removeVirtualInput={removeVirtualInput}
       />
-      <button type="button" onClick={handleSave}>
+      <button type="button" onClick={handleSave} disabled={saving}>
         Save
       </button>
+      {statusMessage && <p>{statusMessage}</p>}
     </section>
   )
 }

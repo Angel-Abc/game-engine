@@ -2,39 +2,35 @@ import { describe, it, expect, vi } from 'vitest'
 import { saveGame } from '../../src/editor/main'
 
 describe('saveGame', () => {
-  it('alerts when json is invalid and does not fetch', async () => {
+  it('returns error message when json is invalid and does not fetch', async () => {
     const fetchMock = vi.fn()
-    const alertMock = vi.fn()
-    await saveGame('invalid', fetchMock as any, alertMock)
-    expect(alertMock).toHaveBeenCalledWith('Invalid JSON')
+    const result = await saveGame('invalid', fetchMock as any)
+    expect(result).toBe('Invalid JSON')
     expect(fetchMock).not.toHaveBeenCalled()
   })
 
-  it('posts json and alerts on success', async () => {
+  it('posts json and returns success message', async () => {
     const response = { ok: true } as Response
     const fetchMock = vi.fn().mockResolvedValue(response)
-    const alertMock = vi.fn()
-    await saveGame('{}', fetchMock as any, alertMock)
+    const result = await saveGame('{}', fetchMock as any)
     expect(fetchMock).toHaveBeenCalledWith('/api/game', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: '{}',
     })
-    expect(alertMock).toHaveBeenCalledWith('Saved')
+    expect(result).toBe('Saved')
   })
 
-  it('alerts error text when request fails', async () => {
+  it('returns error text when request fails', async () => {
     const response = { ok: false, text: vi.fn().mockResolvedValue('error') } as unknown as Response
     const fetchMock = vi.fn().mockResolvedValue(response)
-    const alertMock = vi.fn()
-    await saveGame('{}', fetchMock as any, alertMock)
-    expect(alertMock).toHaveBeenCalledWith('error')
+    const result = await saveGame('{}', fetchMock as any)
+    expect(result).toBe('error')
   })
 
-  it('alerts error message when fetch rejects', async () => {
+  it('returns error message when fetch rejects', async () => {
     const fetchMock = vi.fn().mockRejectedValue(new Error('network'))
-    const alertMock = vi.fn()
-    await saveGame('{}', fetchMock as any, alertMock)
-    expect(alertMock).toHaveBeenCalledWith('network')
+    const result = await saveGame('{}', fetchMock as any)
+    expect(result).toBe('network')
   })
 })

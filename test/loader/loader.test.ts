@@ -10,6 +10,7 @@ const rootData = {
   pages: { page1: 'page1.json' },
   maps: { start: 'start.json' },
   tiles: { outdoor: 'tiles.json' },
+  dialogs: {},
   styling: [],
   handlers: ['handlers.json'],
   'virtual-keys': ['virtual-keys.json'],

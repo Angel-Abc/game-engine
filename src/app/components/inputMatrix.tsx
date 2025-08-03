@@ -11,18 +11,18 @@ export type InputMatrixProps = {
 
 export const InputMatrx: React.FC<InputMatrixProps> = ({ component }): React.JSX.Element => {
     const engine = getGameEngine()
-    const [inputMatrix, setInputMatrix] = useState(engine.InputManager.getInputMatrix(component.matrixSize.rows, component.matrixSize.columns))
+    const [inputMatrix, setInputMatrix] = useState(engine.InputManager.getInputMatrix(component.matrixSize.width, component.matrixSize.height))
     const style: CSSCustomProperties = {
-        '--ge-input-matrix-width': component.matrixSize.rows.toString(),
-        '--ge-input-matrix-height': component.matrixSize.columns.toString()
+        '--ge-input-matrix-width': component.matrixSize.width.toString(),
+        '--ge-input-matrix-height': component.matrixSize.height.toString()
     }
 
     useEffect(() => {
         const cleanup = engine.MessageBus.registerMessageListener(INPUTHANDLER_INPUTS_CHANGED, () => {
-            setInputMatrix(engine.InputManager.getInputMatrix(component.matrixSize.rows, component.matrixSize.columns))
+            setInputMatrix(engine.InputManager.getInputMatrix(component.matrixSize.width, component.matrixSize.height))
         })
         return cleanup
-    }, [engine, component.matrixSize.rows, component.matrixSize.columns])
+    }, [engine, component.matrixSize.height, component.matrixSize.width])
 
     const onButtonClick = (item: MatrixInputItem): void => {
         if (!item.enabled || item.virtualInput === '') return

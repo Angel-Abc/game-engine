@@ -4,8 +4,8 @@ import { actionSchema } from './action'
 
 export const inputSchema = z.object({
     virtualInput: z.string(),
-    prefferedRow: z.int().nonnegative().optional(),
-    prefferedCol: z.int().nonnegative().optional(),
+    preferredRow: z.int().nonnegative().optional(),
+    preferredCol: z.int().nonnegative().optional(),
     label: z.string(),
     description: z.string(),
     visible: conditionSchema,

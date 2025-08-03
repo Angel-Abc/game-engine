@@ -30,8 +30,8 @@
                 "component": {
                     "type": "input-matrix",
                     "matrixSize": {
-                        "rows": 4,
-                        "columns": 5
+                        "width": 5,
+                        "height": 4
                     }
                 }
             }

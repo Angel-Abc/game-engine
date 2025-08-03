@@ -3,6 +3,7 @@ import type { IGameEngine } from './gameEngine'
 import { INPUTHANDLER_INPUTS_CHANGED, VIRTUAL_INPUT_MESSAGE } from './messages'
 import type { Input } from '@loader/data/inputs'
 import { hasMapChanged, updateMap } from '@utils/map'
+import { logDebug } from '@utils/logMessage'
 
 export type MatrixInputItem = {
     enabled: boolean
@@ -63,6 +64,7 @@ export class InputManager implements IInputManager {
                 let found = false
                 for (let index = itemsToProcess.length-1; index >= 0 && !found; index--) {
                     const inputItem = itemsToProcess[index]
+                    logDebug('(x,y)=({0}, {1}) => {2}', x, y, inputItem)
                     if (inputItem.input.preferredCol === x && inputItem.input.preferredRow === y){
                         found = true
                         matrix[y][x] = this.getMatrxInputItem(inputItem)

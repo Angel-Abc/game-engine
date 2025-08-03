@@ -64,8 +64,8 @@ export function mapComponent(context: Context, component: Component): ComponentD
             return {
                 type: 'input-matrix',
                 matrixSize: {
-                    rows: component.matrixSize.rows,
-                    columns: component.matrixSize.columns
+                    width: component.matrixSize.width,
+                    height: component.matrixSize.height
                 }
             }
     }

@@ -21,8 +21,8 @@ export interface SquaresMapComponent {
 }
 
 interface MatrixSize {
-    rows: number
-    columns: number
+    width: number
+    height: number
 }
 
 export interface inputMatrixComponent {

@@ -41,8 +41,8 @@ export function mapInputs(inputs: Input[]): InputData[] {
 export function mapInput(input: Input): InputData {
     return {
         virtualInput: input.virtualInput,
-        preferredRow: input.prefferedRow,
-        preferredCol: input.prefferedCol,
+        preferredRow: input.preferredRow,
+        preferredCol: input.preferredCol,
         label: input.label,
         description: input.description,
         visible: mapCondition(input.visible),

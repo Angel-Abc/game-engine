@@ -22,8 +22,8 @@ const squaresMapComponentSchema = z.object({
 const inputMatrxComponentSchema = z.object({
     type: z.literal('input-matrix'),
     matrixSize: z.object({
-        rows: z.int().positive(),
-        columns: z.int().positive()
+        width: z.int().positive(),
+        height: z.int().positive()
     })
 })
 

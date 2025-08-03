@@ -10,8 +10,11 @@ function flushPromises() {
   })
 }
 
+const originalFetch = globalThis.fetch
+
 afterEach(() => {
   vi.restoreAllMocks()
+  globalThis.fetch = originalFetch
 })
 
 beforeAll(() => {
@@ -43,8 +46,9 @@ describe('Map editor', () => {
 
     const container = document.createElement('div')
     document.body.appendChild(container)
+    const root = createRoot(container)
     await act(async () => {
-      createRoot(container).render(<GameEditor />)
+      root.render(<GameEditor />)
       await flushPromises()
     })
 
@@ -76,5 +80,9 @@ describe('Map editor', () => {
     const saved = JSON.parse(body)
     const savedMap = JSON.parse(saved.maps.world)
     expect(savedMap.map[0][0]).toBe('grass')
+    await act(async () => {
+      root.unmount()
+    })
+    container.remove()
   })
 })

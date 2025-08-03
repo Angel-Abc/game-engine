@@ -10,8 +10,11 @@ function flushPromises() {
   })
 }
 
+const originalFetch = globalThis.fetch
+
 afterEach(() => {
   vi.restoreAllMocks()
+  globalThis.fetch = originalFetch
 })
 
 beforeAll(() => {
@@ -41,8 +44,9 @@ describe('GameEditor', () => {
 
     const container = document.createElement('div')
     document.body.appendChild(container)
+    const root = createRoot(container)
     await act(async () => {
-      createRoot(container).render(<GameEditor />)
+      root.render(<GameEditor />)
       await flushPromises()
     })
 
@@ -88,6 +92,10 @@ describe('GameEditor', () => {
     expect(mapInputs.length).toBe(1)
     expect((tileInputs[0] as HTMLInputElement).value).toBe('new-tile-1')
     expect((tileInputs[1] as HTMLInputElement).value).toBe('')
+    await act(async () => {
+      root.unmount()
+    })
+    container.remove()
   })
 
   it('removes entries when clicking remove', async () => {
@@ -112,8 +120,9 @@ describe('GameEditor', () => {
 
     const container = document.createElement('div')
     document.body.appendChild(container)
+    const root = createRoot(container)
     await act(async () => {
-      createRoot(container).render(<GameEditor />)
+      root.render(<GameEditor />)
       await flushPromises()
     })
 
@@ -146,6 +155,10 @@ describe('GameEditor', () => {
     expect(pagesSection.querySelectorAll('fieldset').length).toBe(0)
     expect(mapsSection.querySelectorAll('fieldset').length).toBe(0)
     expect(tilesSection.querySelectorAll('fieldset').length).toBe(0)
+    await act(async () => {
+      root.unmount()
+    })
+    container.remove()
   })
 
   it('displays status message and disables save button while saving', async () => {
@@ -177,8 +190,9 @@ describe('GameEditor', () => {
 
     const container = document.createElement('div')
     document.body.appendChild(container)
+    const root = createRoot(container)
     await act(async () => {
-      createRoot(container).render(<GameEditor />)
+      root.render(<GameEditor />)
       await flushPromises()
     })
 
@@ -199,5 +213,9 @@ describe('GameEditor', () => {
 
     expect(saveButton.disabled).toBe(false)
     expect(container.textContent).toContain('Saved')
+    await act(async () => {
+      root.unmount()
+    })
+    container.remove()
   })
 })

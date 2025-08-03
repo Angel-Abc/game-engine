@@ -51,7 +51,8 @@ function createTestEngine() {
     get PageManager(): IPageManager { return {} as IPageManager },
     get MapManager() { return {} as any },
     get InputManager() { return {} as any },
-    get ScriptRunner() { return {} as any }
+    get ScriptRunner() { return {} as any },
+    get VirtualInputHandler() { return {} as any }
   }
 
   const pageManager = new PageManager(engine)

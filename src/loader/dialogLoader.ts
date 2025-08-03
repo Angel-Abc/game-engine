@@ -8,7 +8,7 @@ interface Context {
     path: string
 }
 
-export async function mapLoader(context: Context): Promise<DialogSetData> {
+export async function dialogLoader(context: Context): Promise<DialogSetData> {
     const schemaData = await loadJsonResource<DialogSetSchema>(`${context.basePath}/${context.path}`, dialogSetSchema)
     return mapDialogSet(schemaData)
 }

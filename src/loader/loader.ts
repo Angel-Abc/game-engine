@@ -17,6 +17,7 @@ import type { VirtualKeys as VirtualKeysData, VirtualInputs as VirtualInputsData
 import { virtualKeysLoader, virtualInputsLoader } from './inputsLoader'
 import { mapGame } from './mappers/game'
 import type { DialogSet } from './data/dialog'
+import { dialogLoader } from './dialogLoader'
 
 export interface ILoader {
     loadPage(page: string): Promise<PageData>

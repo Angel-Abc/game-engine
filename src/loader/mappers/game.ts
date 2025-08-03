@@ -14,6 +14,7 @@ export function mapGame(game: Game, basePath: string): { game: GameData, styling
             languages: game.languages,
             pages: game.pages,
             maps: game.maps,
+            dialogs: game.dialogs,
             tiles: game.tiles,
             handlers: game.handlers,
             virtualKeys: game['virtual-keys'],

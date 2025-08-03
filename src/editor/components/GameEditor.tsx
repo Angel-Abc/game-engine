@@ -81,8 +81,8 @@ export const GameEditor: React.FC = () => {
     setGame((g) => {
       if (!g) return g
       const languages = { ...g.languages }
-      let newId = ''
-      let index = 1
+      let newId = 'new-language-1'
+      let index = 2
       while (Object.prototype.hasOwnProperty.call(languages, newId)) {
         newId = `new-language-${index}`
         index += 1
@@ -123,8 +123,8 @@ export const GameEditor: React.FC = () => {
     setGame((g) => {
       if (!g) return g
       const pages = { ...g.pages }
-      let newId = ''
-      let i = 1
+      let newId = 'new-page-1'
+      let i = 2
       while (Object.prototype.hasOwnProperty.call(pages, newId)) {
         newId = `new-page-${i}`
         i += 1
@@ -165,8 +165,8 @@ export const GameEditor: React.FC = () => {
     setGame((g) => {
       if (!g) return g
       const maps = { ...g.maps }
-      let newId = ''
-      let i = 1
+      let newId = 'new-map-1'
+      let i = 2
       while (Object.prototype.hasOwnProperty.call(maps, newId)) {
         newId = `new-map-${i}`
         i += 1
@@ -207,8 +207,8 @@ export const GameEditor: React.FC = () => {
     setGame((g) => {
       if (!g) return g
       const tiles = { ...g.tiles }
-      let newId = ''
-      let i = 1
+      let newId = 'new-tile-1'
+      let i = 2
       while (Object.prototype.hasOwnProperty.call(tiles, newId)) {
         newId = `new-tile-${i}`
         i += 1

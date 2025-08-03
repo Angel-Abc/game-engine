@@ -9,7 +9,7 @@ export type InputMatrixProps = {
     component: inputMatrixComponent
 }
 
-export const InputMatrx: React.FC<InputMatrixProps> = ({ component }): React.JSX.Element => {
+export const InputMatrix: React.FC<InputMatrixProps> = ({ component }): React.JSX.Element => {
     const engine = getGameEngine()
     const [inputMatrix, setInputMatrix] = useState(engine.InputManager.getInputMatrix(component.matrixSize.width, component.matrixSize.height))
     const style: CSSCustomProperties = {

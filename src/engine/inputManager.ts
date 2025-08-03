@@ -67,7 +67,7 @@ export class InputManager implements IInputManager {
                     logDebug('(x,y)=({0}, {1}) => {2}', x, y, inputItem)
                     if (inputItem.input.preferredCol === x && inputItem.input.preferredRow === y){
                         found = true
-                        matrix[y][x] = this.getMatrxInputItem(inputItem)
+                        matrix[y][x] = this.getMatrixInputItem(inputItem)
                         itemsToProcess.splice(index, 1)
                     }
                 }
@@ -80,7 +80,7 @@ export class InputManager implements IInputManager {
         for (let y=height - 1; y >= 0 && itemsToProcess.length > 0; y--) {
             for (let x=width -1 ; x >=0 && itemsToProcess.length > 0; x--){
                 if (matrix[y][x] === nullMatrixInputItem) {
-                    matrix[y][x] = this.getMatrxInputItem(itemsToProcess.shift()!)
+                    matrix[y][x] = this.getMatrixInputItem(itemsToProcess.shift()!)
                 }
             }
         }
@@ -88,7 +88,7 @@ export class InputManager implements IInputManager {
         return matrix
     }
 
-    private getMatrxInputItem(inputItem: InputItem): MatrixInputItem {
+    private getMatrixInputItem(inputItem: InputItem): MatrixInputItem {
         const matrixItem: MatrixInputItem = {
             enabled: inputItem.enabled,
             label: this.gameEngine.TranslationService.translate(inputItem.input.label),
@@ -133,7 +133,7 @@ export class InputManager implements IInputManager {
                 visible: this.gameEngine.resolveCondition(input.visible ?? null)
             })
         })
-        return false
+        return true
     }
 
     private onInput(input: string): void {

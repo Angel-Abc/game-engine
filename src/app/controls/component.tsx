@@ -1,6 +1,6 @@
 import { GameMenu } from '@app/components/gameMenu'
 import { Image } from '@app/components/image'
-import { InputMatrx } from '@app/components/inputMatrix'
+import { InputMatrix } from '@app/components/inputMatrix'
 import { SquaresMap } from '@app/components/squaresMap'
 import type { Component as ComponentData } from '@loader/data/component'
 
@@ -17,6 +17,6 @@ export const Component:React.FC<ComponentProps> = ({ component }): React.JSX.Ele
         case 'squares-map':
             return <SquaresMap component={component} />
         case 'input-matrix':
-            return <InputMatrx component={component} />
+            return <InputMatrix component={component} />
     }
 }

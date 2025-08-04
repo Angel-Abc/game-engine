@@ -17,3 +17,7 @@ img, picture, video, canvas, svg {
 input, button, textarea, select {
   font: inherit;
 }
+
+bold {
+  font-weight: 800;
+}

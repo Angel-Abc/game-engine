@@ -89,9 +89,10 @@ export function mapComponent(context: Context, component: Component): ComponentD
             return {
                 type: 'character'
             }
-        case 'output':
+        case 'output-log':
             return {
-                type: 'output'
+                type: 'output-log',
+                logSize: component.logSize
             }
     }
 }

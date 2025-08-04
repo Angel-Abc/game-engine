@@ -17,11 +17,11 @@
     "start-page": "pages/start-page.json",
     "main-game": "pages/main-game.json"
   },
-  "tiles": {
-    "outdoor": "tiles/outdoor.json"
-  },
   "maps": {
     "start-beach": "maps/start-beach.json"
+  },
+  "tiles": {
+    "outdoor": "tiles/outdoor.json"
   },
   "dialogs": {
     "start-beach.start-dialog": "dialogs/start-beach/start-dialog.json"

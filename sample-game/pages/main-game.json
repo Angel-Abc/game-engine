@@ -76,7 +76,8 @@
                     "bottom": 17
                 },
                 "component": {
-                    "type": "output"
+                    "type": "output-log",
+                    "logSize": 100
                 }
 
             }

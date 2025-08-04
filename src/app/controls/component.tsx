@@ -1,6 +1,7 @@
 import { GameMenu } from '@app/components/gameMenu'
 import { Image } from '@app/components/image'
 import { InputMatrix } from '@app/components/inputMatrix'
+import { OutputLog } from '@app/components/outputLog'
 import { SquaresMap } from '@app/components/squaresMap'
 import type { Component as ComponentData } from '@loader/data/component'
 
@@ -18,6 +19,8 @@ export const Component:React.FC<ComponentProps> = ({ component }): React.JSX.Ele
             return <SquaresMap component={component} />
         case 'input-matrix':
             return <InputMatrix component={component} />
+        case 'output-log':
+            return <OutputLog component={component} />
         default:
             return <div>TODO: {component.type}</div>
     }

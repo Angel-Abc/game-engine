@@ -43,7 +43,8 @@ export interface CharacterComponent {
 }
 
 export interface OutputComponent {
-    type: 'output'
+    type: 'output-log'
+    logSize: number
 }
 
 export type Component =

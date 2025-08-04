@@ -1,7 +1,7 @@
 import { fatalError, logDebug } from '@utils/logMessage'
 import { MessageBus, type IMessageBus } from '@utils/messageBus'
 import type { ILoader } from '@loader/loader'
-import { END_TURN_MESSAGE, ENGINE_STATE_CHANGED_MESSAGE, MAP_SWITCHED_MESSAGE, POSITION_CHANGED_MESSAGE, SWITCH_PAGE_MESSAGE } from './messages'
+import { ADD_LINE_TO_OUTPUT_LOG, END_TURN_MESSAGE, ENGINE_STATE_CHANGED_MESSAGE, MAP_SWITCHED_MESSAGE, POSITION_CHANGED_MESSAGE, SWITCH_PAGE_MESSAGE } from './messages'
 import { StateManager, type IStateManager } from './stateManager'
 import { ChangeTracker } from './changeTracker'
 import { TrackedValue, type ITrackedValue } from '@utils/trackedState'
@@ -17,6 +17,7 @@ import { VirtualInputHandler, type IVirtualInputHandler } from './virtualInputHa
 import { InputManager, type IInputManager } from './inputManager'
 import { ScriptRunner, type IScriptRunner, type ScriptContext } from './scriptRunner'
 import type { Condition } from '@loader/data/condition'
+import { OutputManager, type IOutputManager } from './outputManager'
 
 let gameEngine: GameEngine | null = null
 function setGameEngine(engine: GameEngine): void {
@@ -78,6 +79,7 @@ export interface IGameEngine {
     get InputManager(): IInputManager
     get ScriptRunner(): IScriptRunner
     get VirtualInputHandler(): IVirtualInputHandler
+    get OutputManager(): IOutputManager
 }
 
 export class GameEngine implements IGameEngine {
@@ -90,6 +92,7 @@ export class GameEngine implements IGameEngine {
     private virtualInputHandler: IVirtualInputHandler
     private inputManager: IInputManager
     private scriptRunner: IScriptRunner
+    private outputManager: IOutputManager
 
     private endingTurn: boolean = false
     private currentLanguage: string | null = null
@@ -119,6 +122,7 @@ export class GameEngine implements IGameEngine {
         this.mapManager = new MapManager(this)
         this.virtualInputHandler = new VirtualInputHandler(this)
         this.inputManager = new InputManager(this)
+        this.outputManager = new OutputManager(this)
         this.scriptRunner = new ScriptRunner()
         setGameEngine(this)
     }
@@ -230,6 +234,11 @@ export class GameEngine implements IGameEngine {
         return this.virtualInputHandler
     }
 
+    public get OutputManager(): IOutputManager {
+        return this.outputManager
+    }
+
+    private counter: number = 0
     private handleOnQueueEmpty(): void {
         if (this.endingTurn) {
             this.endTurn()
@@ -237,6 +246,10 @@ export class GameEngine implements IGameEngine {
             return
         }
         this.endingTurn = true
+        this.MessageBus.postMessage({
+            message: ADD_LINE_TO_OUTPUT_LOG,
+            payload: `<p>This is test line <bold>${this.counter++}</bold>.</p>`
+        })
         this.messageBus.postMessage({
             message: END_TURN_MESSAGE,
             payload: null

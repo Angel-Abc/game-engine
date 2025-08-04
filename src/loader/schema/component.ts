@@ -40,7 +40,8 @@ const characterComponentSchema = z.object({
 })
 
 const outputComponentSchema = z.object({
-    type: z.literal('output')
+    type: z.literal('output-log'),
+    logSize: z.int().positive()
 })
 
 export const componentSchema = z.discriminatedUnion('type', [

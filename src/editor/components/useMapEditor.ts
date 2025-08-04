@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react'
 import type { GameMap } from '@loader/data/map'
 import type { Tile } from '@loader/data/tile'
+import { fromAnyMap, toSchemaMap } from '../convertMap'
 
 export interface UseMapEditorOptions {
   map?: GameMap
@@ -35,8 +36,8 @@ export function useMapEditor(options: UseMapEditorOptions = {}): MapEditorState 
   const [redoStack, setRedoStack] = useState<GameMap[]>([])
 
   const loadFromJSON = useCallback((json: string) => {
-    const data = JSON.parse(json) as { map: GameMap; tiles: Record<string, Tile> }
-    setMap(data.map)
+    const data = JSON.parse(json) as { map: unknown; tiles: Record<string, Tile> }
+    setMap(fromAnyMap(data.map as GameMap))
     setTiles(data.tiles)
     setSelectedTile('')
     setUndoStack([])
@@ -44,7 +45,8 @@ export function useMapEditor(options: UseMapEditorOptions = {}): MapEditorState 
   }, [])
 
   const saveToJSON = useCallback(() => {
-    return JSON.stringify({ map, tiles }, null, 2)
+    if (!map) return ''
+    return JSON.stringify({ map: toSchemaMap(map), tiles }, null, 2)
   }, [map, tiles])
 
   const pushHistory = useCallback(

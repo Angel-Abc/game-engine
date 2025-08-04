@@ -13,9 +13,10 @@ import { HandlerList } from './HandlerList'
 import { VirtualKeyList } from './VirtualKeyList'
 import { VirtualInputList } from './VirtualInputList'
 import { useEditableList } from './useEditableList'
-import type { GameMap, MapTile } from '@loader/data/map'
+import type { GameMap } from '@loader/data/map'
 import type { Tile } from '@loader/data/tile'
 import { resolveTileSet } from '../resolveTileSet'
+import { fromAnyMap, toSchemaMap } from '../convertMap'
 
 export const GameEditor: React.FC = () => {
   const [game, setGame] = useState<Game | null>(null)
@@ -173,21 +174,7 @@ export const GameEditor: React.FC = () => {
       const res = await fetch(`/api/map/${encodeURIComponent(path)}`)
       if (!res.ok) throw new Error('failed')
       const json = await res.json()
-      const mapData: GameMap = {
-        ...json,
-        map: Array.isArray(json.map?.[0])
-          ? json.map
-          : json.map?.map((row: string) => row.split(',')),
-        tiles: Array.isArray(json.tiles)
-          ? json.tiles.reduce(
-              (acc: Record<string, MapTile>, t: MapTile) => {
-                acc[t.key] = t
-                return acc
-              },
-              {},
-            )
-          : json.tiles,
-      }
+      const mapData: GameMap = fromAnyMap(json)
       const tiles: Record<string, Tile> = {}
       await Promise.all(
         (mapData.tileSets || []).map(async (setId: string) => {
@@ -214,7 +201,7 @@ export const GameEditor: React.FC = () => {
 
   const handleMapSave = async (map: GameMap, tiles: Record<string, Tile>) => {
     if (!game || !editingMapId) return
-    const json = JSON.stringify({ map, tiles }, null, 2)
+    const json = JSON.stringify({ map: toSchemaMap(map), tiles }, null, 2)
     const path = game.maps[editingMapId]
     const message = await saveGame(
       json,

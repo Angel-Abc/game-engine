@@ -17,14 +17,11 @@ describe('useMapEditor', () => {
         width: 2,
         height: 2,
         tileSets: [],
-        tiles: {
-          a: { key: 'a', tile: 'grass' },
-          b: { key: 'b', tile: 'water' },
-        },
-        map: [
-          ['a', 'a'],
-          ['a', 'a'],
+        tiles: [
+          { key: 'a', tile: 'grass' },
+          { key: 'b', tile: 'water' },
         ],
+        map: ['a,a', 'a,a'],
       },
       tiles: {
         grass: { key: 'grass', description: 'Grass', color: '#0f0' },
@@ -73,7 +70,9 @@ describe('useMapEditor', () => {
 
     const json = hook!.saveToJSON()
     const parsed = JSON.parse(json)
-    expect(parsed.map.map[0][0]).toBe('b')
+    expect(
+      parsed.map.map.every((row: string) => row.split(',').every((t: string) => t === 'b')),
+    ).toBe(true)
   })
 })
 

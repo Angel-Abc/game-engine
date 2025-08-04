@@ -47,4 +47,30 @@ describe('server api', () => {
     expect(res.status).toBe(500)
     expect(res.body).toEqual({ error: 'Failed to save game' })
   })
+
+  it('GET /api/map/:path returns parsed json', async () => {
+    const fsMock = {
+      readFile: vi.fn((_p: string, _e: string, cb: (err: Error | null, data?: string) => void) => cb(null, '{"m":1}')),
+      writeFile: vi.fn(),
+    } as any
+    const app = createApp(fsMock)
+
+    await supertest(app)
+      .get(`/api/map/${encodeURIComponent('maps/test.json')}`)
+      .expect(200, { m: 1 })
+  })
+
+  it('POST /api/map/:path saves data', async () => {
+    const fsMock = {
+      readFile: vi.fn(),
+      writeFile: vi.fn((_p: string, _d: string, _e: string, cb: (err: Error | null) => void) => cb(null)),
+    } as any
+    const app = createApp(fsMock)
+
+    await supertest(app)
+      .post(`/api/map/${encodeURIComponent('maps/test.json')}`)
+      .send({ n: 2 })
+      .expect(200, { ok: true })
+    expect(fsMock.writeFile).toHaveBeenCalled()
+  })
 })

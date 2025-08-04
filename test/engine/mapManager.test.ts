@@ -70,7 +70,7 @@ function createTestEngine() {
     get ScriptRunner() { return {} as any },
     get VirtualInputHandler() { return {} as any },
     get OutputManager() { return {} as any },
-
+    get DialogManager() { return {} as any },
   }
 
   const mapManager = new MapManager(engine)

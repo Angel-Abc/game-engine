@@ -1,9 +1,23 @@
 import { useCallback } from 'react'
 import type React from 'react'
+import type { GameMap } from '@loader/data/map'
+import type { Tile } from '@loader/data/tile'
 import { MapViewport } from './MapViewport'
 import { useMapEditor } from './useMapEditor'
 
-export const MapEditor: React.FC = () => {
+interface MapEditorProps {
+  map: GameMap | null
+  tiles: Record<string, Tile>
+  onSave: (map: GameMap, tiles: Record<string, Tile>) => void
+  onCancel: () => void
+}
+
+export const MapEditor: React.FC<MapEditorProps> = ({
+  map: initialMap,
+  tiles: initialTiles,
+  onSave,
+  onCancel,
+}) => {
   const {
     map,
     tiles,
@@ -13,49 +27,32 @@ export const MapEditor: React.FC = () => {
     canRedo,
     setSelectedTile,
     setTool,
-    loadFromJSON,
-    saveToJSON,
     placeTile,
     undo,
     redo,
-  } = useMapEditor()
-
-  const handleLoad = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-    const reader = new FileReader()
-    reader.onload = () => {
-      const text = reader.result
-      if (typeof text === 'string') {
-        loadFromJSON(text)
-      }
-    }
-    reader.readAsText(file)
-  }, [loadFromJSON])
+  } = useMapEditor({ map: initialMap ?? undefined, tiles: initialTiles })
 
   const handleSave = useCallback(() => {
-    const json = saveToJSON()
-    const blob = new Blob([json], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `${map?.key ?? 'map'}.json`
-    a.click()
-    URL.revokeObjectURL(url)
-  }, [saveToJSON, map])
+    if (map) onSave(map, tiles)
+  }, [map, tiles, onSave])
 
-  const handleTileClick = useCallback((x: number, y: number) => {
-    placeTile(x, y)
-  }, [placeTile])
+  const handleTileClick = useCallback(
+    (x: number, y: number) => {
+      placeTile(x, y)
+    },
+    [placeTile],
+  )
 
   return (
     <section className="editor-section">
       <h2>Map Editor</h2>
       <div className="editor-list">
-        <input type="file" accept="application/json" onChange={handleLoad} />
         <div>
           <button type="button" onClick={handleSave} disabled={!map}>
             Save
+          </button>
+          <button type="button" onClick={onCancel}>
+            Back
           </button>
           <button type="button" onClick={undo} disabled={!canUndo}>
             Undo
@@ -141,4 +138,3 @@ export const MapEditor: React.FC = () => {
     </section>
   )
 }
-

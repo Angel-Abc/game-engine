@@ -3,6 +3,7 @@ import type { EditableMapActions } from './useEditableList'
 
 interface MapListProps extends EditableMapActions {
   maps: Record<string, string>
+  onEdit?: (id: string) => void
 }
 
 export const MapList: React.FC<MapListProps> = ({
@@ -11,6 +12,7 @@ export const MapList: React.FC<MapListProps> = ({
   updateItem,
   addItem,
   removeItem,
+  onEdit,
 }) => (
   <section className="editor-section editor-list">
     <h2>Maps</h2>
@@ -26,6 +28,9 @@ export const MapList: React.FC<MapListProps> = ({
           value={path}
           onChange={(e) => updateItem(id, e.target.value)}
         />
+        <button type="button" onClick={() => onEdit?.(id)}>
+          Edit
+        </button>
         <button type="button" onClick={() => removeItem(id)}>
           Remove
         </button>

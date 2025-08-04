@@ -330,4 +330,60 @@ describe('GameEditor', () => {
     expect(fetchMock.mock.calls[2][0]).toBe('/api/map/tiles%2Fset1.json')
     expect(container.textContent).toContain('Map Editor')
   })
+
+  it('opens blank map when fetching map fails', async () => {
+    const data = {
+      title: '',
+      description: '',
+      version: '',
+      'initial-data': { language: '', 'start-page': '' },
+      languages: {},
+      pages: {},
+      maps: { world: 'maps/world.json' },
+      tiles: {},
+      dialogs: {},
+      styling: [],
+      handlers: [],
+      'virtual-keys': [],
+      'virtual-inputs': [],
+    }
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({ ok: true, json: vi.fn().mockResolvedValue(data) })
+      .mockResolvedValueOnce({ ok: false })
+      .mockResolvedValueOnce({ ok: true })
+    ;(globalThis as { fetch: typeof fetch }).fetch = fetchMock as unknown as typeof fetch
+
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+    await act(async () => {
+      createRoot(container).render(<GameEditor />)
+      await flushPromises()
+    })
+
+    const mapsSection = Array.from(container.querySelectorAll('h2'))
+      .find((h) => h.textContent === 'Maps')!.parentElement as HTMLElement
+    const editButton = Array.from(mapsSection.querySelectorAll('button')).find(
+      (b) => b.textContent === 'Edit',
+    ) as HTMLButtonElement
+
+    await act(async () => {
+      editButton.click()
+      await flushPromises()
+    })
+
+    expect(fetchMock.mock.calls[1][0]).toBe('/api/map/maps%2Fworld.json')
+    expect(container.textContent).toContain('Map Editor')
+    const saveButton = Array.from(container.querySelectorAll('button')).find(
+      (b) => b.textContent === 'Save',
+    ) as HTMLButtonElement
+    expect(saveButton.disabled).toBe(false)
+
+    await act(async () => {
+      saveButton.click()
+      await flushPromises()
+    })
+
+    expect(fetchMock.mock.calls[2][0]).toBe('/api/map/maps%2Fworld.json')
+  })
 })

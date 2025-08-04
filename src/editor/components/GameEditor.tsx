@@ -170,12 +170,13 @@ export const GameEditor: React.FC = () => {
   const openMapEditor = async (id: string) => {
     if (!game) return
     const path = game.maps[id]
+    let mapData: GameMap
+    let tiles: Record<string, Tile> = {}
     try {
       const res = await fetch(`/api/map/${encodeURIComponent(path)}`)
       if (!res.ok) throw new Error('failed')
       const json = await res.json()
-      const mapData: GameMap = fromAnyMap(json)
-      const tiles: Record<string, Tile> = {}
+      mapData = fromAnyMap(json)
       await Promise.all(
         (mapData.tileSets || []).map(async (setId: string) => {
           const tilePath = game.tiles[setId]
@@ -190,13 +191,25 @@ export const GameEditor: React.FC = () => {
           }
         }),
       )
-      setEditingMapId(id)
-      setEditingMap(mapData)
-      setEditingTiles(tiles)
-      setTab('map')
     } catch {
+      mapData = {
+        key: id,
+        type: 'squares-map',
+        width: 1,
+        height: 1,
+        tileSets: [],
+        tiles: { blank: { key: 'blank', tile: 'blank' } },
+        map: [['blank']],
+      }
+      tiles = {
+        blank: { key: 'blank', description: '', color: 'transparent' },
+      }
       setStatusMessage('Failed to load map')
     }
+    setEditingMapId(id)
+    setEditingMap(mapData)
+    setEditingTiles(tiles)
+    setTab('map')
   }
 
   const handleMapSave = async (map: GameMap, tiles: Record<string, Tile>) => {

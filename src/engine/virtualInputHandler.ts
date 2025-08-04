@@ -4,6 +4,7 @@ import { VIRTUAL_INPUT_MESSAGE } from './messages'
 import type { IGameEngine } from './gameEngine'
 
 export interface IVirtualInputHandler {
+    initialize(): void
     cleanup(): void
     load(): Promise<void>
     getVirtualInput(virtualInput: string): VirtualInput | null
@@ -19,6 +20,9 @@ export class VirtualInputHandler implements IVirtualInputHandler {
     constructor(gameEngine: IGameEngine) {
         this.gameEngine = gameEngine
         this.keydownEventHandler = (event: KeyboardEvent) => { this.onKeydownEvent(event.code, event.altKey, event.ctrlKey, event.shiftKey) }
+    }
+
+    public initialize(): void {
         if (typeof document !== 'undefined') {
             document.addEventListener('keydown', this.keydownEventHandler)
         }

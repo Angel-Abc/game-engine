@@ -3,6 +3,7 @@ import { type IGameEngine } from './gameEngine'
 import { PAGE_SWITCHED_MESSAGE, SWITCH_PAGE_MESSAGE } from './messages'
 
 export interface IPageManager {
+    initialize(): void
     switchPage(page: string): Promise<void>
     cleanup(): void
 }
@@ -13,8 +14,11 @@ export class PageManager implements IPageManager {
 
     constructor(gameEngine: IGameEngine) {
         this.gameEngine = gameEngine
+    }
+
+    public initialize(): void {
         this.unregisterEventHandlers.push(
-            gameEngine.MessageBus.registerMessageListener(
+            this.gameEngine.MessageBus.registerMessageListener(
                 SWITCH_PAGE_MESSAGE,
                 async (message) => this.switchPage(message.payload as string)
             )

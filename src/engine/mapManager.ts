@@ -4,6 +4,7 @@ import { MAP_SWITCHED_MESSAGE, SWITCH_MAP_MESSAGE } from './messages'
 import type { GameMap } from '@loader/data/map'
 
 export interface IMapManager {
+    initialize(): void
     cleanup(): void
     switchMap(map: string): Promise<void>
 }
@@ -14,8 +15,11 @@ export class MapManager implements IMapManager {
 
     constructor(gameEngine: IGameEngine) {
         this.gameEngine = gameEngine
+    }
+
+    public initialize(): void {
         this.unregisterEventHandlers.push(
-            gameEngine.MessageBus.registerMessageListener(
+            this.gameEngine.MessageBus.registerMessageListener(
                 SWITCH_MAP_MESSAGE,
                 async (message) => this.switchMap(message.payload as string)
             )

@@ -21,6 +21,7 @@ export const nullMatrixInputItem: MatrixInputItem = {
 }
 
 export interface IInputManager {
+    initialize(): void
     cleanup(): void
     update(): void
     getInputMatrix(width: number, height: number): MatrixInputItem[][]
@@ -41,7 +42,15 @@ export class InputManager implements IInputManager {
 
     constructor(gameEngine: IGameEngine) {
         this.gameEngine = gameEngine
-        this.unregisterEventHandlers.push(gameEngine.MessageBus.registerMessageListener(VIRTUAL_INPUT_MESSAGE, (message) => this.onInput(message.payload as string)))
+    }
+
+    public initialize(): void {
+        this.unregisterEventHandlers.push(
+            this.gameEngine.MessageBus.registerMessageListener(
+                VIRTUAL_INPUT_MESSAGE,
+                (message) => this.onInput(message.payload as string)
+            )
+        )
     }
 
     public cleanup(): void {

@@ -3,6 +3,7 @@ import type { IGameEngine } from './gameEngine'
 import { DIALOG_STARTED, START_DIALOG } from './messages'
 
 export interface IDialogManager {
+    initialize(): void
     cleanup(): void
 }
 
@@ -12,8 +13,11 @@ export class DialogManager implements IDialogManager {
 
     constructor(gameEngine: IGameEngine) {
         this.gameEngine = gameEngine
+    }
+
+    public initialize(): void {
         this.unregisterEventHandlers.push(
-            gameEngine.MessageBus.registerMessageListener(
+            this.gameEngine.MessageBus.registerMessageListener(
                 START_DIALOG,
                 async (message) => this.startDialog(message.payload as string)
             )

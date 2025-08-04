@@ -6,12 +6,12 @@ import type { Action } from '@loader/data/action'
 function createEngine() {
   const loader = {} as unknown as ILoader
   const factory: IEngineManagerFactory = {
-    createPageManager: () => ({ switchPage: vi.fn(), cleanup: vi.fn() }) as any,
-    createMapManager: () => ({ switchMap: vi.fn(), cleanup: vi.fn() }) as any,
-    createVirtualInputHandler: () => ({ cleanup: vi.fn(), load: vi.fn(), getVirtualInput: vi.fn() }) as any,
-    createInputManager: () => ({ cleanup: vi.fn(), update: vi.fn(), getInputMatrix: vi.fn() }) as any,
-    createOutputManager: () => ({ cleanup: vi.fn(), getLastLines: vi.fn() }) as any,
-    createDialogManager: () => ({ cleanup: vi.fn() }) as any,
+    createPageManager: () => ({ initialize: vi.fn(), switchPage: vi.fn(), cleanup: vi.fn() }) as any,
+    createMapManager: () => ({ initialize: vi.fn(), switchMap: vi.fn(), cleanup: vi.fn() }) as any,
+    createVirtualInputHandler: () => ({ initialize: vi.fn(), cleanup: vi.fn(), load: vi.fn(), getVirtualInput: vi.fn() }) as any,
+    createInputManager: () => ({ initialize: vi.fn(), cleanup: vi.fn(), update: vi.fn(), getInputMatrix: vi.fn() }) as any,
+    createOutputManager: () => ({ initialize: vi.fn(), cleanup: vi.fn(), getLastLines: vi.fn() }) as any,
+    createDialogManager: () => ({ initialize: vi.fn(), cleanup: vi.fn() }) as any,
     createScriptRunner: () => ({ run: vi.fn() }) as any
   }
   const engine = new GameEngine(loader, factory)

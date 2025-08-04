@@ -274,4 +274,60 @@ describe('GameEditor', () => {
     expect(fetchMock.mock.calls[2][0]).toBe('/api/map/tiles%2Fset1.json')
     expect(container.textContent).toContain('Map Editor')
   })
+
+  it('handles maps with comma separated rows', async () => {
+    const data = {
+      title: '',
+      description: '',
+      version: '',
+      'initial-data': { language: '', 'start-page': '' },
+      languages: {},
+      pages: {},
+      maps: { world: 'maps/world.json' },
+      tiles: { set1: 'tiles/set1.json' },
+      dialogs: {},
+      styling: [],
+      handlers: [],
+      'virtual-keys': [],
+      'virtual-inputs': [],
+    }
+    const mapData = {
+      key: 'world',
+      type: 'squares-map',
+      width: 1,
+      height: 1,
+      tileSets: ['set1'],
+      tiles: [{ key: 'a', tile: 'set1.a' }],
+      map: ['a'],
+    }
+    const tilesData = { tiles: [{ key: 'set1.a', color: 'red' }] }
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({ ok: true, json: vi.fn().mockResolvedValue(data) })
+      .mockResolvedValueOnce({ ok: true, json: vi.fn().mockResolvedValue(mapData) })
+      .mockResolvedValueOnce({ ok: true, json: vi.fn().mockResolvedValue(tilesData) })
+    ;(globalThis as { fetch: typeof fetch }).fetch = fetchMock as unknown as typeof fetch
+
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+    await act(async () => {
+      createRoot(container).render(<GameEditor />)
+      await flushPromises()
+    })
+
+    const mapsSection = Array.from(container.querySelectorAll('h2'))
+      .find((h) => h.textContent === 'Maps')!.parentElement as HTMLElement
+    const editButton = Array.from(mapsSection.querySelectorAll('button')).find(
+      (b) => b.textContent === 'Edit',
+    ) as HTMLButtonElement
+
+    await act(async () => {
+      editButton.click()
+      await flushPromises()
+    })
+
+    expect(fetchMock.mock.calls[1][0]).toBe('/api/map/maps%2Fworld.json')
+    expect(fetchMock.mock.calls[2][0]).toBe('/api/map/tiles%2Fset1.json')
+    expect(container.textContent).toContain('Map Editor')
+  })
 })

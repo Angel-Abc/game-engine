@@ -1,5 +1,7 @@
 # Agent Instructions
 
+- Create dedicated editor modules rather than extending game-engine components directly.
+
 Before marking any code task as complete, ensure the following commands are run and pass:
 
 ```

@@ -150,6 +150,12 @@ export class GameEngine implements IGameEngine {
         this.outputManager = managerFactory.createOutputManager(this)
         this.dialogManager = managerFactory.createDialogManager(this)
         this.scriptRunner = managerFactory.createScriptRunner()
+        this.pageManager.initialize()
+        this.mapManager.initialize()
+        this.virtualInputHandler.initialize()
+        this.inputManager.initialize()
+        this.outputManager.initialize()
+        this.dialogManager.initialize()
         this.registerActionHandler(new PostMessageActionHandler())
         this.registerActionHandler(new ScriptActionHandler())
         this.registerConditionResolver(new ScriptConditionResolver())
@@ -175,6 +181,9 @@ export class GameEngine implements IGameEngine {
         this.pageManager.cleanup()
         this.mapManager.cleanup()
         this.virtualInputHandler.cleanup()
+        this.inputManager.cleanup()
+        this.outputManager.cleanup()
+        this.dialogManager.cleanup()
         this.cleanupHandlers()
     }
 

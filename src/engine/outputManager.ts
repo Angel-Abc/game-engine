@@ -2,6 +2,7 @@ import type { IGameEngine } from './gameEngine'
 import { ADD_LINE_TO_OUTPUT_LOG, OUTPUT_LOG_LINE_ADDED } from './messages'
 
 export interface IOutputManager {
+    initialize(): void
     cleanup(): void
     getLastLines(maxCount: number): string[]
 }
@@ -14,8 +15,15 @@ export class OutputManager implements IOutputManager {
 
     constructor(gameEngine: IGameEngine) {
         this.gameEngine = gameEngine
-        this.unregisterEventHandlers.push(gameEngine.MessageBus.registerMessageListener(ADD_LINE_TO_OUTPUT_LOG, (message) => this.newLine(message.payload as string)))
+    }
 
+    public initialize(): void {
+        this.unregisterEventHandlers.push(
+            this.gameEngine.MessageBus.registerMessageListener(
+                ADD_LINE_TO_OUTPUT_LOG,
+                (message) => this.newLine(message.payload as string)
+            )
+        )
     }
 
     public cleanup(): void {

@@ -15,6 +15,7 @@ import { VirtualInputList } from './VirtualInputList'
 import { useEditableList } from './useEditableList'
 import type { GameMap, MapTile } from '@loader/data/map'
 import type { Tile } from '@loader/data/tile'
+import { resolveTileSet } from '../resolveTileSet'
 
 export const GameEditor: React.FC = () => {
   const [game, setGame] = useState<Game | null>(null)
@@ -198,9 +199,7 @@ export const GameEditor: React.FC = () => {
           if (!tRes.ok) return
           const tJson = await tRes.json()
           if (Array.isArray(tJson.tiles)) {
-            tJson.tiles.forEach((t: Tile) => {
-              tiles[t.key] = t
-            })
+            Object.assign(tiles, resolveTileSet(tilePath, tJson.tiles as Tile[]))
           }
         }),
       )

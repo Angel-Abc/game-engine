@@ -37,6 +37,9 @@ function createTestEngine() {
     cleanup() {},
     executeAction: vi.fn(),
     resolveCondition: vi.fn().mockReturnValue(true),
+    registerActionHandler: vi.fn(),
+    registerConditionResolver: vi.fn(),
+    createScriptContext: vi.fn(),
     setIsLoading() {
       state.value = GameEngineState.loading
     },

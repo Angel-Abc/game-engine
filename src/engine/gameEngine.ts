@@ -20,6 +20,12 @@ import type { Condition } from '@loader/data/condition'
 import type { IOutputManager } from './outputManager'
 import type { IDialogManager } from './dialogManager'
 
+import type { IActionHandler } from './actions/actionHandler'
+import { PostMessageActionHandler } from './actions/postMessageActionHandler'
+import { ScriptActionHandler } from './actions/scriptActionHandler'
+import type { IConditionResolver } from './conditions/conditionResolver'
+import { ScriptConditionResolver } from './conditions/scriptConditionResolver'
+
 let gameEngine: GameEngine | null = null
 function setGameEngine(engine: GameEngine): void {
     gameEngine = engine
@@ -68,6 +74,9 @@ export interface IGameEngine {
     cleanup(): void
     executeAction(action: Action): void
     resolveCondition(condition: Condition | null): boolean
+    registerActionHandler(handler: IActionHandler): void
+    registerConditionResolver(resolver: IConditionResolver): void
+    createScriptContext(): ScriptContext
     setIsLoading(): void
     setIsRunning(): void
     get StateManager(): IStateManager<ContextData>
@@ -112,6 +121,8 @@ export class GameEngine implements IGameEngine {
     private state: ITrackedValue<GameEngineState>
     private handlerCleanupList: CleanUp[] = []
     private loadCounter: number = 0
+    private actionHandlers = new Map<string, IActionHandler>()
+    private conditionResolvers = new Map<string, IConditionResolver>()
 
     constructor(loader: ILoader, managerFactory: IEngineManagerFactory) {
         this.loader = loader
@@ -139,6 +150,9 @@ export class GameEngine implements IGameEngine {
         this.outputManager = managerFactory.createOutputManager(this)
         this.dialogManager = managerFactory.createDialogManager(this)
         this.scriptRunner = managerFactory.createScriptRunner()
+        this.registerActionHandler(new PostMessageActionHandler())
+        this.registerActionHandler(new ScriptActionHandler())
+        this.registerConditionResolver(new ScriptConditionResolver())
     }
 
     public async start(): Promise<void> {
@@ -164,28 +178,29 @@ export class GameEngine implements IGameEngine {
         this.cleanupHandlers()
     }
 
+    public registerActionHandler(handler: IActionHandler): void {
+        this.actionHandlers.set(handler.type, handler)
+    }
+
+    public registerConditionResolver(resolver: IConditionResolver): void {
+        this.conditionResolvers.set(resolver.type, resolver)
+    }
+
     public executeAction(action: Action): void {
-        switch (action.type) {
-            case 'post-message':
-                this.messageBus.postMessage({
-                    message: action.message,
-                    payload: action.payload
-                })
-                break
-            case 'script': {
-                this.scriptRunner.run<void>(action.script, this.createScriptContext())
-                break
-            }
+        const handler = this.actionHandlers.get(action.type)
+        if (handler === undefined) {
+            fatalError(`No action handler for type: ${action.type}`)
         }
+        handler.handle(this, action)
     }
 
     public resolveCondition(condition: Condition | null): boolean {
         if (condition === null) return true
-        switch (condition.type) {
-            case 'script': {
-                return this.scriptRunner.run<boolean>(condition.script, this.createScriptContext())
-            }
+        const resolver = this.conditionResolvers.get(condition.type)
+        if (resolver === undefined) {
+            fatalError(`No condition resolver for type: ${condition.type}`)
         }
+        return resolver.resolve(this, condition)
     }
 
     public setIsLoading(): void {
@@ -334,7 +349,7 @@ export class GameEngine implements IGameEngine {
         }
     }
 
-    private createScriptContext(): ScriptContext {
+    public createScriptContext(): ScriptContext {
         const context: ScriptContext = {
             state: this.StateManager.state,
             setPosition: (x: number, y: number) => {

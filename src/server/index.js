@@ -39,6 +39,36 @@ export function createApp(fsModule = fs) {
     })
   })
 
+  app.get('/api/map/:path', (req, res) => {
+    const file = req.params.path
+    const mapPath = join(__dirname, '..', '..', gameFolder, file)
+    fsModule.readFile(mapPath, 'utf-8', (err, data) => {
+      if (err) {
+        res.status(500).json({ error: 'Failed to read map' })
+        return
+      }
+      try {
+        const json = JSON.parse(data)
+        res.json(json)
+      } catch {
+        res.status(500).json({ error: 'Invalid JSON' })
+      }
+    })
+  })
+
+  app.post('/api/map/:path', (req, res) => {
+    const file = req.params.path
+    const mapPath = join(__dirname, '..', '..', gameFolder, file)
+    const jsonString = JSON.stringify(req.body, null, 2)
+    fsModule.writeFile(mapPath, jsonString, 'utf-8', (err) => {
+      if (err) {
+        res.status(500).json({ error: 'Failed to save map' })
+        return
+      }
+      res.json({ ok: true })
+    })
+  })
+
   return app
 }
 

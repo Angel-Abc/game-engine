@@ -5,6 +5,7 @@ import { saveGame } from '../main'
 import { LanguageList } from './LanguageList'
 import { PageList } from './PageList'
 import { MapList } from './MapList'
+import { MapEditor } from './MapEditor'
 import { TileList } from './TileList'
 import { DialogList } from './DialogList'
 import { StylingList } from './StylingList'
@@ -12,6 +13,8 @@ import { HandlerList } from './HandlerList'
 import { VirtualKeyList } from './VirtualKeyList'
 import { VirtualInputList } from './VirtualInputList'
 import { useEditableList } from './useEditableList'
+import type { GameMap } from '@loader/data/map'
+import type { Tile } from '@loader/data/tile'
 
 export const GameEditor: React.FC = () => {
   const [game, setGame] = useState<Game | null>(null)
@@ -19,6 +22,10 @@ export const GameEditor: React.FC = () => {
   const [statusMessage, setStatusMessage] = useState('')
   const [saving, setSaving] = useState(false)
   const [loadError, setLoadError] = useState('')
+  const [tab, setTab] = useState<'game' | 'map'>('game')
+  const [editingMap, setEditingMap] = useState<GameMap | null>(null)
+  const [editingTiles, setEditingTiles] = useState<Record<string, Tile>>({})
+  const [editingMapId, setEditingMapId] = useState<string | null>(null)
   useEffect(() => {
     const controller = new AbortController()
 
@@ -158,6 +165,49 @@ export const GameEditor: React.FC = () => {
     type: 'array',
   })
 
+  const openMapEditor = async (id: string) => {
+    if (!game) return
+    const path = game.maps[id]
+    try {
+      const res = await fetch(path)
+      if (!res.ok) throw new Error('failed')
+      const mapData: GameMap = await res.json()
+      const tiles: Record<string, Tile> = {}
+      await Promise.all(
+        (mapData.tileSets || []).map(async (setId: string) => {
+          const tilePath = game.tiles[setId]
+          if (!tilePath) return
+          const tRes = await fetch(tilePath)
+          if (!tRes.ok) return
+          const tJson = await tRes.json()
+          if (Array.isArray(tJson.tiles)) {
+            tJson.tiles.forEach((t: Tile) => {
+              tiles[t.key] = t
+            })
+          }
+        }),
+      )
+      setEditingMapId(id)
+      setEditingMap(mapData)
+      setEditingTiles(tiles)
+      setTab('map')
+    } catch {
+      setStatusMessage('Failed to load map')
+    }
+  }
+
+  const handleMapSave = async (map: GameMap, tiles: Record<string, Tile>) => {
+    if (!game || !editingMapId) return
+    const json = JSON.stringify({ map, tiles }, null, 2)
+    const path = game.maps[editingMapId]
+    const message = await saveGame(
+      json,
+      (_url, options) => fetch(`/api/map/${encodeURIComponent(path)}`, options),
+    )
+    setStatusMessage(message)
+    setTab('game')
+  }
+
   const handleSave = async () => {
     if (!game) return
     const obj = {
@@ -189,12 +239,24 @@ export const GameEditor: React.FC = () => {
 
   return (
     <section className="editor">
-      <fieldset className="editor-section">
-        <label>
-          Title:
-          <input
-            type="text"
-            value={game.title}
+      <nav className="editor-tabs">
+        <button type="button" onClick={() => setTab('game')}>Game</button>
+        <button
+          type="button"
+          onClick={() => editingMap && setTab('map')}
+          disabled={!editingMap}
+        >
+          Map Editor
+        </button>
+      </nav>
+      {tab === 'game' && (
+        <>
+          <fieldset className="editor-section">
+            <label>
+              Title:
+              <input
+                type="text"
+                value={game.title}
             onChange={(e) => setGame({ ...game, title: e.target.value })}
           />
         </label>
@@ -213,13 +275,13 @@ export const GameEditor: React.FC = () => {
             onChange={(e) => setGame({ ...game, version: e.target.value })}
           />
         </label>
-      </fieldset>
-      <fieldset className="editor-section">
-        <label>
-          Initial Language:
-          <input
-            type="text"
-            value={game.initialData.language}
+          </fieldset>
+          <fieldset className="editor-section">
+            <label>
+              Initial Language:
+              <input
+                type="text"
+                value={game.initialData.language}
             onChange={(e) =>
               setGame({
                 ...game,
@@ -240,23 +302,37 @@ export const GameEditor: React.FC = () => {
               })
             }
           />
-        </label>
-      </fieldset>
-      <LanguageList languages={game.languages} {...languageActions} />
-      <PageList pages={game.pages} {...pageActions} />
-      <MapList maps={game.maps} {...mapActions} />
-      <TileList tiles={game.tiles} {...tileActions} />
-      <DialogList dialogs={game.dialogs} {...dialogActions} />
-      <StylingList styling={styling} {...stylingActions} />
-      <HandlerList handlers={game.handlers} {...handlerActions} />
-      <VirtualKeyList virtualKeys={game.virtualKeys} {...virtualKeyActions} />
-      <VirtualInputList
-        virtualInputs={game.virtualInputs}
-        {...virtualInputActions}
-      />
-      <button type="button" onClick={handleSave} disabled={saving}>
-        Save
-      </button>
+            </label>
+          </fieldset>
+          <LanguageList languages={game.languages} {...languageActions} />
+          <PageList pages={game.pages} {...pageActions} />
+          <MapList maps={game.maps} onEdit={openMapEditor} {...mapActions} />
+          <TileList tiles={game.tiles} {...tileActions} />
+          <DialogList dialogs={game.dialogs} {...dialogActions} />
+          <StylingList styling={styling} {...stylingActions} />
+          <HandlerList handlers={game.handlers} {...handlerActions} />
+          <VirtualKeyList
+            virtualKeys={game.virtualKeys}
+            {...virtualKeyActions}
+          />
+          <VirtualInputList
+            virtualInputs={game.virtualInputs}
+            {...virtualInputActions}
+          />
+          <button type="button" onClick={handleSave} disabled={saving}>
+            Save
+          </button>
+        </>
+      )}
+      {tab === 'map' && editingMap && (
+        <MapEditor
+          key={editingMapId ?? undefined}
+          map={editingMap}
+          tiles={editingTiles}
+          onSave={handleMapSave}
+          onCancel={() => setTab('game')}
+        />
+      )}
       {loadError && <p>{loadError}</p>}
       {statusMessage && <p>{statusMessage}</p>}
     </section>

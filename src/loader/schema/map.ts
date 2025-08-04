@@ -1,8 +1,10 @@
 import { z } from 'zod'
+import { actionSchema } from './action'
 
 export const mapTileSchema = z.object({
     key: z.string(),
     tile: z.string(),
+    onEnter: actionSchema.optional()
 })
 
 export const squaresMapSchema = z.object({

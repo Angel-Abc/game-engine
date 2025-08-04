@@ -1,6 +1,9 @@
+import type { Action } from './action'
+
 export type MapTile = {
     key: string
     tile: string
+    onEnter?: Action
 }
 
 export interface SquaresMap {

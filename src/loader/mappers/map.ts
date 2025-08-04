@@ -20,7 +20,8 @@ export function mapGameMap(gameMap: GameMap): GameMapData {
 export function mapMapTile(mapTile: MapTile): MapTileData {
     return {
         key: mapTile.key,
-        tile: mapTile.tile
+        tile: mapTile.tile,
+        onEnter: mapTile.onEnter
     }
 }
 

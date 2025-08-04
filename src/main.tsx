@@ -1,7 +1,14 @@
 import { createRoot } from 'react-dom/client'
 import { logDebug } from '@utils/logMessage'
 import { Loader, type ILoader } from '@loader/loader'
-import { GameEngine, type IGameEngine } from '@engine/gameEngine'
+import { GameEngine, type IGameEngine, type IEngineManagerFactory } from '@engine/gameEngine'
+import { PageManager } from '@engine/pageManager'
+import { MapManager } from '@engine/mapManager'
+import { VirtualInputHandler } from '@engine/virtualInputHandler'
+import { InputManager } from '@engine/inputManager'
+import { OutputManager } from '@engine/outputManager'
+import { DialogManager } from '@engine/dialogManager'
+import { ScriptRunner } from '@engine/scriptRunner'
 import { App } from '@app/app'
 import './style/reset.css'
 import './style/variables.css'
@@ -21,7 +28,17 @@ loader.Styling.forEach(css => {
   document.head.appendChild(link)
 })
 
-const engine: IGameEngine = new GameEngine(loader)
+const factory: IEngineManagerFactory = {
+  createPageManager: (engine) => new PageManager(engine),
+  createMapManager: (engine) => new MapManager(engine),
+  createVirtualInputHandler: (engine) => new VirtualInputHandler(engine),
+  createInputManager: (engine) => new InputManager(engine),
+  createOutputManager: (engine) => new OutputManager(engine),
+  createDialogManager: (engine) => new DialogManager(engine),
+  createScriptRunner: () => new ScriptRunner()
+}
+
+const engine: IGameEngine = new GameEngine(loader, factory)
 await engine.start()
 
 const root = document.getElementById('app')

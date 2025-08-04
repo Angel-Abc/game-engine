@@ -6,19 +6,19 @@ import { StateManager, type IStateManager } from './stateManager'
 import { ChangeTracker } from './changeTracker'
 import { TrackedValue, type ITrackedValue } from '@utils/trackedState'
 import { TranslationService, type ITranslationService } from './translationService'
-import { PageManager, type IPageManager } from './pageManager'
+import type { IPageManager } from './pageManager'
 import type { Page } from '@loader/data/page'
 import type { Action } from '@loader/data/action'
 import type { CleanUp } from '@utils/types'
-import { MapManager, type IMapManager } from './mapManager'
+import type { IMapManager } from './mapManager'
 import type { Tile } from '@loader/data/tile'
 import type { GameMap } from '@loader/data/map'
-import { VirtualInputHandler, type IVirtualInputHandler } from './virtualInputHandler'
-import { InputManager, type IInputManager } from './inputManager'
-import { ScriptRunner, type IScriptRunner, type ScriptContext } from './scriptRunner'
+import type { IVirtualInputHandler } from './virtualInputHandler'
+import type { IInputManager } from './inputManager'
+import type { IScriptRunner, ScriptContext } from './scriptRunner'
 import type { Condition } from '@loader/data/condition'
-import { OutputManager, type IOutputManager } from './outputManager'
-import { DialogManager, type IDialogManager } from './dialogManager'
+import type { IOutputManager } from './outputManager'
+import type { IDialogManager } from './dialogManager'
 
 let gameEngine: GameEngine | null = null
 function setGameEngine(engine: GameEngine): void {
@@ -84,6 +84,16 @@ export interface IGameEngine {
     get DialogManager(): IDialogManager
 }
 
+export interface IEngineManagerFactory {
+    createPageManager(engine: IGameEngine): IPageManager
+    createMapManager(engine: IGameEngine): IMapManager
+    createVirtualInputHandler(engine: IGameEngine): IVirtualInputHandler
+    createInputManager(engine: IGameEngine): IInputManager
+    createOutputManager(engine: IGameEngine): IOutputManager
+    createDialogManager(engine: IGameEngine): IDialogManager
+    createScriptRunner(): IScriptRunner
+}
+
 export class GameEngine implements IGameEngine {
     private loader: ILoader
     private messageBus: MessageBus
@@ -103,7 +113,7 @@ export class GameEngine implements IGameEngine {
     private handlerCleanupList: CleanUp[] = []
     private loadCounter: number = 0
 
-    constructor(loader: ILoader) {
+    constructor(loader: ILoader, managerFactory: IEngineManagerFactory) {
         this.loader = loader
         this.messageBus = new MessageBus(() => this.handleOnQueueEmpty())
         this.initializeMessageListeners()
@@ -121,14 +131,14 @@ export class GameEngine implements IGameEngine {
             }
         )
         this.translationService = new TranslationService()
-        this.pageManager = new PageManager(this)
-        this.mapManager = new MapManager(this)
-        this.virtualInputHandler = new VirtualInputHandler(this)
-        this.inputManager = new InputManager(this)
-        this.outputManager = new OutputManager(this)
-        this.dialogManager = new DialogManager(this)
-        this.scriptRunner = new ScriptRunner()
         setGameEngine(this)
+        this.pageManager = managerFactory.createPageManager(this)
+        this.mapManager = managerFactory.createMapManager(this)
+        this.virtualInputHandler = managerFactory.createVirtualInputHandler(this)
+        this.inputManager = managerFactory.createInputManager(this)
+        this.outputManager = managerFactory.createOutputManager(this)
+        this.dialogManager = managerFactory.createDialogManager(this)
+        this.scriptRunner = managerFactory.createScriptRunner()
     }
 
     public async start(): Promise<void> {

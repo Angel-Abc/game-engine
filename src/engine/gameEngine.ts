@@ -18,6 +18,7 @@ import { InputManager, type IInputManager } from './inputManager'
 import { ScriptRunner, type IScriptRunner, type ScriptContext } from './scriptRunner'
 import type { Condition } from '@loader/data/condition'
 import { OutputManager, type IOutputManager } from './outputManager'
+import { DialogManager, type IDialogManager } from './dialogManager'
 
 let gameEngine: GameEngine | null = null
 function setGameEngine(engine: GameEngine): void {
@@ -80,6 +81,7 @@ export interface IGameEngine {
     get ScriptRunner(): IScriptRunner
     get VirtualInputHandler(): IVirtualInputHandler
     get OutputManager(): IOutputManager
+    get DialogManager(): IDialogManager
 }
 
 export class GameEngine implements IGameEngine {
@@ -93,6 +95,7 @@ export class GameEngine implements IGameEngine {
     private inputManager: IInputManager
     private scriptRunner: IScriptRunner
     private outputManager: IOutputManager
+    private dialogManager: IDialogManager
 
     private endingTurn: boolean = false
     private currentLanguage: string | null = null
@@ -123,6 +126,7 @@ export class GameEngine implements IGameEngine {
         this.virtualInputHandler = new VirtualInputHandler(this)
         this.inputManager = new InputManager(this)
         this.outputManager = new OutputManager(this)
+        this.dialogManager = new DialogManager(this)
         this.scriptRunner = new ScriptRunner()
         setGameEngine(this)
     }
@@ -236,6 +240,10 @@ export class GameEngine implements IGameEngine {
 
     public get OutputManager(): IOutputManager {
         return this.outputManager
+    }
+
+    public get DialogManager(): IDialogManager {
+        return this.dialogManager
     }
 
     private counter: number = 0

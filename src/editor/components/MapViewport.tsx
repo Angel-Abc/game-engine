@@ -26,9 +26,9 @@ export interface MapViewportProps {
 
 export const MapViewport: React.FC<MapViewportProps> = ({ map, tiles, viewport, position }) => {
     const viewportSize: ViewportSize = viewport ?? { columns: map.width, rows: map.height }
-    const pos: Position = position ?? { x: 0, y: 0 }
     const deltaX = Math.floor(viewportSize.columns / 2)
     const deltaY = Math.floor(viewportSize.rows / 2)
+    const pos: Position = position ?? { x: deltaX, y: deltaY }
 
     const style: CSSCustomProperties = {
         '--ge-map-viewport-width': viewportSize.columns.toString(),

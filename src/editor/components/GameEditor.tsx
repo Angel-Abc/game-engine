@@ -169,7 +169,7 @@ export const GameEditor: React.FC = () => {
     if (!game) return
     const path = game.maps[id]
     try {
-      const res = await fetch(path)
+      const res = await fetch(`/api/map/${encodeURIComponent(path)}`)
       if (!res.ok) throw new Error('failed')
       const mapData: GameMap = await res.json()
       const tiles: Record<string, Tile> = {}
@@ -177,7 +177,9 @@ export const GameEditor: React.FC = () => {
         (mapData.tileSets || []).map(async (setId: string) => {
           const tilePath = game.tiles[setId]
           if (!tilePath) return
-          const tRes = await fetch(tilePath)
+          const tRes = await fetch(
+            `/api/map/${encodeURIComponent(tilePath)}`,
+          )
           if (!tRes.ok) return
           const tJson = await tRes.json()
           if (Array.isArray(tJson.tiles)) {

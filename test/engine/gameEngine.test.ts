@@ -30,10 +30,12 @@ function createEngine() {
       void messageBus
       return { initialize: vi.fn(), cleanup: vi.fn(), load: vi.fn(), getVirtualInput: vi.fn() } as any
     },
-    createInputManager: (engine, messageBus, stateManager) => {
+    createInputManager: (engine, messageBus, stateManager, translationService, virtualInputHandler) => {
       void engine
       void messageBus
       void stateManager
+      void translationService
+      void virtualInputHandler
       return { initialize: vi.fn(), cleanup: vi.fn(), update: vi.fn(), getInputMatrix: vi.fn() } as any
     },
     createOutputManager: (engine, messageBus) => {

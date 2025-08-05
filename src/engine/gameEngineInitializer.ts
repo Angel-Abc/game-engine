@@ -20,7 +20,13 @@ export interface IEngineManagerFactory {
     createPageManager(engine: IGameEngine, messageBus: MessageBus, stateManager: IStateManager<ContextData>): IPageManager
     createMapManager(engine: IGameEngine, messageBus: MessageBus, stateManager: IStateManager<ContextData>): IMapManager
     createVirtualInputHandler(engine: IGameEngine, messageBus: MessageBus): IVirtualInputHandler
-    createInputManager(engine: IGameEngine, messageBus: MessageBus, stateManager: IStateManager<ContextData>): IInputManager
+    createInputManager(
+        engine: IGameEngine,
+        messageBus: MessageBus,
+        stateManager: IStateManager<ContextData>,
+        translationService: ITranslationService,
+        virtualInputHandler: IVirtualInputHandler
+    ): IInputManager
     createOutputManager(engine: IGameEngine, messageBus: MessageBus): IOutputManager
     createDialogManager(engine: IGameEngine, messageBus: MessageBus): IDialogManager
     createTranslationService(): ITranslationService
@@ -63,7 +69,7 @@ export class GameEngineInitializer {
         const pageManager = factory.createPageManager(engine, messageBus, stateManager)
         const mapManager = factory.createMapManager(engine, messageBus, stateManager)
         const virtualInputHandler = factory.createVirtualInputHandler(engine, messageBus)
-        const inputManager = factory.createInputManager(engine, messageBus, stateManager)
+        const inputManager = factory.createInputManager(engine, messageBus, stateManager, translationService, virtualInputHandler)
         const outputManager = factory.createOutputManager(engine, messageBus)
         const dialogManager = factory.createDialogManager(engine, messageBus)
 

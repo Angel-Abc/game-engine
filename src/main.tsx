@@ -37,7 +37,8 @@ const factory: IEngineManagerFactory = {
   createPageManager: (engine, messageBus, stateManager) => createPageManager(engine, messageBus, stateManager),
   createMapManager: (engine, messageBus, stateManager) => createMapManager(engine, messageBus, stateManager),
   createVirtualInputHandler: (engine, messageBus) => createVirtualInputHandler(engine, messageBus),
-  createInputManager: (engine, messageBus, stateManager) => createInputManager(engine, messageBus, stateManager),
+  createInputManager: (engine, messageBus, stateManager, translationService, virtualInputHandler) =>
+    createInputManager(engine, messageBus, stateManager, translationService, virtualInputHandler),
   createOutputManager: (engine, messageBus) => createOutputManager(engine, messageBus),
   createDialogManager: (engine, messageBus) => createDialogManager(engine, messageBus),
   createTranslationService: () => createTranslationService(),

@@ -1,6 +1,7 @@
 import type { IGameEngine } from './gameEngine'
 import { DialogManager, type IDialogManager } from './dialogManager'
+import type { IMessageBus } from '@utils/messageBus'
 
-export function createDialogManager(engine: IGameEngine): IDialogManager {
-    return new DialogManager({ messageBus: engine.MessageBus })
+export function createDialogManager(_engine: IGameEngine, messageBus: IMessageBus): IDialogManager {
+    return new DialogManager({ messageBus })
 }

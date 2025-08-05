@@ -18,11 +18,11 @@ import { GameEngine, type IGameEngine } from './gameEngine'
 
 export interface IEngineManagerFactory {
     createPageManager(engine: IGameEngine, messageBus: MessageBus, stateManager: IStateManager<ContextData>): IPageManager
-    createMapManager(engine: IGameEngine, stateManager: IStateManager<ContextData>): IMapManager
-    createVirtualInputHandler(engine: IGameEngine): IVirtualInputHandler
-    createInputManager(engine: IGameEngine, stateManager: IStateManager<ContextData>): IInputManager
-    createOutputManager(engine: IGameEngine): IOutputManager
-    createDialogManager(engine: IGameEngine): IDialogManager
+    createMapManager(engine: IGameEngine, messageBus: MessageBus, stateManager: IStateManager<ContextData>): IMapManager
+    createVirtualInputHandler(engine: IGameEngine, messageBus: MessageBus): IVirtualInputHandler
+    createInputManager(engine: IGameEngine, messageBus: MessageBus, stateManager: IStateManager<ContextData>): IInputManager
+    createOutputManager(engine: IGameEngine, messageBus: MessageBus): IOutputManager
+    createDialogManager(engine: IGameEngine, messageBus: MessageBus): IDialogManager
     createTranslationService(): ITranslationService
     createScriptRunner(): IScriptRunner
 }
@@ -61,11 +61,11 @@ export class GameEngineInitializer {
         const scriptRunner = factory.createScriptRunner()
 
         const pageManager = factory.createPageManager(engine, messageBus, stateManager)
-        const mapManager = factory.createMapManager(engine, stateManager)
-        const virtualInputHandler = factory.createVirtualInputHandler(engine)
-        const inputManager = factory.createInputManager(engine, stateManager)
-        const outputManager = factory.createOutputManager(engine)
-        const dialogManager = factory.createDialogManager(engine)
+        const mapManager = factory.createMapManager(engine, messageBus, stateManager)
+        const virtualInputHandler = factory.createVirtualInputHandler(engine, messageBus)
+        const inputManager = factory.createInputManager(engine, messageBus, stateManager)
+        const outputManager = factory.createOutputManager(engine, messageBus)
+        const dialogManager = factory.createDialogManager(engine, messageBus)
 
         turnScheduler = new TurnScheduler(stateManager, inputManager, messageBus)
 

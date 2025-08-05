@@ -35,11 +35,11 @@ loader.Styling.forEach(css => {
 
 const factory: IEngineManagerFactory = {
   createPageManager: (engine, messageBus, stateManager) => createPageManager(engine, messageBus, stateManager),
-  createMapManager: (engine, stateManager) => createMapManager(engine, stateManager),
-  createVirtualInputHandler: (engine) => createVirtualInputHandler(engine),
-  createInputManager: (engine, stateManager) => createInputManager(engine, stateManager),
-  createOutputManager: (engine) => createOutputManager(engine),
-  createDialogManager: (engine) => createDialogManager(engine),
+  createMapManager: (engine, messageBus, stateManager) => createMapManager(engine, messageBus, stateManager),
+  createVirtualInputHandler: (engine, messageBus) => createVirtualInputHandler(engine, messageBus),
+  createInputManager: (engine, messageBus, stateManager) => createInputManager(engine, messageBus, stateManager),
+  createOutputManager: (engine, messageBus) => createOutputManager(engine, messageBus),
+  createDialogManager: (engine, messageBus) => createDialogManager(engine, messageBus),
   createTranslationService: () => createTranslationService(),
   createScriptRunner: () => createScriptRunner()
 }

@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { GameEngine, type IEngineManagerFactory } from '@engine/gameEngine'
 import type { ILoader } from '@loader/loader'
 import type { Action } from '@loader/data/action'
+import { PostMessageActionHandler } from '@engine/actions/postMessageActionHandler'
 
 function createEngine() {
   const loader = {
@@ -21,7 +22,9 @@ function createEngine() {
     createTranslationService: () => ({ translate: vi.fn(), setLanguage: vi.fn() }) as any,
     createScriptRunner: () => ({ run: vi.fn() }) as any
   }
-  const engine = new GameEngine(loader, factory)
+  const engine = new GameEngine(loader, factory, {
+    actionHandlers: [new PostMessageActionHandler()]
+  })
   const bus = {
     postMessage: vi.fn(),
     registerMessageListener: vi.fn(),

@@ -13,10 +13,22 @@ function createEngine() {
     }
   } as unknown as ILoader
   const factory: IEngineManagerFactory = {
-    createPageManager: () => ({ initialize: vi.fn(), switchPage: vi.fn(), cleanup: vi.fn() }) as any,
-    createMapManager: () => ({ initialize: vi.fn(), switchMap: vi.fn(), cleanup: vi.fn() }) as any,
+    createPageManager: (engine, stateManager) => {
+      void engine
+      void stateManager
+      return { initialize: vi.fn(), switchPage: vi.fn(), cleanup: vi.fn() } as any
+    },
+    createMapManager: (engine, stateManager) => {
+      void engine
+      void stateManager
+      return { initialize: vi.fn(), switchMap: vi.fn(), cleanup: vi.fn() } as any
+    },
     createVirtualInputHandler: () => ({ initialize: vi.fn(), cleanup: vi.fn(), load: vi.fn(), getVirtualInput: vi.fn() }) as any,
-    createInputManager: () => ({ initialize: vi.fn(), cleanup: vi.fn(), update: vi.fn(), getInputMatrix: vi.fn() }) as any,
+    createInputManager: (engine, stateManager) => {
+      void engine
+      void stateManager
+      return { initialize: vi.fn(), cleanup: vi.fn(), update: vi.fn(), getInputMatrix: vi.fn() } as any
+    },
     createOutputManager: () => ({ initialize: vi.fn(), cleanup: vi.fn(), getLastLines: vi.fn() }) as any,
     createDialogManager: () => ({ initialize: vi.fn(), cleanup: vi.fn() }) as any,
     createTranslationService: () => ({ translate: vi.fn(), setLanguage: vi.fn() }) as any,

@@ -2,13 +2,14 @@ import { createRoot } from 'react-dom/client'
 import { logDebug } from '@utils/logMessage'
 import { Loader, type ILoader } from '@loader/loader'
 import { GameEngine, type IGameEngine, type IEngineManagerFactory } from '@engine/gameEngine'
-import { PageManager } from '@engine/pageManager'
-import { MapManager } from '@engine/mapManager'
+import { createPageManager } from '@engine/pageManagerService'
+import { createMapManager } from '@engine/mapManagerService'
 import { VirtualInputHandler } from '@engine/virtualInputHandler'
-import { InputManager } from '@engine/inputManager'
-import { OutputManager } from '@engine/outputManager'
-import { DialogManager } from '@engine/dialogManager'
-import { ScriptRunner } from '@engine/scriptRunner'
+import { createInputManager } from '@engine/inputManagerService'
+import { createOutputManager } from '@engine/outputManagerService'
+import { createDialogManager } from '@engine/dialogManagerService'
+import { createScriptRunner } from '@engine/scriptRunnerFactory'
+import { createTranslationService } from '@engine/translationServiceFactory'
 import { App } from '@app/app'
 import './style/reset.css'
 import './style/variables.css'
@@ -29,13 +30,14 @@ loader.Styling.forEach(css => {
 })
 
 const factory: IEngineManagerFactory = {
-  createPageManager: (engine) => new PageManager(engine),
-  createMapManager: (engine) => new MapManager(engine),
+  createPageManager: (engine) => createPageManager(engine),
+  createMapManager: (engine) => createMapManager(engine),
   createVirtualInputHandler: (engine) => new VirtualInputHandler(engine),
-  createInputManager: (engine) => new InputManager(engine),
-  createOutputManager: (engine) => new OutputManager(engine),
-  createDialogManager: (engine) => new DialogManager(engine),
-  createScriptRunner: () => new ScriptRunner()
+  createInputManager: (engine) => createInputManager(engine),
+  createOutputManager: (engine) => createOutputManager(engine),
+  createDialogManager: (engine) => createDialogManager(engine),
+  createTranslationService: () => createTranslationService(),
+  createScriptRunner: () => createScriptRunner()
 }
 
 const engine: IGameEngine = new GameEngine(loader, factory)

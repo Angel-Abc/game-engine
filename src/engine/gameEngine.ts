@@ -5,20 +5,18 @@ import { ADD_LINE_TO_OUTPUT_LOG, END_TURN_MESSAGE, ENGINE_STATE_CHANGED_MESSAGE,
 import { StateManager, type IStateManager } from './stateManager'
 import { ChangeTracker } from './changeTracker'
 import { TrackedValue, type ITrackedValue } from '@utils/trackedState'
-import { TranslationService, type ITranslationService } from './translationService'
+import type { ITranslationService } from './translationService'
 import type { IPageManager } from './pageManager'
-import type { Page } from '@loader/data/page'
 import type { Action } from '@loader/data/action'
 import type { CleanUp } from '@utils/types'
 import type { IMapManager } from './mapManager'
-import type { Tile } from '@loader/data/tile'
-import type { GameMap } from '@loader/data/map'
 import type { IVirtualInputHandler } from './virtualInputHandler'
 import type { IInputManager } from './inputManager'
 import type { IScriptRunner, ScriptContext } from './scriptRunner'
 import type { Condition } from '@loader/data/condition'
 import type { IOutputManager } from './outputManager'
 import type { IDialogManager } from './dialogManager'
+import type { ContextData } from './context'
 
 import type { IActionHandler } from './actions/actionHandler'
 import { PostMessageActionHandler } from './actions/postMessageActionHandler'
@@ -34,29 +32,6 @@ export const GameEngineState = {
 export type GameEngineState = typeof GameEngineState[keyof typeof GameEngineState]
 
 
-
-export type ContextData = {
-    language: string,
-    pages: Record<string, Page>,
-    maps: Record<string, GameMap>,
-    tiles: Record<string, Tile>,
-    tileSets: Record<string, boolean>,
-    data: {
-        activePage: string | null
-        location: {
-            mapName: string | null
-            position: {
-                x: number
-                y: number
-            },
-            mapSize: {
-                width: number
-                height: number
-            }
-        }
-        [key: string]: unknown
-    }
-}
 
 export interface IGameEngine {
     start(): Promise<void>
@@ -89,6 +64,7 @@ export interface IEngineManagerFactory {
     createInputManager(engine: IGameEngine): IInputManager
     createOutputManager(engine: IGameEngine): IOutputManager
     createDialogManager(engine: IGameEngine): IDialogManager
+    createTranslationService(): ITranslationService
     createScriptRunner(): IScriptRunner
 }
 
@@ -130,7 +106,7 @@ export class GameEngine implements IGameEngine {
                 })
             }
         )
-        this.translationService = new TranslationService()
+        this.translationService = managerFactory.createTranslationService()
         this.pageManager = managerFactory.createPageManager(this)
         this.mapManager = managerFactory.createMapManager(this)
         this.virtualInputHandler = managerFactory.createVirtualInputHandler(this)

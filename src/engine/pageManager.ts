@@ -1,5 +1,8 @@
 import { logDebug } from '@utils/logMessage'
-import { type IGameEngine } from './gameEngine'
+import type { ILoader } from '@loader/loader'
+import type { IMessageBus } from '@utils/messageBus'
+import type { IStateManager } from './stateManager'
+import type { ContextData } from './context'
 import { PAGE_SWITCHED_MESSAGE, SWITCH_PAGE_MESSAGE } from './messages'
 
 export interface IPageManager {
@@ -8,17 +11,25 @@ export interface IPageManager {
     cleanup(): void
 }
 
+export type PageManagerServices = {
+    loader: ILoader
+    messageBus: IMessageBus
+    stateManager: IStateManager<ContextData>
+    setIsLoading: () => void
+    setIsRunning: () => void
+}
+
 export class PageManager implements IPageManager {
-    private gameEngine: IGameEngine
+    private services: PageManagerServices
     private unregisterEventHandlers: (() => void)[] = []
 
-    constructor(gameEngine: IGameEngine) {
-        this.gameEngine = gameEngine
+    constructor(services: PageManagerServices) {
+        this.services = services
     }
 
     public initialize(): void {
         this.unregisterEventHandlers.push(
-            this.gameEngine.MessageBus.registerMessageListener(
+            this.services.messageBus.registerMessageListener(
                 SWITCH_PAGE_MESSAGE,
                 async (message) => this.switchPage(message.payload as string)
             )
@@ -31,21 +42,21 @@ export class PageManager implements IPageManager {
     }
 
     public async switchPage(page: string): Promise<void> {
-        const context = this.gameEngine.StateManager.state
+        const context = this.services.stateManager.state
         if (context.data.activePage === page) return
 
-        this.gameEngine.setIsLoading()
+        this.services.setIsLoading()
         if (!context.pages[page]) {
-            const pageData = await this.gameEngine.Loader.loadPage(page)
+            const pageData = await this.services.loader.loadPage(page)
             logDebug('page {0} loaded as {1}', page, pageData)
             context.pages[page] = pageData
         }
         context.data.activePage = page
-        this.gameEngine.MessageBus.postMessage({
+        this.services.messageBus.postMessage({
             message: PAGE_SWITCHED_MESSAGE,
             payload: page
         })
-        this.gameEngine.setIsRunning()
+        this.services.setIsRunning()
     }
 }
 

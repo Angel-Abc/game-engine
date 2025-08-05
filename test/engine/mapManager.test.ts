@@ -1,13 +1,13 @@
 import { describe, it, expect, vi } from 'vitest'
-import { MapManager } from '@engine/mapManager'
+import { MapManager, type MapManagerServices } from '@engine/mapManager'
 import { ChangeTracker } from '@engine/changeTracker'
 import { StateManager } from '@engine/stateManager'
 import { TrackedValue } from '@utils/trackedState'
-import { GameEngineState, type ContextData, type IGameEngine } from '@engine/gameEngine'
+import { GameEngineState } from '@engine/gameEngine'
 import { MAP_SWITCHED_MESSAGE } from '@engine/messages'
-import type { IPageManager } from '@engine/pageManager'
+import type { ContextData } from '@engine/context'
 
-function createTestEngine() {
+function createMapManagerInstance() {
   const loader = {
     loadMap: vi.fn(async (_map: string) => ({
       key: _map,
@@ -35,8 +35,8 @@ function createTestEngine() {
     maps: {},
     tiles: {},
     tileSets: {},
-    data: { 
-      activePage: null, 
+    data: {
+      activePage: null,
       location: {
         mapName: null,
         mapSize: {
@@ -52,37 +52,21 @@ function createTestEngine() {
   }, new ChangeTracker<ContextData>())
   const state = new TrackedValue<GameEngineState>('state', GameEngineState.init)
 
-  const engine: IGameEngine = {
-    async start() {},
-    cleanup() {},
-    executeAction: vi.fn(),
-    resolveCondition: vi.fn().mockReturnValue(true),
-    registerActionHandler: vi.fn(),
-    registerConditionResolver: vi.fn(),
-    createScriptContext: vi.fn(),
-    setIsLoading() { state.value = GameEngineState.loading },
-    setIsRunning() { state.value = GameEngineState.running },
-    get StateManager() { return stateManager },
-    get State() { return state },
-    get TranslationService() { return {} as any },
-    get Loader() { return loader as any },
-    get MessageBus() { return messageBus as any },
-    get PageManager(): IPageManager { return {} as IPageManager },
-    get MapManager() { return {} as any },
-    get InputManager() { return {} as any },
-    get ScriptRunner() { return {} as any },
-    get VirtualInputHandler() { return {} as any },
-    get OutputManager() { return {} as any },
-    get DialogManager() { return {} as any },
+  const services: MapManagerServices = {
+    loader: loader as any,
+    messageBus: messageBus as any,
+    stateManager,
+    setIsLoading: () => { state.value = GameEngineState.loading },
+    setIsRunning: () => { state.value = GameEngineState.running }
   }
 
-  const mapManager = new MapManager(engine)
+  const mapManager = new MapManager(services)
   return { mapManager, loader, stateManager, state, messageBus }
 }
 
 describe('MapManager', () => {
   it('loads a map only once', async () => {
-    const { mapManager, loader } = createTestEngine()
+    const { mapManager, loader } = createMapManagerInstance()
 
     await mapManager.switchMap('map1')
     await mapManager.switchMap('map1')
@@ -91,7 +75,7 @@ describe('MapManager', () => {
   })
 
   it('loads tile sets and populates context.tiles', async () => {
-    const { mapManager, loader, stateManager } = createTestEngine()
+    const { mapManager, loader, stateManager } = createMapManagerInstance()
 
     await mapManager.switchMap('map1')
 
@@ -104,7 +88,7 @@ describe('MapManager', () => {
   })
 
   it('posts MAP_SWITCHED_MESSAGE and updates state', async () => {
-    const { mapManager, messageBus, state } = createTestEngine()
+    const { mapManager, messageBus, state } = createMapManagerInstance()
     const transitions: GameEngineState[] = []
     state.subscribe(() => transitions.push(state.value))
 

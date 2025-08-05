@@ -12,6 +12,7 @@ function createEngine() {
     createInputManager: () => ({ initialize: vi.fn(), cleanup: vi.fn(), update: vi.fn(), getInputMatrix: vi.fn() }) as any,
     createOutputManager: () => ({ initialize: vi.fn(), cleanup: vi.fn(), getLastLines: vi.fn() }) as any,
     createDialogManager: () => ({ initialize: vi.fn(), cleanup: vi.fn() }) as any,
+    createTranslationService: () => ({ translate: vi.fn(), setLanguage: vi.fn() }) as any,
     createScriptRunner: () => ({ run: vi.fn() }) as any
   }
   const engine = new GameEngine(loader, factory)

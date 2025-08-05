@@ -1,12 +1,12 @@
 import { describe, it, expect, vi } from 'vitest'
-import { PageManager } from '@engine/pageManager'
+import { PageManager, type PageManagerServices } from '@engine/pageManager'
 import { ChangeTracker } from '@engine/changeTracker'
 import { StateManager } from '@engine/stateManager'
 import { TrackedValue } from '@utils/trackedState'
-import { GameEngineState, type ContextData, type IGameEngine } from '@engine/gameEngine'
-import type { IPageManager } from '@engine/pageManager'
+import { GameEngineState } from '@engine/gameEngine'
+import type { ContextData } from '@engine/context'
 
-function createTestEngine() {
+function createPageManagerInstance() {
   const loader = {
     loadPage: vi.fn(async (page: string) => ({ id: page }))
   }
@@ -22,7 +22,6 @@ function createTestEngine() {
     tileSets: {},
     data: {
       activePage: null,
-      activeMap: null,
       location: {
         mapName: null,
         position: { x: 0, y: 0 },
@@ -32,41 +31,21 @@ function createTestEngine() {
   }, new ChangeTracker<ContextData>())
   const state = new TrackedValue<GameEngineState>('state', GameEngineState.init)
 
-  const engine: IGameEngine = {
-    async start() {},
-    cleanup() {},
-    executeAction: vi.fn(),
-    resolveCondition: vi.fn().mockReturnValue(true),
-    registerActionHandler: vi.fn(),
-    registerConditionResolver: vi.fn(),
-    createScriptContext: vi.fn(),
-    setIsLoading() {
-      state.value = GameEngineState.loading
-    },
-    setIsRunning() {
-      state.value = GameEngineState.running
-    },
-    get StateManager() { return stateManager },
-    get State() { return state },
-    get TranslationService() { return {} as any },
-    get Loader() { return loader as any },
-    get MessageBus() { return messageBus as any },
-    get PageManager(): IPageManager { return {} as IPageManager },
-    get MapManager() { return {} as any },
-    get InputManager() { return {} as any },
-    get ScriptRunner() { return {} as any },
-    get VirtualInputHandler() { return {} as any },
-    get OutputManager() { return {} as any },
-    get DialogManager() { return {} as any }
+  const services: PageManagerServices = {
+    loader: loader as any,
+    messageBus: messageBus as any,
+    stateManager,
+    setIsLoading: () => { state.value = GameEngineState.loading },
+    setIsRunning: () => { state.value = GameEngineState.running }
   }
 
-  const pageManager = new PageManager(engine)
+  const pageManager = new PageManager(services)
   return { pageManager, loader, stateManager, state }
 }
 
 describe('PageManager', () => {
   it('loads a page only once', async () => {
-    const { pageManager, loader } = createTestEngine()
+    const { pageManager, loader } = createPageManagerInstance()
 
     await pageManager.switchPage('page1')
     await pageManager.switchPage('page1')
@@ -75,7 +54,7 @@ describe('PageManager', () => {
   })
 
   it('updates game state to loading then running', async () => {
-    const { pageManager, state } = createTestEngine()
+    const { pageManager, state } = createPageManagerInstance()
     const transitions: GameEngineState[] = []
     state.subscribe(() => transitions.push(state.value))
 

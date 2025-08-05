@@ -107,6 +107,7 @@ export class GameEngine implements IGameEngine {
             }
         )
         this.translationService = managerFactory.createTranslationService()
+        this.initStateManager()
         this.pageManager = managerFactory.createPageManager(this)
         this.mapManager = managerFactory.createMapManager(this)
         this.virtualInputHandler = managerFactory.createVirtualInputHandler(this)
@@ -130,7 +131,6 @@ export class GameEngine implements IGameEngine {
         await this.loader.reset()
         await this.registerGameHandlers()
         await this.virtualInputHandler.load()
-        this.initStateManager()
         const language = (this.currentLanguage ?? this.stateManager?.state.language) ?? fatalError('No language set!')
         this.currentLanguage = language
         this.translationService.setLanguage(await this.loader.loadLanguage(language))

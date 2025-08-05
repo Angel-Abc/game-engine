@@ -4,7 +4,13 @@ import type { ILoader } from '@loader/loader'
 import type { Action } from '@loader/data/action'
 
 function createEngine() {
-  const loader = {} as unknown as ILoader
+  const loader = {
+    Game: {
+      initialData: {
+        language: 'en'
+      }
+    }
+  } as unknown as ILoader
   const factory: IEngineManagerFactory = {
     createPageManager: () => ({ initialize: vi.fn(), switchPage: vi.fn(), cleanup: vi.fn() }) as any,
     createMapManager: () => ({ initialize: vi.fn(), switchMap: vi.fn(), cleanup: vi.fn() }) as any,

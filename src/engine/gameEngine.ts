@@ -17,7 +17,6 @@ import type { Condition } from '@loader/data/condition'
 import type { IOutputManager } from './outputManager'
 import type { IDialogManager } from './dialogManager'
 import type { ContextData } from './context'
-
 import type { IActionHandler } from './actions/actionHandler'
 import { PostMessageActionHandler } from './actions/postMessageActionHandler'
 import { ScriptActionHandler } from './actions/scriptActionHandler'
@@ -30,8 +29,6 @@ export const GameEngineState = {
     running: 2
 } as const
 export type GameEngineState = typeof GameEngineState[keyof typeof GameEngineState]
-
-
 
 export interface IGameEngine {
     start(): Promise<void>

@@ -18,10 +18,7 @@ import type { IOutputManager } from './outputManager'
 import type { IDialogManager } from './dialogManager'
 import type { ContextData } from './context'
 import type { IActionHandler } from './actions/actionHandler'
-import { PostMessageActionHandler } from './actions/postMessageActionHandler'
-import { ScriptActionHandler } from './actions/scriptActionHandler'
 import type { IConditionResolver } from './conditions/conditionResolver'
-import { ScriptConditionResolver } from './conditions/scriptConditionResolver'
 
 export const GameEngineState = {
     init: 0,
@@ -65,6 +62,11 @@ export interface IEngineManagerFactory {
     createScriptRunner(): IScriptRunner
 }
 
+export interface GameEngineOptions {
+    actionHandlers?: IActionHandler[]
+    conditionResolvers?: IConditionResolver[]
+}
+
 export class GameEngine implements IGameEngine {
     private loader: ILoader
     private messageBus: MessageBus
@@ -86,7 +88,7 @@ export class GameEngine implements IGameEngine {
     private actionHandlers = new Map<string, IActionHandler>()
     private conditionResolvers = new Map<string, IConditionResolver>()
 
-    constructor(loader: ILoader, managerFactory: IEngineManagerFactory) {
+    constructor(loader: ILoader, managerFactory: IEngineManagerFactory, options: GameEngineOptions = {}) {
         this.loader = loader
         this.messageBus = new MessageBus(() => this.handleOnQueueEmpty())
         this.initializeMessageListeners()
@@ -118,9 +120,8 @@ export class GameEngine implements IGameEngine {
         this.inputManager.initialize()
         this.outputManager.initialize()
         this.dialogManager.initialize()
-        this.registerActionHandler(new PostMessageActionHandler())
-        this.registerActionHandler(new ScriptActionHandler())
-        this.registerConditionResolver(new ScriptConditionResolver())
+        options.actionHandlers?.forEach(h => this.registerActionHandler(h))
+        options.conditionResolvers?.forEach(r => this.registerConditionResolver(r))
     }
 
     public async start(): Promise<void> {

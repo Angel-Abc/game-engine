@@ -2,6 +2,9 @@ import { createRoot } from 'react-dom/client'
 import { logDebug } from '@utils/logMessage'
 import { Loader, type ILoader } from '@loader/loader'
 import { GameEngine, type IGameEngine, type IEngineManagerFactory } from '@engine/gameEngine'
+import { PostMessageActionHandler } from '@engine/actions/postMessageActionHandler'
+import { ScriptActionHandler } from '@engine/actions/scriptActionHandler'
+import { ScriptConditionResolver } from '@engine/conditions/scriptConditionResolver'
 import { createPageManager } from '@engine/pageManagerService'
 import { createMapManager } from '@engine/mapManagerService'
 import { createVirtualInputHandler } from '@engine/virtualInputHandlerService'
@@ -40,7 +43,10 @@ const factory: IEngineManagerFactory = {
   createScriptRunner: () => createScriptRunner()
 }
 
-const engine: IGameEngine = new GameEngine(loader, factory)
+const engine: IGameEngine = new GameEngine(loader, factory, {
+  actionHandlers: [new PostMessageActionHandler(), new ScriptActionHandler()],
+  conditionResolvers: [new ScriptConditionResolver()]
+})
 await engine.start()
 
 const root = document.getElementById('app')

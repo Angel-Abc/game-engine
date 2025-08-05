@@ -13,8 +13,9 @@ function createEngine() {
     }
   } as unknown as ILoader
   const factory: IEngineManagerFactory = {
-    createPageManager: (engine, stateManager) => {
+    createPageManager: (engine, messageBus, stateManager) => {
       void engine
+      void messageBus
       void stateManager
       return { initialize: vi.fn(), switchPage: vi.fn(), cleanup: vi.fn() } as any
     },

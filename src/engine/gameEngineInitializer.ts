@@ -17,7 +17,7 @@ import { TurnScheduler } from './turnScheduler'
 import { GameEngine, type IGameEngine } from './gameEngine'
 
 export interface IEngineManagerFactory {
-    createPageManager(engine: IGameEngine, stateManager: IStateManager<ContextData>): IPageManager
+    createPageManager(engine: IGameEngine, messageBus: MessageBus, stateManager: IStateManager<ContextData>): IPageManager
     createMapManager(engine: IGameEngine, stateManager: IStateManager<ContextData>): IMapManager
     createVirtualInputHandler(engine: IGameEngine): IVirtualInputHandler
     createInputManager(engine: IGameEngine, stateManager: IStateManager<ContextData>): IInputManager
@@ -60,7 +60,7 @@ export class GameEngineInitializer {
         const translationService = factory.createTranslationService()
         const scriptRunner = factory.createScriptRunner()
 
-        const pageManager = factory.createPageManager(engine, stateManager)
+        const pageManager = factory.createPageManager(engine, messageBus, stateManager)
         const mapManager = factory.createMapManager(engine, stateManager)
         const virtualInputHandler = factory.createVirtualInputHandler(engine)
         const inputManager = factory.createInputManager(engine, stateManager)

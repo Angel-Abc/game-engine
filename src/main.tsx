@@ -34,7 +34,7 @@ loader.Styling.forEach(css => {
 })
 
 const factory: IEngineManagerFactory = {
-  createPageManager: (engine, stateManager) => createPageManager(engine, stateManager),
+  createPageManager: (engine, messageBus, stateManager) => createPageManager(engine, messageBus, stateManager),
   createMapManager: (engine, stateManager) => createMapManager(engine, stateManager),
   createVirtualInputHandler: (engine) => createVirtualInputHandler(engine),
   createInputManager: (engine, stateManager) => createInputManager(engine, stateManager),

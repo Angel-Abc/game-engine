@@ -1,9 +1,8 @@
 import { fatalError, logDebug } from '@utils/logMessage'
 import { MessageBus, type IMessageBus } from '@utils/messageBus'
 import type { ILoader } from '@loader/loader'
-import { ADD_LINE_TO_OUTPUT_LOG, END_TURN_MESSAGE, ENGINE_STATE_CHANGED_MESSAGE, MAP_SWITCHED_MESSAGE, POSITION_CHANGED_MESSAGE, SWITCH_PAGE_MESSAGE } from './messages'
-import { StateManager, type IStateManager } from './stateManager'
-import { ChangeTracker } from './changeTracker'
+import { END_TURN_MESSAGE, ENGINE_STATE_CHANGED_MESSAGE, MAP_SWITCHED_MESSAGE, POSITION_CHANGED_MESSAGE, SWITCH_PAGE_MESSAGE } from './messages'
+import type { IStateManager } from './stateManager'
 import { TrackedValue, type ITrackedValue } from '@utils/trackedState'
 import type { ITranslationService } from './translationService'
 import type { IPageManager } from './pageManager'
@@ -51,47 +50,52 @@ export interface IGameEngine {
     get DialogManager(): IDialogManager
 }
 
-export interface IEngineManagerFactory {
-    createPageManager(engine: IGameEngine): IPageManager
-    createMapManager(engine: IGameEngine): IMapManager
-    createVirtualInputHandler(engine: IGameEngine): IVirtualInputHandler
-    createInputManager(engine: IGameEngine): IInputManager
-    createOutputManager(engine: IGameEngine): IOutputManager
-    createDialogManager(engine: IGameEngine): IDialogManager
-    createTranslationService(): ITranslationService
-    createScriptRunner(): IScriptRunner
-}
-
-export interface GameEngineOptions {
-    actionHandlers?: IActionHandler[]
-    conditionResolvers?: IConditionResolver[]
-}
-
 export class GameEngine implements IGameEngine {
     private loader: ILoader
-    private messageBus: MessageBus
+    private messageBus!: MessageBus
     private stateManager: IStateManager<ContextData> | null = null
-    private translationService: ITranslationService
-    private pageManager: IPageManager
-    private mapManager: IMapManager
-    private virtualInputHandler: IVirtualInputHandler
-    private inputManager: IInputManager
-    private scriptRunner: IScriptRunner
-    private outputManager: IOutputManager
-    private dialogManager: IDialogManager
+    private translationService!: ITranslationService
+    private pageManager!: IPageManager
+    private mapManager!: IMapManager
+    private virtualInputHandler!: IVirtualInputHandler
+    private inputManager!: IInputManager
+    private scriptRunner!: IScriptRunner
+    private outputManager!: IOutputManager
+    private dialogManager!: IDialogManager
 
-    private endingTurn: boolean = false
     private currentLanguage: string | null = null
-    private state: ITrackedValue<GameEngineState>
+    private state!: ITrackedValue<GameEngineState>
     private handlerCleanupList: CleanUp[] = []
     private loadCounter: number = 0
     private actionHandlers = new Map<string, IActionHandler>()
     private conditionResolvers = new Map<string, IConditionResolver>()
 
-    constructor(loader: ILoader, managerFactory: IEngineManagerFactory, options: GameEngineOptions = {}) {
+    constructor(loader: ILoader) {
         this.loader = loader
-        this.messageBus = new MessageBus(() => this.handleOnQueueEmpty())
-        this.initializeMessageListeners()
+    }
+
+    public initialize(deps: {
+        messageBus: MessageBus
+        stateManager: IStateManager<ContextData>
+        translationService: ITranslationService
+        pageManager: IPageManager
+        mapManager: IMapManager
+        virtualInputHandler: IVirtualInputHandler
+        inputManager: IInputManager
+        outputManager: IOutputManager
+        dialogManager: IDialogManager
+        scriptRunner: IScriptRunner
+    }): void {
+        this.messageBus = deps.messageBus
+        this.stateManager = deps.stateManager
+        this.translationService = deps.translationService
+        this.pageManager = deps.pageManager
+        this.mapManager = deps.mapManager
+        this.virtualInputHandler = deps.virtualInputHandler
+        this.inputManager = deps.inputManager
+        this.outputManager = deps.outputManager
+        this.dialogManager = deps.dialogManager
+        this.scriptRunner = deps.scriptRunner
         this.state = new TrackedValue<GameEngineState>(
             'GameEngine.State',
             GameEngineState.init,
@@ -105,23 +109,7 @@ export class GameEngine implements IGameEngine {
                 })
             }
         )
-        this.translationService = managerFactory.createTranslationService()
-        this.initStateManager()
-        this.pageManager = managerFactory.createPageManager(this)
-        this.mapManager = managerFactory.createMapManager(this)
-        this.virtualInputHandler = managerFactory.createVirtualInputHandler(this)
-        this.inputManager = managerFactory.createInputManager(this)
-        this.outputManager = managerFactory.createOutputManager(this)
-        this.dialogManager = managerFactory.createDialogManager(this)
-        this.scriptRunner = managerFactory.createScriptRunner()
-        this.pageManager.initialize()
-        this.mapManager.initialize()
-        this.virtualInputHandler.initialize()
-        this.inputManager.initialize()
-        this.outputManager.initialize()
-        this.dialogManager.initialize()
-        options.actionHandlers?.forEach(h => this.registerActionHandler(h))
-        options.conditionResolvers?.forEach(r => this.registerConditionResolver(r))
+        this.initializeMessageListeners()
     }
 
     public async start(): Promise<void> {
@@ -242,58 +230,6 @@ export class GameEngine implements IGameEngine {
         return this.dialogManager
     }
 
-    private counter: number = 0
-    private handleOnQueueEmpty(): void {
-        if (this.endingTurn) {
-            this.endTurn()
-            this.endingTurn = false
-            return
-        }
-        this.endingTurn = true
-        this.MessageBus.postMessage({
-            message: ADD_LINE_TO_OUTPUT_LOG,
-            payload: `<p>This is test line <bold>${this.counter++}</bold>.</p>`
-        })
-        this.messageBus.postMessage({
-            message: END_TURN_MESSAGE,
-            payload: null
-        })
-    }
-
-    private endTurn(): void {
-        if (this.stateManager !== null) {
-            this.stateManager.commitTurn()
-            this.inputManager.update()
-            // TODO: Remove when game engine has implemented load and save
-            // logInfo('Current state manager state: {0}', this.stateManager?.save())
-        }
-    }
-
-    private initStateManager(): void {
-        const contextData: ContextData = {
-            language: this.loader.Game.initialData.language,
-            pages: {},
-            maps: {},
-            tileSets: {},
-            tiles: {},
-            data: {
-                activePage: null,
-                location: {
-                    mapName: null,
-                    position: {
-                        x: 9,
-                        y: 6
-                    },
-                    mapSize: {
-                        width: 10,
-                        height: 10
-                    }
-                }
-            }
-        }
-        this.stateManager = new StateManager<ContextData>(contextData, new ChangeTracker<ContextData>())
-    }
-
     private initializeMessageListeners(): void {
         this.messageBus.registerNotificationMessage(END_TURN_MESSAGE)
         this.messageBus.registerNotificationMessage(ENGINE_STATE_CHANGED_MESSAGE)
@@ -330,10 +266,10 @@ export class GameEngine implements IGameEngine {
                     payload: { x, y },
                 })
                 logDebug('Position set to x: {0}, y: {1}', x, y)
-            }
+            },
 
         }
         return context
     }
-
 }
+

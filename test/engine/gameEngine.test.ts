@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { GameEngine, type IEngineManagerFactory } from '@engine/gameEngine'
+import { type IEngineManagerFactory, GameEngineInitializer } from '@engine/gameEngineInitializer'
 import type { ILoader } from '@loader/loader'
 import type { Action } from '@loader/data/action'
 import { PostMessageActionHandler } from '@engine/actions/postMessageActionHandler'
@@ -22,16 +22,11 @@ function createEngine() {
     createTranslationService: () => ({ translate: vi.fn(), setLanguage: vi.fn() }) as any,
     createScriptRunner: () => ({ run: vi.fn() }) as any
   }
-  const engine = new GameEngine(loader, factory, {
+  const engine = GameEngineInitializer.initialize(loader, factory, {
     actionHandlers: [new PostMessageActionHandler()]
   })
-  const bus = {
-    postMessage: vi.fn(),
-    registerMessageListener: vi.fn(),
-    registerNotificationMessage: vi.fn(),
-    shutDown: vi.fn()
-  } as any
-  ;(engine as any).messageBus = bus
+  const bus = engine.MessageBus as any
+  vi.spyOn(bus, 'postMessage')
   return { engine, bus }
 }
 

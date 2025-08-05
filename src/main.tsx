@@ -4,7 +4,7 @@ import { Loader, type ILoader } from '@loader/loader'
 import { GameEngine, type IGameEngine, type IEngineManagerFactory } from '@engine/gameEngine'
 import { createPageManager } from '@engine/pageManagerService'
 import { createMapManager } from '@engine/mapManagerService'
-import { VirtualInputHandler } from '@engine/virtualInputHandler'
+import { createVirtualInputHandler } from '@engine/virtualInputHandlerService'
 import { createInputManager } from '@engine/inputManagerService'
 import { createOutputManager } from '@engine/outputManagerService'
 import { createDialogManager } from '@engine/dialogManagerService'
@@ -32,7 +32,7 @@ loader.Styling.forEach(css => {
 const factory: IEngineManagerFactory = {
   createPageManager: (engine) => createPageManager(engine),
   createMapManager: (engine) => createMapManager(engine),
-  createVirtualInputHandler: (engine) => new VirtualInputHandler(engine),
+  createVirtualInputHandler: (engine) => createVirtualInputHandler(engine),
   createInputManager: (engine) => createInputManager(engine),
   createOutputManager: (engine) => createOutputManager(engine),
   createDialogManager: (engine) => createDialogManager(engine),

@@ -1,7 +1,8 @@
 import type { VirtualInput, VirtualKey } from '@loader/data/inputs'
 import { logDebug } from '@utils/logMessage'
 import { VIRTUAL_INPUT_MESSAGE } from './messages'
-import type { IGameEngine } from './gameEngine'
+import type { ILoader } from '@loader/loader'
+import type { IMessageBus } from '@utils/messageBus'
 
 export interface IVirtualInputHandler {
     initialize(): void
@@ -10,15 +11,20 @@ export interface IVirtualInputHandler {
     getVirtualInput(virtualInput: string): VirtualInput | null
 }
 
+export type VirtualInputHandlerServices = {
+    loader: ILoader
+    messageBus: IMessageBus
+}
+
 export class VirtualInputHandler implements IVirtualInputHandler {
     private keydownEventHandler: (event: KeyboardEvent) => void
     private virtualKeys: Map<string, VirtualKey> = new Map<string, VirtualKey>()
     private virtualInputsByVirtualKey: Map<string, VirtualInput> = new Map<string, VirtualInput>()
     private virtualInputs: Map<string, VirtualInput> = new Map<string, VirtualInput>()
-    private gameEngine: IGameEngine
+    private services: VirtualInputHandlerServices
 
-    constructor(gameEngine: IGameEngine) {
-        this.gameEngine = gameEngine
+    constructor(services: VirtualInputHandlerServices) {
+        this.services = services
         this.keydownEventHandler = (event: KeyboardEvent) => { this.onKeydownEvent(event.code, event.altKey, event.ctrlKey, event.shiftKey) }
     }
 
@@ -30,8 +36,8 @@ export class VirtualInputHandler implements IVirtualInputHandler {
 
     public async load(): Promise<void> {
         this.virtualKeys.clear()
-        for (const path of this.gameEngine.Loader.Game.virtualKeys) {
-            const virtualKeys = await this.gameEngine.Loader.loadVirtualKeys(path)
+        for (const path of this.services.loader.Game.virtualKeys) {
+            const virtualKeys = await this.services.loader.loadVirtualKeys(path)
             virtualKeys.forEach(virtualKey => {
                 const key = this.createKey(virtualKey.keyCode, virtualKey.alt, virtualKey.ctrl, virtualKey.shift)
                 this.virtualKeys.set(key, virtualKey)
@@ -40,8 +46,8 @@ export class VirtualInputHandler implements IVirtualInputHandler {
 
         this.virtualInputsByVirtualKey.clear()
         this.virtualInputs.clear()
-        for (const path of this.gameEngine.Loader.Game.virtualInputs) {
-            const virtualInputs = await this.gameEngine.Loader.loadVirtualInputs(path)
+        for (const path of this.services.loader.Game.virtualInputs) {
+            const virtualInputs = await this.services.loader.loadVirtualInputs(path)
             virtualInputs.forEach(virtualInput => {
                 this.virtualInputs.set(virtualInput.virtualInput, virtualInput)
                 virtualInput.virtualKeys.forEach(virtualKey => {
@@ -66,7 +72,7 @@ export class VirtualInputHandler implements IVirtualInputHandler {
             logDebug('Virtual key: {0}', virtualKey.virtualKey)
             const virtualInput = this.virtualInputsByVirtualKey.get(virtualKey.virtualKey)
             if (virtualInput) {
-                this.gameEngine.MessageBus.postMessage({
+                this.services.messageBus.postMessage({
                     message: VIRTUAL_INPUT_MESSAGE,
                     payload: virtualInput.virtualInput
                 })

@@ -11,7 +11,6 @@ export interface ITurnScheduler {
 export class TurnScheduler implements ITurnScheduler {
     private endingTurn = false
     private counter = 0
-    private disabled = false
     private stateManager: IStateManager<ContextData>
     private inputManager: IInputManager
     private messageBus: IMessageBus
@@ -27,12 +26,10 @@ export class TurnScheduler implements ITurnScheduler {
     }
 
     onQueueEmpty(): void {
-        if (this.disabled) return
         if (this.endingTurn) {
             this.stateManager.commitTurn()
             this.inputManager.update()
             this.endingTurn = false
-            this.disabled = true
             return
         }
         this.endingTurn = true

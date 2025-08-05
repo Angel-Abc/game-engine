@@ -1,5 +1,5 @@
 import type { CSSCustomProperties } from '@app/types'
-import { getGameEngine } from '@engine/gameEngine'
+import type { IGameEngine } from '@engine/gameEngine'
 import type { MatrixInputItem } from '@engine/inputManager'
 import { INPUTHANDLER_INPUTS_CHANGED, VIRTUAL_INPUT_MESSAGE } from '@engine/messages'
 import type { InputMatrixComponent } from '@loader/data/component'
@@ -7,10 +7,10 @@ import { useEffect, useState } from 'react'
 
 export type InputMatrixProps = {
     component: InputMatrixComponent
+    engine: IGameEngine
 }
 
-export const InputMatrix: React.FC<InputMatrixProps> = ({ component }): React.JSX.Element => {
-    const engine = getGameEngine()
+export const InputMatrix: React.FC<InputMatrixProps> = ({ component, engine }): React.JSX.Element => {
     const [inputMatrix, setInputMatrix] = useState(engine.InputManager.getInputMatrix(component.matrixSize.width, component.matrixSize.height))
     const style: CSSCustomProperties = {
         '--ge-input-matrix-width': component.matrixSize.width.toString(),

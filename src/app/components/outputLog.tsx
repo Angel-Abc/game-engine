@@ -1,15 +1,15 @@
 import { ScrollContainer } from '@app/controls/scrollContainer'
-import { getGameEngine } from '@engine/gameEngine'
+import type { IGameEngine } from '@engine/gameEngine'
 import { OUTPUT_LOG_LINE_ADDED } from '@engine/messages'
 import type { OutputComponent } from '@loader/data/component'
 import { useEffect, useState } from 'react'
 
 export type OutputLogProps = {
     component: OutputComponent
+    engine: IGameEngine
 }
 
-export const OutputLog: React.FC<OutputLogProps> = ({ component }): React.JSX.Element => {
-    const engine = getGameEngine()
+export const OutputLog: React.FC<OutputLogProps> = ({ component, engine }): React.JSX.Element => {
     const [outputLog, setOutputLog] = useState<string>(engine.OutputManager.getLastLines(component.logSize).join(' '))
 
     useEffect(() => {

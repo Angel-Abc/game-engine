@@ -43,6 +43,6 @@ await engine.start()
 
 const root = document.getElementById('app')
 if (root) {
-  createRoot(root).render(<App />)
+  createRoot(root).render(<App engine={engine} />)
 }
 

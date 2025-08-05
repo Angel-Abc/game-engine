@@ -1,13 +1,13 @@
-import { getGameEngine } from '@engine/gameEngine'
+import type { IGameEngine } from '@engine/gameEngine'
 import type { Button } from '@loader/data/button'
 import type { GameMenuComponent } from '@loader/data/component'
 
 export type GameMenuProps = {
     component: GameMenuComponent
+    engine: IGameEngine
 }
 
-export const GameMenu: React.FC<GameMenuProps> = ({ component }): React.JSX.Element => {
-    const engine = getGameEngine()
+export const GameMenu: React.FC<GameMenuProps> = ({ component, engine }): React.JSX.Element => {
 
     const onButtonClick = (button: Button) => {
         engine.executeAction(button.action)

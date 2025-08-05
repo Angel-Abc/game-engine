@@ -1,11 +1,14 @@
 import { useEffect, useState, useSyncExternalStore } from 'react'
-import { GameEngineState, getGameEngine } from '@engine/gameEngine'
+import { GameEngineState, type IGameEngine } from '@engine/gameEngine'
 import { PAGE_SWITCHED_MESSAGE } from '@engine/messages'
 import type { Page as PageData } from '@loader/data/page'
 import { Page } from './controls/page'
 
-export const App: React.FC = (): React.JSX.Element => {
-  const engine = getGameEngine()
+export type AppProps = {
+  engine: IGameEngine
+}
+
+export const App: React.FC<AppProps> = ({ engine }): React.JSX.Element => {
   const engineState = useSyncExternalStore(engine.State.subscribe.bind(engine.State), () => engine.State.value)
   const [activePage, setActivePage] = useState<string | null>(engine.StateManager.state.data.activePage)
   useEffect(() => {
@@ -23,7 +26,7 @@ export const App: React.FC = (): React.JSX.Element => {
       return (<div>Loading game data ...</div>)
     case GameEngineState.running:
       return (
-        <Page page={page} />
+        <Page page={page} engine={engine} />
       )
   }
 }

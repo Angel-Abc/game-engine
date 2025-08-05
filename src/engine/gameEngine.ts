@@ -26,17 +26,6 @@ import { ScriptActionHandler } from './actions/scriptActionHandler'
 import type { IConditionResolver } from './conditions/conditionResolver'
 import { ScriptConditionResolver } from './conditions/scriptConditionResolver'
 
-let gameEngine: GameEngine | null = null
-function setGameEngine(engine: GameEngine): void {
-    gameEngine = engine
-}
-export function getGameEngine(): IGameEngine {
-    if (gameEngine === null) {
-        fatalError('Game engine is not initialized')
-    }
-    return gameEngine
-}
-
 export const GameEngineState = {
     init: 0,
     loading: 1,
@@ -142,7 +131,6 @@ export class GameEngine implements IGameEngine {
             }
         )
         this.translationService = new TranslationService()
-        setGameEngine(this)
         this.pageManager = managerFactory.createPageManager(this)
         this.mapManager = managerFactory.createMapManager(this)
         this.virtualInputHandler = managerFactory.createVirtualInputHandler(this)

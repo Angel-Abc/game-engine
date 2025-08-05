@@ -1,5 +1,5 @@
 import type { CSSCustomProperties } from '@app/types'
-import { getGameEngine } from '@engine/gameEngine'
+import type { IGameEngine } from '@engine/gameEngine'
 import { MAP_SWITCHED_MESSAGE, POSITION_CHANGED_MESSAGE } from '@engine/messages'
 import type { SquaresMapComponent } from '@loader/data/component'
 import type { GameMap } from '@loader/data/map'
@@ -8,6 +8,7 @@ import { Tile } from './tile'
 
 export type SquaresMapProps = {
     component: SquaresMapComponent
+    engine: IGameEngine
 }
 
 interface Position {
@@ -15,8 +16,7 @@ interface Position {
     y: number
 }
 
-export const SquaresMap: React.FC<SquaresMapProps> = ({ component }): React.JSX.Element => {
-    const engine = getGameEngine()
+export const SquaresMap: React.FC<SquaresMapProps> = ({ component, engine }): React.JSX.Element => {
     const [activeMap, setActiveMap] = useState<string | null>(engine.StateManager.state.data.location.mapName)
     const [pos, setPos] = useState<Position>(engine.StateManager.state.data.location.position)
 

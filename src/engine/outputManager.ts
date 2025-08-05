@@ -1,4 +1,4 @@
-import type { IGameEngine } from './gameEngine'
+import type { IMessageBus } from '@utils/messageBus'
 import { ADD_LINE_TO_OUTPUT_LOG, OUTPUT_LOG_LINE_ADDED } from './messages'
 
 export interface IOutputManager {
@@ -7,19 +7,23 @@ export interface IOutputManager {
     getLastLines(maxCount: number): string[]
 }
 
+export type OutputManagerServices = {
+    messageBus: IMessageBus
+}
+
 export class OutputManager implements IOutputManager {
-    private gameEngine: IGameEngine
+    private services: OutputManagerServices
     private unregisterEventHandlers: (() => void)[] = []
     private outputLogLines: string[] = []
     private currentMaxSize: number = 0
 
-    constructor(gameEngine: IGameEngine) {
-        this.gameEngine = gameEngine
+    constructor(services: OutputManagerServices) {
+        this.services = services
     }
 
     public initialize(): void {
         this.unregisterEventHandlers.push(
-            this.gameEngine.MessageBus.registerMessageListener(
+            this.services.messageBus.registerMessageListener(
                 ADD_LINE_TO_OUTPUT_LOG,
                 (message) => this.newLine(message.payload as string)
             )
@@ -41,7 +45,7 @@ export class OutputManager implements IOutputManager {
         if (this.currentMaxSize > 0 && this.outputLogLines.length > 2 * this.currentMaxSize){
             this.outputLogLines = this.outputLogLines.slice(-1 * this.currentMaxSize)
         }
-        this.gameEngine.MessageBus.postMessage({
+        this.services.messageBus.postMessage({
             message: OUTPUT_LOG_LINE_ADDED,
             payload: line
         })

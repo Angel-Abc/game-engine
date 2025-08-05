@@ -1,8 +1,14 @@
 import { create2DArray } from '@utils/array'
-import type { IGameEngine } from './gameEngine'
+import type { IMessageBus } from '@utils/messageBus'
+import type { ITranslationService } from './translationService'
+import type { IVirtualInputHandler } from './virtualInputHandler'
+import type { IStateManager } from './stateManager'
+import type { ContextData } from './context'
 import { INPUTHANDLER_INPUTS_CHANGED, VIRTUAL_INPUT_MESSAGE } from './messages'
 import type { Input } from '@loader/data/inputs'
 import { hasMapChanged, updateMap } from '@utils/map'
+import type { Condition } from '@loader/data/condition'
+import type { Action } from '@loader/data/action'
 
 export type MatrixInputItem = {
     enabled: boolean
@@ -33,20 +39,29 @@ type InputItem = {
     visible: boolean
 }
 
+export type InputManagerServices = {
+    messageBus: IMessageBus
+    translationService: ITranslationService
+    virtualInputHandler: IVirtualInputHandler
+    stateManager: IStateManager<ContextData>
+    resolveCondition: (condition: Condition | null) => boolean
+    executeAction: (action: Action) => void
+}
+
 export class InputManager implements IInputManager {
     private unregisterEventHandlers: (() => void)[] = []
-    private gameEngine: IGameEngine
+    private services: InputManagerServices
     private currentPage: string | null = null
     private inputs: Map<string, InputItem> = new Map()
     private previousInputs: Map<string, InputItem> = new Map()
 
-    constructor(gameEngine: IGameEngine) {
-        this.gameEngine = gameEngine
+    constructor(services: InputManagerServices) {
+        this.services = services
     }
 
     public initialize(): void {
         this.unregisterEventHandlers.push(
-            this.gameEngine.MessageBus.registerMessageListener(
+            this.services.messageBus.registerMessageListener(
                 VIRTUAL_INPUT_MESSAGE,
                 (message) => this.onInput(message.payload as string)
             )
@@ -98,10 +113,10 @@ export class InputManager implements IInputManager {
     private getMatrixInputItem(inputItem: InputItem): MatrixInputItem {
         const matrixItem: MatrixInputItem = {
             enabled: inputItem.enabled,
-            label: this.gameEngine.TranslationService.translate(inputItem.input.label),
-            description: this.gameEngine.TranslationService.translate(inputItem.input.description),
+            label: this.services.translationService.translate(inputItem.input.label),
+            description: this.services.translationService.translate(inputItem.input.description),
             virtualInput: inputItem.input.virtualInput,
-            character: this.gameEngine.VirtualInputHandler.getVirtualInput(inputItem.input.virtualInput)?.label ?? ''
+            character: this.services.virtualInputHandler.getVirtualInput(inputItem.input.virtualInput)?.label ?? ''
         }
         return matrixItem
     }
@@ -109,14 +124,14 @@ export class InputManager implements IInputManager {
     private recalculateInputConditions(): void {
         this.inputs.forEach((inputItem) => {
             const input = inputItem.input
-            inputItem.enabled = this.gameEngine.resolveCondition(input.enabled ?? null)
-            inputItem.visible = this.gameEngine.resolveCondition(input.visible ?? null)
+            inputItem.enabled = this.services.resolveCondition(input.enabled ?? null)
+            inputItem.visible = this.services.resolveCondition(input.visible ?? null)
         })
 
-        if (hasMapChanged(this.previousInputs, this.inputs, 
+        if (hasMapChanged(this.previousInputs, this.inputs,
             (a,b) => a.input.virtualInput === b.input.virtualInput && a.enabled === b.enabled && a.visible == b.visible)) {
                 updateMap(this.previousInputs, this.inputs, item => ({ ...item }))
-                this.gameEngine.MessageBus.postMessage({
+                this.services.messageBus.postMessage({
                     message: INPUTHANDLER_INPUTS_CHANGED,
                     payload: {}
                 })
@@ -124,20 +139,20 @@ export class InputManager implements IInputManager {
     }
 
     private checkSources(): boolean {
-        if (this.currentPage === this.gameEngine.StateManager.state.data.activePage) {
+        if (this.currentPage === this.services.stateManager.state.data.activePage) {
             return false
         }
         this.inputs.clear()
-        this.currentPage = this.gameEngine.StateManager.state.data.activePage
+        this.currentPage = this.services.stateManager.state.data.activePage
         if (this.currentPage === null) {
             return false
         }
-        const page = this.gameEngine.StateManager.state.pages[this.currentPage]
+        const page = this.services.stateManager.state.pages[this.currentPage]
         page.inputs.forEach(input => {
             this.inputs.set(input.virtualInput, {
                 input,
-                enabled: this.gameEngine.resolveCondition(input.enabled ?? null),
-                visible: this.gameEngine.resolveCondition(input.visible ?? null)
+                enabled: this.services.resolveCondition(input.enabled ?? null),
+                visible: this.services.resolveCondition(input.visible ?? null)
             })
         })
         return true
@@ -145,10 +160,9 @@ export class InputManager implements IInputManager {
 
     private onInput(input: string): void {
         const inputItem = this.inputs.get(input)
-        if (inputItem && inputItem.enabled) {
-            this.gameEngine.executeAction(inputItem.input.action ?? null)
+        if (inputItem && inputItem.enabled && inputItem.input.action) {
+            this.services.executeAction(inputItem.input.action)
         }
     }
-
-
 }
+

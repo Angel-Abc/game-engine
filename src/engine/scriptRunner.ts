@@ -1,5 +1,5 @@
 import { fatalError, logInfo } from '@utils/logMessage'
-import type { ContextData } from './gameEngine'
+import type { ContextData } from './context'
 
 export interface IScriptRunner {
     run<T>(script: string, context: ScriptContext): T

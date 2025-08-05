@@ -1,5 +1,5 @@
 import { logDebug } from '@utils/logMessage'
-import type { IGameEngine } from './gameEngine'
+import type { IMessageBus } from '@utils/messageBus'
 import { DIALOG_STARTED, START_DIALOG } from './messages'
 
 export interface IDialogManager {
@@ -7,17 +7,21 @@ export interface IDialogManager {
     cleanup(): void
 }
 
+export type DialogManagerServices = {
+    messageBus: IMessageBus
+}
+
 export class DialogManager implements IDialogManager {
     private unregisterEventHandlers: (() => void)[] = []
-    private gameEngine: IGameEngine
+    private services: DialogManagerServices
 
-    constructor(gameEngine: IGameEngine) {
-        this.gameEngine = gameEngine
+    constructor(services: DialogManagerServices) {
+        this.services = services
     }
 
     public initialize(): void {
         this.unregisterEventHandlers.push(
-            this.gameEngine.MessageBus.registerMessageListener(
+            this.services.messageBus.registerMessageListener(
                 START_DIALOG,
                 async (message) => this.startDialog(message.payload as string)
             )
@@ -31,7 +35,7 @@ export class DialogManager implements IDialogManager {
 
     private async startDialog(dialogId: string): Promise<void> {
         logDebug('TODO: startDialog called with id = {0}', dialogId)
-        this.gameEngine.MessageBus.postMessage({
+        this.services.messageBus.postMessage({
             message: DIALOG_STARTED,
             payload: dialogId
         })

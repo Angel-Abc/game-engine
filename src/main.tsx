@@ -1,7 +1,8 @@
 import { createRoot } from 'react-dom/client'
 import { logDebug } from '@utils/logMessage'
 import { Loader, type ILoader } from '@loader/loader'
-import { GameEngine, type IGameEngine, type IEngineManagerFactory } from '@engine/gameEngine'
+import { type IGameEngine } from '@engine/gameEngine'
+import { GameEngineInitializer, type IEngineManagerFactory } from '@engine/gameEngineInitializer'
 import { PostMessageActionHandler } from '@engine/actions/postMessageActionHandler'
 import { ScriptActionHandler } from '@engine/actions/scriptActionHandler'
 import { ScriptConditionResolver } from '@engine/conditions/scriptConditionResolver'
@@ -43,7 +44,7 @@ const factory: IEngineManagerFactory = {
   createScriptRunner: () => createScriptRunner()
 }
 
-const engine: IGameEngine = new GameEngine(loader, factory, {
+const engine: IGameEngine = GameEngineInitializer.initialize(loader, factory, {
   actionHandlers: [new PostMessageActionHandler(), new ScriptActionHandler()],
   conditionResolvers: [new ScriptConditionResolver()]
 })

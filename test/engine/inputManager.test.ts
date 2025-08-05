@@ -1,5 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { InputManager, type InputManagerServices } from '@engine/inputManager'
+import { InputSourceTracker } from '@engine/inputSourceTracker'
+import { InputMatrixBuilder } from '@engine/inputMatrixBuilder'
 import { VIRTUAL_INPUT_MESSAGE } from '@engine/messages'
 import type { ContextData } from '@engine/context'
 import type { Input } from '@loader/data/inputs'
@@ -48,12 +50,21 @@ function createInputManager(actionFn = vi.fn()) {
   }
   const stateManager = { state } as any
 
+  const inputSourceTracker = new InputSourceTracker({
+    messageBus: messageBus as any,
+    stateManager,
+    resolveCondition: () => true
+  })
+
+  const inputMatrixBuilder = new InputMatrixBuilder({
+    translationService: translationService as any,
+    virtualInputHandler: virtualInputHandler as any
+  })
+
   const services: InputManagerServices = {
     messageBus: messageBus as any,
-    translationService: translationService as any,
-    virtualInputHandler: virtualInputHandler as any,
-    stateManager,
-    resolveCondition: () => true,
+    inputSourceTracker,
+    inputMatrixBuilder,
     executeAction: actionFn
   }
 

@@ -17,10 +17,10 @@ import { TurnScheduler } from './turnScheduler'
 import { GameEngine, type IGameEngine } from './gameEngine'
 
 export interface IEngineManagerFactory {
-    createPageManager(engine: IGameEngine): IPageManager
-    createMapManager(engine: IGameEngine): IMapManager
+    createPageManager(engine: IGameEngine, stateManager: IStateManager<ContextData>): IPageManager
+    createMapManager(engine: IGameEngine, stateManager: IStateManager<ContextData>): IMapManager
     createVirtualInputHandler(engine: IGameEngine): IVirtualInputHandler
-    createInputManager(engine: IGameEngine): IInputManager
+    createInputManager(engine: IGameEngine, stateManager: IStateManager<ContextData>): IInputManager
     createOutputManager(engine: IGameEngine): IOutputManager
     createDialogManager(engine: IGameEngine): IDialogManager
     createTranslationService(): ITranslationService
@@ -60,10 +60,10 @@ export class GameEngineInitializer {
         const translationService = factory.createTranslationService()
         const scriptRunner = factory.createScriptRunner()
 
-        const pageManager = factory.createPageManager(engine)
-        const mapManager = factory.createMapManager(engine)
+        const pageManager = factory.createPageManager(engine, stateManager)
+        const mapManager = factory.createMapManager(engine, stateManager)
         const virtualInputHandler = factory.createVirtualInputHandler(engine)
-        const inputManager = factory.createInputManager(engine)
+        const inputManager = factory.createInputManager(engine, stateManager)
         const outputManager = factory.createOutputManager(engine)
         const dialogManager = factory.createDialogManager(engine)
 

@@ -70,6 +70,7 @@ export class InputManager implements IInputManager {
 
     public cleanup(): void {
         this.unregisterEventHandlers.forEach(unregister => unregister())
+        this.unregisterEventHandlers = []
     }
 
     public update(): void {

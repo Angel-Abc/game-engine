@@ -5,13 +5,15 @@ import { InputMatrixBuilder } from './inputMatrixBuilder'
 import type { Action } from '@loader/data/action'
 import type { IStateManager } from './stateManager'
 import type { ContextData } from './context'
+import type { IMessageBus } from '@utils/messageBus'
 
 export function createInputManager(
     engine: IGameEngine,
+    messageBus: IMessageBus,
     stateManager: IStateManager<ContextData>
 ): IInputManager {
     const inputSourceTracker = new InputSourceTracker({
-        messageBus: engine.MessageBus,
+        messageBus,
         stateManager,
         resolveCondition: (condition) => engine.resolveCondition(condition)
     })
@@ -22,7 +24,7 @@ export function createInputManager(
     })
 
     const services: InputManagerServices = {
-        messageBus: engine.MessageBus,
+        messageBus,
         inputSourceTracker,
         inputMatrixBuilder,
         executeAction: (action: Action) => engine.executeAction(action)

@@ -19,19 +19,33 @@ function createEngine() {
       void stateManager
       return { initialize: vi.fn(), switchPage: vi.fn(), cleanup: vi.fn() } as any
     },
-    createMapManager: (engine, stateManager) => {
+    createMapManager: (engine, messageBus, stateManager) => {
       void engine
+      void messageBus
       void stateManager
       return { initialize: vi.fn(), switchMap: vi.fn(), cleanup: vi.fn() } as any
     },
-    createVirtualInputHandler: () => ({ initialize: vi.fn(), cleanup: vi.fn(), load: vi.fn(), getVirtualInput: vi.fn() }) as any,
-    createInputManager: (engine, stateManager) => {
+    createVirtualInputHandler: (engine, messageBus) => {
       void engine
+      void messageBus
+      return { initialize: vi.fn(), cleanup: vi.fn(), load: vi.fn(), getVirtualInput: vi.fn() } as any
+    },
+    createInputManager: (engine, messageBus, stateManager) => {
+      void engine
+      void messageBus
       void stateManager
       return { initialize: vi.fn(), cleanup: vi.fn(), update: vi.fn(), getInputMatrix: vi.fn() } as any
     },
-    createOutputManager: () => ({ initialize: vi.fn(), cleanup: vi.fn(), getLastLines: vi.fn() }) as any,
-    createDialogManager: () => ({ initialize: vi.fn(), cleanup: vi.fn() }) as any,
+    createOutputManager: (engine, messageBus) => {
+      void engine
+      void messageBus
+      return { initialize: vi.fn(), cleanup: vi.fn(), getLastLines: vi.fn() } as any
+    },
+    createDialogManager: (engine, messageBus) => {
+      void engine
+      void messageBus
+      return { initialize: vi.fn(), cleanup: vi.fn() } as any
+    },
     createTranslationService: () => ({ translate: vi.fn(), setLanguage: vi.fn() }) as any,
     createScriptRunner: () => ({ run: vi.fn() }) as any
   }

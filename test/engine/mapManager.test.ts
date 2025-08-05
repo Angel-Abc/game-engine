@@ -1,11 +1,11 @@
 import { describe, it, expect, vi } from 'vitest'
-import { MapManager, type MapManagerServices } from '@engine/mapManager'
-import { ChangeTracker } from '@engine/changeTracker'
-import { StateManager } from '@engine/stateManager'
+import { MapManager, type MapManagerServices } from '@engine/map/mapManager'
+import { ChangeTracker } from '@engine/core/changeTracker'
+import { StateManager } from '@engine/core/stateManager'
 import { TrackedValue } from '@utils/trackedState'
-import { GameEngineState } from '@engine/gameEngine'
-import { MAP_SWITCHED_MESSAGE } from '@engine/messages'
-import type { ContextData } from '@engine/context'
+import { GameEngineState } from '@engine/core/gameEngine'
+import { MAP_SWITCHED_MESSAGE } from '@engine/dialog/messages'
+import type { ContextData } from '@engine/core/context'
 
 function createMapManagerInstance() {
   const loader = {

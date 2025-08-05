@@ -1,5 +1,5 @@
 import { create2DArray } from '@utils/array'
-import type { ITranslationService } from './translationService'
+import type { ITranslationService } from '../dialog/translationService'
 import type { IVirtualInputHandler } from './virtualInputHandler'
 import type { InputItem } from './inputSourceTracker'
 

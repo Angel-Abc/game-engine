@@ -1,12 +1,12 @@
-import type { IGameEngine } from './gameEngine'
+import type { IGameEngine } from '../core/gameEngine'
 import { InputManager, type IInputManager, type InputManagerServices } from './inputManager'
 import { InputSourceTracker } from './inputSourceTracker'
 import { InputMatrixBuilder } from './inputMatrixBuilder'
 import type { Action } from '@loader/data/action'
-import type { IStateManager } from './stateManager'
-import type { ContextData } from './context'
+import type { IStateManager } from '../core/stateManager'
+import type { ContextData } from '../core/context'
 import type { IMessageBus } from '@utils/messageBus'
-import type { ITranslationService } from './translationService'
+import type { ITranslationService } from '../dialog/translationService'
 import type { IVirtualInputHandler } from './virtualInputHandler'
 
 export function createInputManager(

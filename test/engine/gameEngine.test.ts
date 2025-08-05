@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { type IEngineManagerFactory, GameEngineInitializer } from '@engine/gameEngineInitializer'
+import { type IEngineManagerFactory, GameEngineInitializer } from '@engine/core/gameEngineInitializer'
 import type { ILoader } from '@loader/loader'
 import type { Action } from '@loader/data/action'
 import { PostMessageActionHandler } from '@engine/actions/postMessageActionHandler'

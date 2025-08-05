@@ -37,7 +37,7 @@ export class DialogManager implements IDialogManager {
         logDebug('TODO: startDialog called with id = {0}', dialogId)
         this.services.messageBus.postMessage({
             message: DIALOG_STARTED,
-            payload: dialogId
+        payload: dialogId
         })
     }
 

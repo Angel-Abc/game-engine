@@ -1,8 +1,8 @@
-import { ADD_LINE_TO_OUTPUT_LOG, END_TURN_MESSAGE } from './messages'
+import { ADD_LINE_TO_OUTPUT_LOG, END_TURN_MESSAGE } from '../dialog/messages'
 import type { IMessageBus } from '@utils/messageBus'
 import type { IStateManager } from './stateManager'
 import type { ContextData } from './context'
-import type { IInputManager } from './inputManager'
+import type { IInputManager } from '../input/inputManager'
 
 export interface ITurnScheduler {
     onQueueEmpty(): void

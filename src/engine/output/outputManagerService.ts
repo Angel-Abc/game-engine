@@ -1,4 +1,4 @@
-import type { IGameEngine } from './gameEngine'
+import type { IGameEngine } from '../core/gameEngine'
 import { OutputManager, type IOutputManager } from './outputManager'
 import type { IMessageBus } from '@utils/messageBus'
 

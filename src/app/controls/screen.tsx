@@ -1,6 +1,6 @@
 import type { CSSCustomProperties } from '@app/types'
 import type { Screen as ScreenData } from '@loader/data/page'
-import type { IGameEngine } from '@engine/gameEngine'
+import type { IGameEngine } from '@engine/core/gameEngine'
 import { Component } from './component'
 
 export type ScreenProps = {

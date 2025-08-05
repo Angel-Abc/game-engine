@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { TranslationService } from '@engine/translationService'
+import { TranslationService } from '@engine/dialog/translationService'
 import type { Language } from '@loader/data/language'
 
 

@@ -1,6 +1,6 @@
 import type { IActionHandler } from './actionHandler'
 import type { Action, PostMessageAction } from '@loader/data/action'
-import type { IGameEngine } from '@engine/gameEngine'
+import type { IGameEngine } from '@engine/core/gameEngine'
 
 export class PostMessageActionHandler implements IActionHandler {
     readonly type = 'post-message' as const

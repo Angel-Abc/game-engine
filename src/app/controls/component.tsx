@@ -4,7 +4,7 @@ import { InputMatrix } from '@app/components/inputMatrix'
 import { OutputLog } from '@app/components/outputLog'
 import { SquaresMap } from '@app/components/squaresMap'
 import type { Component as ComponentData } from '@loader/data/component'
-import type { IGameEngine } from '@engine/gameEngine'
+import type { IGameEngine } from '@engine/core/gameEngine'
 
 export type ComponentProps = {
     component: ComponentData

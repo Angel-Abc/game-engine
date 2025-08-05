@@ -1,7 +1,7 @@
-import type { IGameEngine } from './gameEngine'
+import type { IGameEngine } from '../core/gameEngine'
 import { MapManager, type IMapManager, type MapManagerServices } from './mapManager'
-import type { IStateManager } from './stateManager'
-import type { ContextData } from './context'
+import type { IStateManager } from '../core/stateManager'
+import type { ContextData } from '../core/context'
 import type { IMessageBus } from '@utils/messageBus'
 
 export function createMapManager(

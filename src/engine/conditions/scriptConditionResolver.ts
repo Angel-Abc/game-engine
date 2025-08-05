@@ -1,6 +1,6 @@
 import type { IConditionResolver } from './conditionResolver'
 import type { Condition, ScriptCondition } from '@loader/data/condition'
-import type { IGameEngine } from '@engine/gameEngine'
+import type { IGameEngine } from '@engine/core/gameEngine'
 
 export class ScriptConditionResolver implements IConditionResolver {
     readonly type = 'script' as const

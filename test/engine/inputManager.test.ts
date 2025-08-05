@@ -1,9 +1,9 @@
 import { describe, it, expect, vi } from 'vitest'
-import { InputManager, type InputManagerServices } from '@engine/inputManager'
-import { InputSourceTracker } from '@engine/inputSourceTracker'
-import { InputMatrixBuilder } from '@engine/inputMatrixBuilder'
-import { VIRTUAL_INPUT_MESSAGE } from '@engine/messages'
-import type { ContextData } from '@engine/context'
+import { InputManager, type InputManagerServices } from '@engine/input/inputManager'
+import { InputSourceTracker } from '@engine/input/inputSourceTracker'
+import { InputMatrixBuilder } from '@engine/input/inputMatrixBuilder'
+import { VIRTUAL_INPUT_MESSAGE } from '@engine/dialog/messages'
+import type { ContextData } from '@engine/core/context'
 import type { Input } from '@loader/data/inputs'
 
 function createInputManager(actionFn = vi.fn()) {

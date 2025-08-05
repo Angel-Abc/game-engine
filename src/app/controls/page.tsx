@@ -1,5 +1,5 @@
 import type { Page as PageData } from '@loader/data/page'
-import type { IGameEngine } from '@engine/gameEngine'
+import type { IGameEngine } from '@engine/core/gameEngine'
 import { Screen } from './screen'
 
 export type PageProps = {

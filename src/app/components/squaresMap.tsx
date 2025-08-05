@@ -1,6 +1,6 @@
 import type { CSSCustomProperties } from '@app/types'
-import type { IGameEngine } from '@engine/gameEngine'
-import { MAP_SWITCHED_MESSAGE, POSITION_CHANGED_MESSAGE } from '@engine/messages'
+import type { IGameEngine } from '@engine/core/gameEngine'
+import { MAP_SWITCHED_MESSAGE, POSITION_CHANGED_MESSAGE } from '@engine/dialog/messages'
 import type { SquaresMapComponent } from '@loader/data/component'
 import type { GameMap } from '@loader/data/map'
 import { useEffect, useState } from 'react'

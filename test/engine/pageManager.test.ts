@@ -1,10 +1,10 @@
 import { describe, it, expect, vi } from 'vitest'
-import { PageManager, type PageManagerServices } from '@engine/pageManager'
-import { ChangeTracker } from '@engine/changeTracker'
-import { StateManager } from '@engine/stateManager'
+import { PageManager, type PageManagerServices } from '@engine/page/pageManager'
+import { ChangeTracker } from '@engine/core/changeTracker'
+import { StateManager } from '@engine/core/stateManager'
 import { TrackedValue } from '@utils/trackedState'
-import { GameEngineState } from '@engine/gameEngine'
-import type { ContextData } from '@engine/context'
+import { GameEngineState } from '@engine/core/gameEngine'
+import type { ContextData } from '@engine/core/context'
 
 function createPageManagerInstance() {
   const loader = {

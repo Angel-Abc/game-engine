@@ -1,6 +1,6 @@
 import type { VirtualInput, VirtualKey } from '@loader/data/inputs'
 import { logDebug } from '@utils/logMessage'
-import { VIRTUAL_INPUT_MESSAGE } from './messages'
+import { VIRTUAL_INPUT_MESSAGE } from '../dialog/messages'
 import type { ILoader } from '@loader/loader'
 import type { IMessageBus } from '@utils/messageBus'
 

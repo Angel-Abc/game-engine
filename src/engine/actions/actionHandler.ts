@@ -1,5 +1,5 @@
 import type { Action } from '@loader/data/action'
-import type { IGameEngine } from '@engine/gameEngine'
+import type { IGameEngine } from '@engine/core/gameEngine'
 
 export interface IActionHandler {
     readonly type: Action['type']

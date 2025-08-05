@@ -1,4 +1,4 @@
-import type { IGameEngine } from './gameEngine'
+import type { IGameEngine } from '../core/gameEngine'
 import { VirtualInputHandler, type IVirtualInputHandler, type VirtualInputHandlerServices } from './virtualInputHandler'
 import type { IMessageBus } from '@utils/messageBus'
 

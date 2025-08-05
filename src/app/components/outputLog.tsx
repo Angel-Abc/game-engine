@@ -1,6 +1,6 @@
 import { ScrollContainer } from '@app/controls/scrollContainer'
-import type { IGameEngine } from '@engine/gameEngine'
-import { OUTPUT_LOG_LINE_ADDED } from '@engine/messages'
+import type { IGameEngine } from '@engine/core/gameEngine'
+import { OUTPUT_LOG_LINE_ADDED } from '@engine/dialog/messages'
 import type { OutputComponent } from '@loader/data/component'
 import { useEffect, useState } from 'react'
 

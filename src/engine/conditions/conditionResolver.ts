@@ -1,5 +1,5 @@
 import type { Condition } from '@loader/data/condition'
-import type { IGameEngine } from '@engine/gameEngine'
+import type { IGameEngine } from '@engine/core/gameEngine'
 
 export interface IConditionResolver {
     readonly type: Condition['type']

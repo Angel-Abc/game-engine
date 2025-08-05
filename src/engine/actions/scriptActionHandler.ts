@@ -1,6 +1,6 @@
 import type { IActionHandler } from './actionHandler'
 import type { Action, ScriptAction } from '@loader/data/action'
-import type { IGameEngine } from '@engine/gameEngine'
+import type { IGameEngine } from '@engine/core/gameEngine'
 
 export class ScriptActionHandler implements IActionHandler {
     readonly type = 'script' as const

@@ -1,7 +1,7 @@
-import type { IGameEngine } from './gameEngine'
+import type { IGameEngine } from '../core/gameEngine'
 import { PageManager, type IPageManager, type PageManagerServices } from './pageManager'
-import type { IStateManager } from './stateManager'
-import type { ContextData } from './context'
+import type { IStateManager } from '../core/stateManager'
+import type { ContextData } from '../core/context'
 import type { IMessageBus } from '@utils/messageBus'
 
 export function createPageManager(

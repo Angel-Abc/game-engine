@@ -1,10 +1,10 @@
 import type { IMessageBus } from '@utils/messageBus'
-import type { IStateManager } from './stateManager'
-import type { ContextData } from './context'
+import type { IStateManager } from '../core/stateManager'
+import type { ContextData } from '../core/context'
 import type { Input } from '@loader/data/inputs'
 import type { Condition } from '@loader/data/condition'
 import { hasMapChanged, updateMap } from '@utils/map'
-import { INPUTHANDLER_INPUTS_CHANGED } from './messages'
+import { INPUTHANDLER_INPUTS_CHANGED } from '../dialog/messages'
 
 export type InputItem = {
     input: Input

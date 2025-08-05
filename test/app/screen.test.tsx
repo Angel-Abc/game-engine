@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { Screen } from '@app/controls/screen'
 import type { Screen as ScreenData } from '@loader/data/page'
-import type { IGameEngine } from '@engine/gameEngine'
+import type { IGameEngine } from '@engine/core/gameEngine'
 
 describe('Screen', () => {
   it('applies grid position variables to components', () => {

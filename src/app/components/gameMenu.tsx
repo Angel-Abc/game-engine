@@ -1,4 +1,4 @@
-import type { IGameEngine } from '@engine/gameEngine'
+import type { IGameEngine } from '@engine/core/gameEngine'
 import type { Button } from '@loader/data/button'
 import type { GameMenuComponent } from '@loader/data/component'
 

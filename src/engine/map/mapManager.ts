@@ -1,9 +1,9 @@
 import { logDebug } from '@utils/logMessage'
 import type { ILoader } from '@loader/loader'
 import type { IMessageBus } from '@utils/messageBus'
-import type { IStateManager } from './stateManager'
-import type { ContextData } from './context'
-import { MAP_SWITCHED_MESSAGE, SWITCH_MAP_MESSAGE } from './messages'
+import type { IStateManager } from '../core/stateManager'
+import type { ContextData } from '../core/context'
+import { MAP_SWITCHED_MESSAGE, SWITCH_MAP_MESSAGE } from '../dialog/messages'
 import type { GameMap } from '@loader/data/map'
 
 export interface IMapManager {

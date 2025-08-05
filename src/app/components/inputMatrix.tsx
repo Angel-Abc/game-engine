@@ -1,7 +1,7 @@
 import type { CSSCustomProperties } from '@app/types'
-import type { IGameEngine } from '@engine/gameEngine'
-import type { MatrixInputItem } from '@engine/inputManager'
-import { INPUTHANDLER_INPUTS_CHANGED, VIRTUAL_INPUT_MESSAGE } from '@engine/messages'
+import type { IGameEngine } from '@engine/core/gameEngine'
+import type { MatrixInputItem } from '@engine/input/inputManager'
+import { INPUTHANDLER_INPUTS_CHANGED, VIRTUAL_INPUT_MESSAGE } from '@engine/dialog/messages'
 import type { InputMatrixComponent } from '@loader/data/component'
 import { useEffect, useState } from 'react'
 

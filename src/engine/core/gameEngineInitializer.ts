@@ -53,6 +53,7 @@ export class GameEngineInitializer {
             maps: {},
             tileSets: {},
             tiles: {},
+            dialogs: {},
             data: {
                 activePage: null,
                 activeDialog: null,

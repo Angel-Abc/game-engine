@@ -1,4 +1,3 @@
-import { logDebug } from '@utils/logMessage'
 import { useRef, useLayoutEffect, type ReactNode } from 'react'
 
 type ScrollContainerProps = {
@@ -14,9 +13,7 @@ export const ScrollContainer: React.FC<ScrollContainerProps> = ({ children, clas
     const el = ref.current
     if (!el) return
 
-    const isAtBottom =
-      el.scrollHeight - el.scrollTop <= el.clientHeight * 1.1
-    logDebug('scrollHeight: {0}, scrollTop: {1}, clientHeight: {2}, isAtBottom: {3}', el.scrollHeight, el.scrollTop, el.clientHeight, isAtBottom)
+    const isAtBottom = el.scrollHeight - el.scrollTop <= el.clientHeight * 1.1
 
     if (isAtBottom) {
       el.scrollTop = el.scrollHeight

@@ -1,4 +1,4 @@
-import { ADD_LINE_TO_OUTPUT_LOG, END_TURN_MESSAGE } from '../messages/messages'
+import { END_TURN_MESSAGE } from '../messages/messages'
 import type { IMessageBus } from '@utils/messageBus'
 import type { IStateManager } from './stateManager'
 import type { ContextData } from './context'
@@ -10,7 +10,6 @@ export interface ITurnScheduler {
 
 export class TurnScheduler implements ITurnScheduler {
     private endingTurn = false
-    private counter = 0
     private stateManager: IStateManager<ContextData>
     private inputManager: IInputManager
     private messageBus: IMessageBus
@@ -33,10 +32,6 @@ export class TurnScheduler implements ITurnScheduler {
             return
         }
         this.endingTurn = true
-        this.messageBus.postMessage({
-            message: ADD_LINE_TO_OUTPUT_LOG,
-            payload: `<p>This is test line <bold>${this.counter++}</bold>.</p>`
-        })
         this.messageBus.postMessage({
             message: END_TURN_MESSAGE,
             payload: null

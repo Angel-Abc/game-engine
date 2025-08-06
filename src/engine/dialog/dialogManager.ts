@@ -4,6 +4,8 @@ import { DIALOG_STARTED, START_DIALOG } from '../messages/messages'
 import type { IStateManager } from '@engine/core/stateManager'
 import type { ContextData } from '@engine/core/context'
 import type { ILoader } from '@loader/loader'
+import { loadOnce } from '@utils/loadOnce'
+import type { Condition } from '@loader/data/condition'
 
 export interface IDialogManager {
     initialize(): void
@@ -15,7 +17,8 @@ export type DialogManagerServices = {
     messageBus: IMessageBus
     stateManager: IStateManager<ContextData>
     setIsLoading: () => void
-    setIsRunning: () => void   
+    setIsRunning: () => void
+    resolveCondition: (condition: Condition | null) => boolean
 }
 
 export class DialogManager implements IDialogManager {
@@ -44,11 +47,34 @@ export class DialogManager implements IDialogManager {
         const context = this.services.stateManager.state
         if (context.data.activeDialog === dialogId) return
 
+        const dialogSet = await loadOnce(
+            context.dialogs,
+            dialogId,
+            async () => {
+                const loadedDialog = await this.services.loader.loadDialog(dialogId)
+                logDebug('DialogSet {0} loaded as {1}', dialogId, loadedDialog)
+                return loadedDialog
+            },
+            this.services.setIsLoading,
+            this.services.setIsRunning,
+        )
+
+        if (!this.services.resolveCondition(dialogSet.startCondition)) return
+
+        context.data.activeDialog = dialogId
+
         logDebug('TODO: startDialog called with id = {0}', dialogId)
         this.services.messageBus.postMessage({
             message: DIALOG_STARTED,
-        payload: dialogId
+            payload: dialogId
         })
     }
 
+    /*
+            this.messageBus.postMessage({
+                message: ADD_LINE_TO_OUTPUT_LOG,
+                payload: `<p>This is test line <bold>${this.counter++}</bold>.</p>`
+            })
+    
+    */
 }

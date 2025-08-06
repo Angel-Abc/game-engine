@@ -15,6 +15,7 @@ export function createDialogManager(
         stateManager,
         setIsLoading: () => engine.setIsLoading(),
         setIsRunning: () => engine.setIsRunning(),
+        resolveCondition: (condition) => engine.resolveCondition(condition)
     }
     return new DialogManager(services)
 }

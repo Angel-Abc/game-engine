@@ -43,9 +43,10 @@ function createEngine() {
       void messageBus
       return { initialize: vi.fn(), cleanup: vi.fn(), getLastLines: vi.fn() } as any
     },
-    createDialogManager: (engine, messageBus) => {
+    createDialogManager: (engine, messageBus, stateManager) => {
       void engine
       void messageBus
+      void stateManager
       return { initialize: vi.fn(), cleanup: vi.fn() } as any
     },
     createTranslationService: () => ({ translate: vi.fn(), setLanguage: vi.fn() }) as any,

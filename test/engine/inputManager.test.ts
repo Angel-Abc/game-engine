@@ -45,6 +45,7 @@ function createInputManager(actionFn = vi.fn()) {
     tileSets: {},
     data: {
       activePage: 'page1',
+      activeDialog: null,
       location: { mapName: null, position: { x: 0, y: 0 }, mapSize: { width: 0, height: 0 } }
     }
   }

@@ -1,4 +1,5 @@
 import { logDebug } from '@utils/logMessage'
+import { loadOnce } from '@utils/loadOnce'
 import type { ILoader } from '@loader/loader'
 import type { IMessageBus } from '@utils/messageBus'
 import type { IStateManager } from '../core/stateManager'
@@ -55,16 +56,22 @@ export class MapManager implements IMapManager {
         const mapName = switchMap.mapName
         if (context.data.location.mapName === mapName) return
 
-        this.services.setIsLoading()
-        if (!context.maps[mapName]) {
-            const mapData = await this.services.loader.loadMap(mapName)
-            logDebug('map {0} loaded as {1}', mapName, mapData)
-            context.maps[mapName] = mapData
-        }
+        const mapData = await loadOnce(
+            context.maps,
+            mapName,
+            async () => {
+                const loadedMap = await this.services.loader.loadMap(mapName)
+                logDebug('map {0} loaded as {1}', mapName, loadedMap)
+                return loadedMap
+            },
+            this.services.setIsLoading,
+            this.services.setIsRunning,
+        )
+
         context.data.location.mapName = mapName
-        context.data.location.mapSize.width = context.maps[mapName].width
-        context.data.location.mapSize.height = context.maps[mapName].height
-        await this.loadAdditionalMapData(context.maps[mapName])
+        context.data.location.mapSize.width = mapData.width
+        context.data.location.mapSize.height = mapData.height
+        await this.loadAdditionalMapData(mapData)
         this.services.messageBus.postMessage({
             message: MAP_SWITCHED_MESSAGE,
             payload: mapName
@@ -78,7 +85,6 @@ export class MapManager implements IMapManager {
                 }
             })
         }
-        this.services.setIsRunning()
     }
 
     private async changePosition(position: { x: number; y: number }): Promise<void> {
@@ -104,12 +110,18 @@ export class MapManager implements IMapManager {
     private async loadAdditionalMapData(mapData: GameMap): Promise<void> {
         const context = this.services.stateManager.state
         for (const tileSetName of mapData.tileSets) {
-            if (!context.tileSets[tileSetName]) {
-                const tileSet = await this.services.loader.loadTileSet(tileSetName)
-                logDebug('tile set {0} loaded as {1}', tileSetName, tileSet)
-                context.tileSets[tileSetName] = true
-                tileSet.tiles.forEach(tile => context.tiles[tile.key] = tile)
-            }
+            await loadOnce(
+                context.tileSets as Record<string, boolean>,
+                tileSetName,
+                async () => {
+                    const tileSet = await this.services.loader.loadTileSet(tileSetName)
+                    logDebug('tile set {0} loaded as {1}', tileSetName, tileSet)
+                    tileSet.tiles.forEach(tile => context.tiles[tile.key] = tile)
+                    return true
+                },
+                this.services.setIsLoading,
+                this.services.setIsRunning,
+            )
         }
     }
 }

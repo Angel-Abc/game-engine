@@ -28,7 +28,7 @@ export interface IEngineManagerFactory {
         virtualInputHandler: IVirtualInputHandler
     ): IInputManager
     createOutputManager(engine: IGameEngine, messageBus: MessageBus): IOutputManager
-    createDialogManager(engine: IGameEngine, messageBus: MessageBus): IDialogManager
+    createDialogManager(engine: IGameEngine, messageBus: MessageBus, stateManager: IStateManager<ContextData>): IDialogManager
     createTranslationService(): ITranslationService
     createScriptRunner(): IScriptRunner
 }
@@ -72,7 +72,7 @@ export class GameEngineInitializer {
         const virtualInputHandler = factory.createVirtualInputHandler(engine, messageBus)
         const inputManager = factory.createInputManager(engine, messageBus, stateManager, translationService, virtualInputHandler)
         const outputManager = factory.createOutputManager(engine, messageBus)
-        const dialogManager = factory.createDialogManager(engine, messageBus)
+        const dialogManager = factory.createDialogManager(engine, messageBus, stateManager)
 
         turnScheduler = new TurnScheduler(stateManager, inputManager, messageBus)
 

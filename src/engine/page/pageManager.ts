@@ -1,4 +1,5 @@
 import { logDebug } from '@utils/logMessage'
+import { loadOnce } from '@utils/loadOnce'
 import type { ILoader } from '@loader/loader'
 import type { IMessageBus } from '@utils/messageBus'
 import type { IStateManager } from '../core/stateManager'
@@ -45,18 +46,23 @@ export class PageManager implements IPageManager {
         const context = this.services.stateManager.state
         if (context.data.activePage === page) return
 
-        this.services.setIsLoading()
-        if (!context.pages[page]) {
-            const pageData = await this.services.loader.loadPage(page)
-            logDebug('page {0} loaded as {1}', page, pageData)
-            context.pages[page] = pageData
-        }
+        await loadOnce(
+            context.pages,
+            page,
+            async () => {
+                const pageData = await this.services.loader.loadPage(page)
+                logDebug('page {0} loaded as {1}', page, pageData)
+                return pageData
+            },
+            this.services.setIsLoading,
+            this.services.setIsRunning,
+        )
+
         context.data.activePage = page
         this.services.messageBus.postMessage({
             message: PAGE_SWITCHED_MESSAGE,
             payload: page
         })
-        this.services.setIsRunning()
     }
 }
 

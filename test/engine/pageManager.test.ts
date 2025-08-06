@@ -22,6 +22,7 @@ function createPageManagerInstance() {
     tileSets: {},
     data: {
       activePage: null,
+      activeDialog: null,
       location: {
         mapName: null,
         position: { x: 0, y: 0 },

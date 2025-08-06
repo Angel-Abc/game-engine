@@ -39,6 +39,7 @@ function createMapManagerInstance() {
     data: {
       activePage: null,
       activeDialog: null,
+      isModalDialog: false,
       location: {
         mapName: null,
         mapSize: {

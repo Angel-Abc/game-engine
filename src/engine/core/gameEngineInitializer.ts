@@ -13,6 +13,8 @@ import type { ITranslationService } from '../dialog/translationService'
 import type { IScriptRunner } from '../script/scriptRunner'
 import type { IActionHandler } from '../actions/actionHandler'
 import type { IConditionResolver } from '../conditions/conditionResolver'
+import type { Action } from '@loader/data/action'
+import type { Condition } from '@loader/data/condition'
 import { TurnScheduler } from './turnScheduler'
 import { GameEngine, type IGameEngine } from './gameEngine'
 import { HandlerRegistry, type IHandlerRegistry } from './handlerRegistry'
@@ -47,7 +49,15 @@ export class GameEngineInitializer {
         factory: IEngineManagerFactory,
         options: GameEngineOptions = {}
     ): GameEngine {
-        const engine = new GameEngine(loader)
+        let engine: GameEngine // eslint-disable-line prefer-const
+
+        const engineProxy = {
+            get Loader() { return loader },
+            setIsLoading: () => engine.setIsLoading(),
+            setIsRunning: () => engine.setIsRunning(),
+            executeAction: (action: Action) => engine.executeAction(action),
+            resolveCondition: (condition: Condition | null) => engine.resolveCondition(condition)
+        } as unknown as IGameEngine
 
         // Turn scheduler is defined later so it can be referenced by the message bus callback
         // eslint-disable-next-line prefer-const
@@ -76,15 +86,15 @@ export class GameEngineInitializer {
         const translationService = factory.createTranslationService()
         const scriptRunner = factory.createScriptRunner()
 
-        const pageManager = factory.createPageManager(engine, messageBus, stateManager)
-        const mapManager = factory.createMapManager(engine, messageBus, stateManager)
-        const virtualInputHandler = factory.createVirtualInputHandler(engine, messageBus)
-        const inputManager = factory.createInputManager(engine, messageBus, stateManager, translationService, virtualInputHandler)
-        const outputManager = factory.createOutputManager(engine, messageBus)
-        const dialogManager = factory.createDialogManager(engine, messageBus, stateManager, translationService)
+        const pageManager = factory.createPageManager(engineProxy, messageBus, stateManager)
+        const mapManager = factory.createMapManager(engineProxy, messageBus, stateManager)
+        const virtualInputHandler = factory.createVirtualInputHandler(engineProxy, messageBus)
+        const inputManager = factory.createInputManager(engineProxy, messageBus, stateManager, translationService, virtualInputHandler)
+        const outputManager = factory.createOutputManager(engineProxy, messageBus)
+        const dialogManager = factory.createDialogManager(engineProxy, messageBus, stateManager, translationService)
         const handlerRegistry: IHandlerRegistry = new HandlerRegistry()
         const stateController = new StateController(messageBus)
-        const lifecycleManager = new LifecycleManager(engine, {
+        const lifecycleManager = new LifecycleManager(engineProxy, {
             loader,
             messageBus,
             stateManager,
@@ -101,7 +111,7 @@ export class GameEngineInitializer {
 
         turnScheduler = new TurnScheduler(stateManager, inputManager, messageBus)
 
-        engine.initialize({
+        engine = new GameEngine(loader, {
             messageBus,
             stateManager,
             translationService,

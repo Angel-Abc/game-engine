@@ -1,4 +1,3 @@
-import { fatalError } from '@utils/logMessage'
 import { MessageBus, type IMessageBus } from '@utils/messageBus'
 import type { ILoader, IGameLoader, ILanguageLoader, IHandlerLoader } from '@loader/loader'
 import type { IStateManager } from './stateManager'
@@ -47,40 +46,40 @@ export interface IGameEngine {
 
 export class GameEngine implements IGameEngine {
     private loader: IGameLoader & ILanguageLoader & IHandlerLoader
-    private messageBus!: MessageBus
-    private stateManager: IStateManager<ContextData> | null = null
-    private translationService!: ITranslationService
-    private pageManager!: IPageManager
-    private mapManager!: IMapManager
-    private virtualInputHandler!: IVirtualInputHandler
-    private inputManager!: IInputManager
-    private scriptRunner!: IScriptRunner
-    private outputManager!: IOutputManager
-    private dialogManager!: IDialogManager
+    private messageBus: MessageBus
+    private stateManager: IStateManager<ContextData>
+    private translationService: ITranslationService
+    private pageManager: IPageManager
+    private mapManager: IMapManager
+    private virtualInputHandler: IVirtualInputHandler
+    private inputManager: IInputManager
+    private scriptRunner: IScriptRunner
+    private outputManager: IOutputManager
+    private dialogManager: IDialogManager
 
-    private lifecycleManager!: ILifecycleManager
-    private handlerRegistry!: IHandlerRegistry
-    private stateController!: IStateController
+    private lifecycleManager: ILifecycleManager
+    private handlerRegistry: IHandlerRegistry
+    private stateController: IStateController
 
-    constructor(loader: IGameLoader & ILanguageLoader & IHandlerLoader) {
+    constructor(
+        loader: IGameLoader & ILanguageLoader & IHandlerLoader,
+        deps: {
+            messageBus: MessageBus
+            stateManager: IStateManager<ContextData>
+            translationService: ITranslationService
+            pageManager: IPageManager
+            mapManager: IMapManager
+            virtualInputHandler: IVirtualInputHandler
+            inputManager: IInputManager
+            outputManager: IOutputManager
+            dialogManager: IDialogManager
+            scriptRunner: IScriptRunner
+            lifecycleManager: ILifecycleManager
+            handlerRegistry: IHandlerRegistry
+            stateController: IStateController
+        }
+    ) {
         this.loader = loader
-    }
-
-    public initialize(deps: {
-        messageBus: MessageBus
-        stateManager: IStateManager<ContextData>
-        translationService: ITranslationService
-        pageManager: IPageManager
-        mapManager: IMapManager
-        virtualInputHandler: IVirtualInputHandler
-        inputManager: IInputManager
-        outputManager: IOutputManager
-        dialogManager: IDialogManager
-        scriptRunner: IScriptRunner
-        lifecycleManager: ILifecycleManager
-        handlerRegistry: IHandlerRegistry
-        stateController: IStateController
-    }): void {
         this.messageBus = deps.messageBus
         this.stateManager = deps.stateManager
         this.translationService = deps.translationService
@@ -129,9 +128,6 @@ export class GameEngine implements IGameEngine {
     }
 
     public get StateManager(): IStateManager<ContextData> {
-        if (this.stateManager === null) {
-            fatalError('GameEngine', 'State manager is not initialized')
-        }
         return this.stateManager
     }
 

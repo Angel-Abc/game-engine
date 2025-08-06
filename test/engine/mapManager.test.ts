@@ -57,7 +57,8 @@ function createMapManagerInstance() {
     messageBus: messageBus as any,
     stateManager,
     setIsLoading: () => { state.value = GameEngineState.loading },
-    setIsRunning: () => { state.value = GameEngineState.running }
+    setIsRunning: () => { state.value = GameEngineState.running },
+    executeAction: vi.fn()
   }
 
   const mapManager = new MapManager(services)
@@ -68,8 +69,8 @@ describe('MapManager', () => {
   it('loads a map only once', async () => {
     const { mapManager, loader } = createMapManagerInstance()
 
-    await mapManager.switchMap('map1')
-    await mapManager.switchMap('map1')
+    await (mapManager as any).switchMap({ mapName: 'map1' })
+    await (mapManager as any).switchMap({ mapName: 'map1' })
 
     expect(loader.loadMap).toHaveBeenCalledTimes(1)
   })
@@ -77,7 +78,7 @@ describe('MapManager', () => {
   it('loads tile sets and populates context.tiles', async () => {
     const { mapManager, loader, stateManager } = createMapManagerInstance()
 
-    await mapManager.switchMap('map1')
+    await (mapManager as any).switchMap({ mapName: 'map1' })
 
     expect(loader.loadTileSet).toHaveBeenCalledWith('tileset')
     expect(stateManager.state.tiles['tile1']).toEqual({
@@ -92,7 +93,7 @@ describe('MapManager', () => {
     const transitions: GameEngineState[] = []
     state.subscribe(() => transitions.push(state.value))
 
-    await mapManager.switchMap('map1')
+    await (mapManager as any).switchMap({ mapName: 'map1' })
 
     expect(messageBus.postMessage).toHaveBeenCalledWith({
       message: MAP_SWITCHED_MESSAGE,

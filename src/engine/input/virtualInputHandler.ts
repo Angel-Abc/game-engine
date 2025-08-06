@@ -4,6 +4,7 @@ import { VIRTUAL_INPUT_MESSAGE } from '../messages/messages'
 import type { IInputLoader } from '@loader/inputsLoader'
 import type { IGameLoader } from '@loader/loader'
 import type { IMessageBus } from '@utils/messageBus'
+import type { KeyboardEventTarget } from './keyboardEventTarget'
 
 export interface IVirtualInputHandler {
     initialize(): void
@@ -16,6 +17,7 @@ export type VirtualInputHandlerServices = {
     gameLoader: IGameLoader
     inputLoader: IInputLoader
     messageBus: IMessageBus
+    keyboardEventTarget: KeyboardEventTarget
 }
 
 export class VirtualInputHandler implements IVirtualInputHandler {
@@ -31,9 +33,7 @@ export class VirtualInputHandler implements IVirtualInputHandler {
     }
 
     public initialize(): void {
-        if (typeof document !== 'undefined') {
-            document.addEventListener('keydown', this.keydownEventHandler)
-        }
+        this.services.keyboardEventTarget.addEventListener('keydown', this.keydownEventHandler)
     }
 
     public async load(): Promise<void> {
@@ -85,8 +85,6 @@ export class VirtualInputHandler implements IVirtualInputHandler {
     }
 
     public cleanup(): void {
-        if (typeof document !== 'undefined') {
-            document.removeEventListener('keydown', this.keydownEventHandler)
-        }
+        this.services.keyboardEventTarget.removeEventListener('keydown', this.keydownEventHandler)
     }
 }

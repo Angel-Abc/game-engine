@@ -1,6 +1,8 @@
 import { logDebug } from '@utils/logMessage'
 import type { IMessageBus } from '@utils/messageBus'
 import { DIALOG_STARTED, START_DIALOG } from '../messages/messages'
+import type { IStateManager } from '@engine/core/stateManager'
+import type { ContextData } from '@engine/core/context'
 
 export interface IDialogManager {
     initialize(): void
@@ -9,6 +11,9 @@ export interface IDialogManager {
 
 export type DialogManagerServices = {
     messageBus: IMessageBus
+    stateManager: IStateManager<ContextData>
+    setIsLoading: () => void
+    setIsRunning: () => void   
 }
 
 export class DialogManager implements IDialogManager {
@@ -34,6 +39,9 @@ export class DialogManager implements IDialogManager {
     }
 
     private async startDialog(dialogId: string): Promise<void> {
+        const context = this.services.stateManager.state
+        if (context.data.activeDialog === dialogId) return
+
         logDebug('TODO: startDialog called with id = {0}', dialogId)
         this.services.messageBus.postMessage({
             message: DIALOG_STARTED,

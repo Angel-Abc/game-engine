@@ -1,3 +1,5 @@
+import type { Condition } from './condition'
+
 export type Behavior = {
     canMove: boolean
 }
@@ -10,5 +12,6 @@ export type Dialog = {
 
 export type DialogSet = {
     id: string
+    startCondition: Condition
     dialogs: Dialog[]
 }

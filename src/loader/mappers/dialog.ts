@@ -1,11 +1,13 @@
 import type { Dialog as DialogData, DialogSet as DialogSetData, Behavior as BehaviorData } from '@loader/data/dialog'
 import { type Dialog, type DialogSet, type Behavior } from '@loader/schema/dialog'
+import { mapCondition } from './condition'
 
-export function mapDialogSet(dialogs: DialogSet): DialogSetData {
-    const defaultBehavior = mapBehavior(dialogs['default-behavior'])
+export function mapDialogSet(dialogSet: DialogSet): DialogSetData {
+    const defaultBehavior = mapBehavior(dialogSet['default-behavior'])
     return {
-        id: dialogs.id,
-        dialogs: dialogs.dialogs.map(dialog => mapDialog(dialog, defaultBehavior))
+        id: dialogSet.id,
+        startCondition: mapCondition(dialogSet['start-condition']),
+        dialogs: dialogSet.dialogs.map(dialog => mapDialog(dialog, defaultBehavior))
     }
 }
 

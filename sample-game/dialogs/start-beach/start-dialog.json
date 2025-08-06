@@ -3,6 +3,10 @@
     "default-behavior": {
         "can-move": false
     },
+    "start-condition": {
+        "type": "script",
+        "script": "return true"
+    },
     "dialogs": [
         {
             "id": "intro",

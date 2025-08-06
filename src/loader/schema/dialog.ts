@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { conditionSchema } from './condition'
 
 export const behaviorSchema = z.object({
     'can-move': z.boolean()
@@ -13,6 +14,7 @@ export const dialogSchema = z.object({
 export const dialogSetSchema = z.object({
     id: z.string(),
     'default-behavior': behaviorSchema,
+    'start-condition': conditionSchema,
     dialogs: z.array(dialogSchema)
 })
 

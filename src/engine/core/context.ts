@@ -10,6 +10,7 @@ export type ContextData = {
     tileSets: Record<string, boolean>,
     data: {
         activePage: string | null
+        activeDialog: string | null
         location: {
             mapName: string | null
             position: {

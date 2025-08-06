@@ -3,6 +3,7 @@ import { PageManager, type IPageManager, type PageManagerServices } from './page
 import type { IStateManager } from '../core/stateManager'
 import type { ContextData } from '../core/context'
 import type { IMessageBus } from '@utils/messageBus'
+import type { IPageLoader } from '@loader/pageLoader'
 
 export function createPageManager(
     engine: IGameEngine,
@@ -10,7 +11,7 @@ export function createPageManager(
     stateManager: IStateManager<ContextData>
 ): IPageManager {
     const services: PageManagerServices = {
-        loader: engine.Loader,
+        pageLoader: engine.Loader as IPageLoader,
         messageBus,
         stateManager,
         setIsLoading: () => engine.setIsLoading(),

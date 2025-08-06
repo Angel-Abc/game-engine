@@ -1,6 +1,6 @@
 import { logDebug } from '@utils/logMessage'
 import { loadOnce } from '@utils/loadOnce'
-import type { ILoader } from '@loader/loader'
+import type { IPageLoader } from '@loader/pageLoader'
 import type { IMessageBus } from '@utils/messageBus'
 import type { IStateManager } from '../core/stateManager'
 import type { ContextData } from '../core/context'
@@ -13,7 +13,7 @@ export interface IPageManager {
 }
 
 export type PageManagerServices = {
-    loader: ILoader
+    pageLoader: IPageLoader
     messageBus: IMessageBus
     stateManager: IStateManager<ContextData>
     setIsLoading: () => void
@@ -50,7 +50,7 @@ export class PageManager implements IPageManager {
             context.pages,
             page,
             async () => {
-                const pageData = await this.services.loader.loadPage(page)
+                const pageData = await this.services.pageLoader.loadPage(page)
                 logDebug('PageManager', 'page {0} loaded as {1}', page, pageData)
                 return pageData
             },

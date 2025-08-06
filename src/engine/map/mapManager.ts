@@ -1,6 +1,7 @@
 import { logDebug } from '@utils/logMessage'
 import { loadOnce } from '@utils/loadOnce'
-import type { ILoader } from '@loader/loader'
+import type { IMapLoader } from '@loader/mapLoader'
+import type { ITileLoader } from '@loader/tileLoader'
 import type { IMessageBus } from '@utils/messageBus'
 import type { IStateManager } from '../core/stateManager'
 import type { ContextData } from '../core/context'
@@ -15,7 +16,8 @@ export interface IMapManager {
 }
 
 export type MapManagerServices = {
-    loader: ILoader
+    mapLoader: IMapLoader
+    tileLoader: ITileLoader
     messageBus: IMessageBus
     stateManager: IStateManager<ContextData>
     setIsLoading: () => void
@@ -60,7 +62,7 @@ export class MapManager implements IMapManager {
             context.maps,
             mapName,
             async () => {
-                const loadedMap = await this.services.loader.loadMap(mapName)
+                const loadedMap = await this.services.mapLoader.loadMap(mapName)
                 logDebug('MapManager', 'map {0} loaded as {1}', mapName, loadedMap)
                 return loadedMap
             },
@@ -114,7 +116,7 @@ export class MapManager implements IMapManager {
                 context.tileSets as Record<string, boolean>,
                 tileSetName,
                 async () => {
-                    const tileSet = await this.services.loader.loadTileSet(tileSetName)
+                    const tileSet = await this.services.tileLoader.loadTileSet(tileSetName)
                     logDebug('MapManager', 'tile set {0} loaded as {1}', tileSetName, tileSet)
                     tileSet.tiles.forEach(tile => context.tiles[tile.key] = tile)
                     return true

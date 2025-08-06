@@ -3,6 +3,10 @@ import type { Page as PageData } from './data/page'
 import { type Page, pageSchema } from './schema/page'
 import { mapPage } from './mappers/page'
 
+export interface IPageLoader {
+    loadPage(page: string): Promise<PageData>
+}
+
 interface Context {
     basePath: string
     path: string

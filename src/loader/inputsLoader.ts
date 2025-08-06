@@ -8,6 +8,11 @@ import {
 } from './schema/inputs'
 import { mapVirtualInputs, mapVirtualKeys } from './mappers/input'
 
+export interface IInputLoader {
+    loadVirtualKeys(path: string): Promise<VirtualKeys>
+    loadVirtualInputs(path: string): Promise<VirtualInputs>
+}
+
 export async function virtualKeysLoader(basePath: string, path: string): Promise<VirtualKeys> {
     const schemaData = await loadJsonResource<SchemaVirtualKeys>(`${basePath}/${path}`, virtualKeysSchema)
     return mapVirtualKeys(schemaData)

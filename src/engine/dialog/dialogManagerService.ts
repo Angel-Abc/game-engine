@@ -3,6 +3,7 @@ import type { IGameEngine } from '../core/gameEngine'
 import { DialogManager, type DialogManagerServices, type IDialogManager } from './dialogManager'
 import type { IMessageBus } from '@utils/messageBus'
 import type { ContextData } from '@engine/core/context'
+import type { IDialogLoader } from '@loader/dialogLoader'
 
 export function createDialogManager(
     engine: IGameEngine,
@@ -10,7 +11,7 @@ export function createDialogManager(
     stateManager: IStateManager<ContextData>
 ): IDialogManager {
     const services: DialogManagerServices = {
-        loader: engine.Loader,
+        dialogLoader: engine.Loader as IDialogLoader,
         messageBus,
         stateManager,
         setIsLoading: () => engine.setIsLoading(),

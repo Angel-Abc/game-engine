@@ -6,10 +6,15 @@ export const LogLevel = {
 } as const
 export type LogLevel = typeof LogLevel[keyof typeof LogLevel]
 
-const currentLevelName = (process.env.LOG_LEVEL ?? 'info').toLowerCase()
+const env = (
+    globalThis.process?.env ??
+    (import.meta as unknown as { env?: Record<string, string | undefined> }).env ??
+    {}
+) as Record<string, string | undefined>
+const currentLevelName = (env.LOG_LEVEL ?? env.VITE_LOG_LEVEL ?? 'info').toLowerCase()
 const currentLevel: LogLevel = (LogLevel as Record<string, LogLevel>)[currentLevelName] ?? LogLevel.info
 
-const categoriesEnv = process.env.LOG_DEBUG ?? ''
+const categoriesEnv = env.LOG_DEBUG ?? env.VITE_LOG_DEBUG ?? ''
 const enabledCategories = new Set(
     categoriesEnv
         .split(',')

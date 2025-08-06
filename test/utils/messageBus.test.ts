@@ -1,10 +1,12 @@
 import { describe, it, expect, vi } from 'vitest'
 import { MessageBus } from '@utils/messageBus'
+import { MessageQueue } from '@utils/messageQueue'
 
 describe('MessageBus', () => {
   it('delivers messages to listeners and empties the queue', () => {
     const onEmpty = vi.fn()
-    const bus = new MessageBus(onEmpty)
+    const queue = new MessageQueue(onEmpty)
+    const bus = new MessageBus(queue)
     const handler = vi.fn()
     bus.registerMessageListener('hello', handler)
 
@@ -16,7 +18,8 @@ describe('MessageBus', () => {
 
   it('processes queued messages after re-enabling automatic emptying', () => {
     const onEmpty = vi.fn()
-    const bus = new MessageBus(onEmpty)
+    const queue = new MessageQueue(onEmpty)
+    const bus = new MessageBus(queue)
     const handler = vi.fn()
     bus.registerMessageListener('test', handler)
 
@@ -33,7 +36,8 @@ describe('MessageBus', () => {
 
   it('awaits async listeners before processing next message', async () => {
     const onEmpty = vi.fn()
-    const bus = new MessageBus(onEmpty)
+    const queue = new MessageQueue(onEmpty)
+    const bus = new MessageBus(queue)
     const results: string[] = []
 
     bus.registerMessageListener('first', async () => {
@@ -57,7 +61,8 @@ describe('MessageBus', () => {
 
   it('continues processing when a listener throws', async () => {
     const onEmpty = vi.fn()
-    const bus = new MessageBus(onEmpty)
+    const queue = new MessageQueue(onEmpty)
+    const bus = new MessageBus(queue)
     const handler = vi.fn()
 
     bus.registerMessageListener('bad', () => {
@@ -78,7 +83,8 @@ describe('MessageBus', () => {
 
   it('continues processing when an async listener rejects', async () => {
     const onEmpty = vi.fn()
-    const bus = new MessageBus(onEmpty)
+    const queue = new MessageQueue(onEmpty)
+    const bus = new MessageBus(queue)
     const handler = vi.fn()
 
     bus.registerMessageListener('bad', async () => {

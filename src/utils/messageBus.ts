@@ -1,5 +1,6 @@
 import { logDebug, logWarning } from './logMessage'
 import type { CleanUp, Message } from './types'
+import { MessageQueue } from './messageQueue'
 
 type MessageListener = {
     key: number
@@ -16,33 +17,26 @@ export interface IMessageBus {
 
 export class MessageBus implements IMessageBus {
     private key: number = 0
-    private queue: Message[] = []
     private listeners: Map<string, MessageListener[]> = new Map<string, MessageListener[]>()
     private silentMessages: Set<string> = new Set<string>()
-    private emptyingQueue: boolean = false
-    private emptyQueueAfterPost: number = 0
-    private onQueueEmpty: () => void
+    private messageQueue: MessageQueue
 
-
-    constructor(onQueueEmpty: () => void) {
-        this.onQueueEmpty = onQueueEmpty
+    constructor(messageQueue: MessageQueue) {
+        this.messageQueue = messageQueue
+        this.messageQueue.setHandler((message: Message) => this.handleMessage(message))
     }
 
     postMessage(message: Message): void {
         logDebug('MessageBus', 'Push message: {0}', message)
-        this.queue.push(message)
-        if (this.emptyQueueAfterPost === 0) {
-            this.emptyQueue()
-        }
+        this.messageQueue.postMessage(message)
     }
 
     public disableEmptyQueueAfterPost(): void {
-        this.emptyQueueAfterPost = this.emptyQueueAfterPost + 1
+        this.messageQueue.disableEmptyQueueAfterPost()
     }
 
     public enableEmptyQueueAfterPost(): void {
-        this.emptyQueueAfterPost = Math.max(0, this.emptyQueueAfterPost - 1)
-        this.emptyQueue()
+        this.messageQueue.enableEmptyQueueAfterPost()
     }
 
     public registerNotificationMessage(message: string): void {
@@ -68,10 +62,7 @@ export class MessageBus implements IMessageBus {
         }
     }
 
-    private handleFirstMessage(): void | Promise<void> {
-        if (this.queue.length === 0) return
-        const message = this.queue.shift()
-        if (!message) return
+    private handleMessage(message: Message): void | Promise<void> {
         const listeners = this.listeners.get(message.message)
         if (!listeners || listeners.length === 0) {
             const logger = this.silentMessages.has(message.message)
@@ -98,28 +89,10 @@ export class MessageBus implements IMessageBus {
         }
     }
 
-    public async emptyQueue(): Promise<void> {
-        if (this.emptyingQueue || this.queue.length === 0) return
-        this.emptyingQueue = true
-        try {
-            while (this.queue.length > 0) {
-                const result = this.handleFirstMessage()
-                if (result instanceof Promise) {
-                    await result
-                }
-            }
-        } finally {
-            this.emptyingQueue = false
-        }
-        this.onQueueEmpty()
-    }
-
     public shutDown(): void {
-        this.queue = []
         this.listeners.clear()
         this.silentMessages.clear()
-        this.emptyingQueue = false
-        this.emptyQueueAfterPost = 0
+        this.messageQueue.shutDown()
         logDebug('MessageBus', 'MessageBus shut down')
     }
 }

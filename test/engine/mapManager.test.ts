@@ -37,6 +37,7 @@ function createMapManagerInstance() {
     tileSets: {},
     data: {
       activePage: null,
+      activeDialog: null,
       location: {
         mapName: null,
         mapSize: {
@@ -99,7 +100,12 @@ describe('MapManager', () => {
       message: MAP_SWITCHED_MESSAGE,
       payload: 'map1'
     })
-    expect(transitions).toEqual([GameEngineState.loading, GameEngineState.running])
+    expect(transitions).toEqual([
+      GameEngineState.loading,
+      GameEngineState.running,
+      GameEngineState.loading,
+      GameEngineState.running,
+    ])
     expect(state.value).toBe(GameEngineState.running)
   })
 })

@@ -37,7 +37,7 @@ export class TrackedValue<T> {
         if (this._value !== newValue) {
             const oldValue = this._value
             this._value = newValue
-            logDebug('TrackedValue {0} changed from {2} to {1}', this._name, newValue, oldValue)
+            logDebug('TrackedState', 'TrackedValue {0} changed from {2} to {1}', this._name, newValue, oldValue)
             this.subscribers.forEach(subscriber => subscriber())
             if (this._callback) {
                 this._callback(newValue, oldValue)

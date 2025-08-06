@@ -64,3 +64,20 @@ Run the unit tests once with:
 npm test
 ```
 
+## Logging
+
+Control log output with environment variables:
+
+- `LOG_LEVEL` sets the minimum level that will be emitted (`debug`, `info`, `warning`, `error`). It defaults to `info`.
+- `LOG_DEBUG` enables debug messages for specific categories. Provide a comma-separated list such as `MessageBus,MapManager`.
+
+Examples:
+
+```bash
+# enable all debug logs
+LOG_LEVEL=debug npm run dev
+
+# enable debug logs only for MessageBus and MapManager
+LOG_LEVEL=debug LOG_DEBUG=MessageBus,MapManager npm run dev
+```
+

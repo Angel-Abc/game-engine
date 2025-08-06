@@ -33,6 +33,7 @@ function createMapManagerInstance() {
     language: 'en',
     pages: {},
     maps: {},
+    dialogs: {},
     tiles: {},
     tileSets: {},
     data: {

@@ -117,7 +117,7 @@ export class GameEngine implements IGameEngine {
         await this.loader.reset()
         await this.registerGameHandlers()
         await this.virtualInputHandler.load()
-        const language = (this.currentLanguage ?? this.stateManager?.state.language) ?? fatalError('No language set!')
+        const language = (this.currentLanguage ?? this.stateManager?.state.language) ?? fatalError('GameEngine', 'No language set!')
         this.currentLanguage = language
         this.translationService.setLanguage(await this.loader.loadLanguage(language))
         this.state.value = GameEngineState.running
@@ -148,7 +148,7 @@ export class GameEngine implements IGameEngine {
     public executeAction(action: Action): void {
         const handler = this.actionHandlers.get(action.type)
         if (handler === undefined) {
-            fatalError(`No action handler for type: ${action.type}`)
+            fatalError('GameEngine', `No action handler for type: ${action.type}`)
         }
         handler.handle(this, action)
     }
@@ -157,7 +157,7 @@ export class GameEngine implements IGameEngine {
         if (condition === null) return true
         const resolver = this.conditionResolvers.get(condition.type)
         if (resolver === undefined) {
-            fatalError(`No condition resolver for type: ${condition.type}`)
+            fatalError('GameEngine', `No condition resolver for type: ${condition.type}`)
         }
         return resolver.resolve(this, condition)
     }
@@ -172,7 +172,7 @@ export class GameEngine implements IGameEngine {
     public setIsRunning(): void {
         this.loadCounter -= 1
         if (this.loadCounter < 0) {
-            fatalError('loadCounter cannot be negative')
+            fatalError('GameEngine', 'loadCounter cannot be negative')
         }
         if (this.loadCounter === 0) {
             this.State.value = GameEngineState.running
@@ -181,7 +181,7 @@ export class GameEngine implements IGameEngine {
 
     public get StateManager(): IStateManager<ContextData> {
         if (this.stateManager === null) {
-            fatalError('State manager is not initialized')
+            fatalError('GameEngine', 'State manager is not initialized')
         }
         return this.stateManager
     }

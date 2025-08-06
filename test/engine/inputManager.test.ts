@@ -41,6 +41,7 @@ function createInputManager(actionFn = vi.fn()) {
       page1: { id: 'page1', screen: { type: 'grid', width: 1, height: 1, components: [] }, inputs: [input] }
     },
     maps: {},
+    dialogs: {},
     tiles: {},
     tileSets: {},
     data: {

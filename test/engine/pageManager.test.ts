@@ -24,6 +24,7 @@ function createPageManagerInstance() {
     data: {
       activePage: null,
       activeDialog: null,
+      isModalDialog: false,
       location: {
         mapName: null,
         position: { x: 0, y: 0 },

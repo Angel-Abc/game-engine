@@ -31,8 +31,8 @@ export interface IEngineManagerFactory {
         virtualInputHandler: IVirtualInputHandler
     ): IInputManager
     createOutputManager(engine: IGameEngine, messageBus: MessageBus): IOutputManager
-    createDialogManager(engine: IGameEngine, messageBus: MessageBus, stateManager: IStateManager<ContextData>): IDialogManager
     createTranslationService(): ITranslationService
+    createDialogManager(engine: IGameEngine, messageBus: MessageBus, stateManager: IStateManager<ContextData>, translationService: ITranslationService): IDialogManager
     createScriptRunner(): IScriptRunner
 }
 
@@ -64,6 +64,7 @@ export class GameEngineInitializer {
             data: {
                 activePage: null,
                 activeDialog: null,
+                isModalDialog: false,
                 location: {
                     mapName: null,
                     position: { x: 0, y: 0 },
@@ -80,7 +81,7 @@ export class GameEngineInitializer {
         const virtualInputHandler = factory.createVirtualInputHandler(engine, messageBus)
         const inputManager = factory.createInputManager(engine, messageBus, stateManager, translationService, virtualInputHandler)
         const outputManager = factory.createOutputManager(engine, messageBus)
-        const dialogManager = factory.createDialogManager(engine, messageBus, stateManager)
+        const dialogManager = factory.createDialogManager(engine, messageBus, stateManager, translationService)
         const handlerRegistry: IHandlerRegistry = new HandlerRegistry()
         const stateController = new StateController(messageBus)
         const lifecycleManager = new LifecycleManager(engine, {

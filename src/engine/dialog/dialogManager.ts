@@ -1,11 +1,12 @@
 import { fatalError, logDebug } from '@utils/logMessage'
 import type { IMessageBus } from '@utils/messageBus'
-import { DIALOG_SHOW_DIALOG, DIALOG_START_DIALOG } from '../messages/messages'
+import { ADD_LINE_TO_OUTPUT_LOG, DIALOG_SHOW_DIALOG, DIALOG_START_DIALOG } from '../messages/messages'
 import type { IStateManager } from '@engine/core/stateManager'
 import type { ContextData } from '@engine/core/context'
 import type { IDialogLoader } from '@loader/dialogLoader'
 import { loadOnce } from '@utils/loadOnce'
 import type { Condition } from '@loader/data/condition'
+import type { ITranslationService } from './translationService'
 
 export interface IDialogManager {
     initialize(): void
@@ -16,6 +17,7 @@ export type DialogManagerServices = {
     dialogLoader: IDialogLoader
     messageBus: IMessageBus
     stateManager: IStateManager<ContextData>
+    translationService: ITranslationService
     setIsLoading: () => void
     setIsRunning: () => void
     resolveCondition: (condition: Condition | null) => boolean
@@ -83,6 +85,11 @@ export class DialogManager implements IDialogManager {
         const dialog = dialogSet.dialogs[dialogId]
         if (!dialog) fatalError('Dialog with id {0} not found in dialog set {1}', dialogId, context.data.activeDialog)
 
+        context.data.isModalDialog = !dialog.behavior.canMove
+        this.services.messageBus.postMessage({
+            message: ADD_LINE_TO_OUTPUT_LOG,
+            payload: this.services.translationService.translate(dialog.message)
+        })
         logDebug('dialogManager', 'Found dialog {0} = {1}', dialogId, dialog)
     }
 }

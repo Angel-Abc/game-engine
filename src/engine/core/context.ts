@@ -13,6 +13,7 @@ export type ContextData = {
     data: {
         activePage: string | null
         activeDialog: string | null
+        isModalDialog: boolean
         location: {
             mapName: string | null
             position: {

@@ -1,4 +1,4 @@
-import type { ILoader } from '@loader/loader'
+import type { IGameLoader, ILanguageLoader, IHandlerLoader } from '@loader/loader'
 import { MessageBus } from '@utils/messageBus'
 import { ChangeTracker } from './changeTracker'
 import { StateManager, type IStateManager } from './stateManager'
@@ -15,6 +15,9 @@ import type { IActionHandler } from '../actions/actionHandler'
 import type { IConditionResolver } from '../conditions/conditionResolver'
 import { TurnScheduler } from './turnScheduler'
 import { GameEngine, type IGameEngine } from './gameEngine'
+import { HandlerRegistry, type IHandlerRegistry } from './handlerRegistry'
+import { StateController } from './stateController'
+import { LifecycleManager } from './lifecycleManager'
 
 export interface IEngineManagerFactory {
     createPageManager(engine: IGameEngine, messageBus: MessageBus, stateManager: IStateManager<ContextData>): IPageManager
@@ -39,7 +42,11 @@ export interface GameEngineOptions {
 }
 
 export class GameEngineInitializer {
-    static initialize(loader: ILoader, factory: IEngineManagerFactory, options: GameEngineOptions = {}): GameEngine {
+    static initialize(
+        loader: IGameLoader & ILanguageLoader & IHandlerLoader,
+        factory: IEngineManagerFactory,
+        options: GameEngineOptions = {}
+    ): GameEngine {
         const engine = new GameEngine(loader)
 
         // Turn scheduler is defined later so it can be referenced by the message bus callback
@@ -74,6 +81,22 @@ export class GameEngineInitializer {
         const inputManager = factory.createInputManager(engine, messageBus, stateManager, translationService, virtualInputHandler)
         const outputManager = factory.createOutputManager(engine, messageBus)
         const dialogManager = factory.createDialogManager(engine, messageBus, stateManager)
+        const handlerRegistry: IHandlerRegistry = new HandlerRegistry()
+        const stateController = new StateController(messageBus)
+        const lifecycleManager = new LifecycleManager(engine, {
+            loader,
+            messageBus,
+            stateManager,
+            translationService,
+            pageManager,
+            mapManager,
+            virtualInputHandler,
+            inputManager,
+            outputManager,
+            dialogManager,
+            handlerRegistry,
+            stateController
+        })
 
         turnScheduler = new TurnScheduler(stateManager, inputManager, messageBus)
 
@@ -87,7 +110,10 @@ export class GameEngineInitializer {
             inputManager,
             outputManager,
             dialogManager,
-            scriptRunner
+            scriptRunner,
+            lifecycleManager,
+            handlerRegistry,
+            stateController
         })
 
         pageManager.initialize()

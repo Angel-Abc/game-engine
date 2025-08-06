@@ -1,14 +1,12 @@
 import { fatalError } from '@utils/logMessage'
 import { MessageBus, type IMessageBus } from '@utils/messageBus'
 import type { ILoader, IGameLoader, ILanguageLoader, IHandlerLoader } from '@loader/loader'
-import type { Handler } from '@loader/data/handler'
-import { END_TURN_MESSAGE, ENGINE_STATE_CHANGED_MESSAGE, MAP_SWITCHED_MESSAGE, SWITCH_PAGE_MESSAGE } from '../messages/messages'
 import type { IStateManager } from './stateManager'
-import { TrackedValue, type ITrackedValue } from '@utils/trackedState'
+import type { ITrackedValue } from '@utils/trackedState'
 import type { ITranslationService } from '../dialog/translationService'
 import type { IPageManager } from '../page/pageManager'
 import type { Action } from '@loader/data/action'
-import type { CleanUp, Message } from '@utils/types'
+import type { Message } from '@utils/types'
 import type { IMapManager } from '../map/mapManager'
 import type { IVirtualInputHandler } from '../input/virtualInputHandler'
 import type { IInputManager } from '../input/inputManager'
@@ -19,13 +17,9 @@ import type { IDialogManager } from '../dialog/dialogManager'
 import type { ContextData } from './context'
 import type { IActionHandler } from '../actions/actionHandler'
 import type { IConditionResolver } from '../conditions/conditionResolver'
-
-export const GameEngineState = {
-    init: 0,
-    loading: 1,
-    running: 2
-} as const
-export type GameEngineState = typeof GameEngineState[keyof typeof GameEngineState]
+import type { IHandlerRegistry } from './handlerRegistry'
+import type { ILifecycleManager } from './lifecycleManager'
+import type { IStateController, GameEngineState } from './stateController'
 
 export interface IGameEngine {
     start(): Promise<void>
@@ -64,12 +58,9 @@ export class GameEngine implements IGameEngine {
     private outputManager!: IOutputManager
     private dialogManager!: IDialogManager
 
-    private currentLanguage: string | null = null
-    private state!: ITrackedValue<GameEngineState>
-    private handlerCleanupList: CleanUp[] = []
-    private loadCounter: number = 0
-    private actionHandlers = new Map<string, IActionHandler>()
-    private conditionResolvers = new Map<string, IConditionResolver>()
+    private lifecycleManager!: ILifecycleManager
+    private handlerRegistry!: IHandlerRegistry
+    private stateController!: IStateController
 
     constructor(loader: IGameLoader & ILanguageLoader & IHandlerLoader) {
         this.loader = loader
@@ -86,6 +77,9 @@ export class GameEngine implements IGameEngine {
         outputManager: IOutputManager
         dialogManager: IDialogManager
         scriptRunner: IScriptRunner
+        lifecycleManager: ILifecycleManager
+        handlerRegistry: IHandlerRegistry
+        stateController: IStateController
     }): void {
         this.messageBus = deps.messageBus
         this.stateManager = deps.stateManager
@@ -97,87 +91,41 @@ export class GameEngine implements IGameEngine {
         this.outputManager = deps.outputManager
         this.dialogManager = deps.dialogManager
         this.scriptRunner = deps.scriptRunner
-        this.state = new TrackedValue<GameEngineState>(
-            'GameEngine.State',
-            GameEngineState.init,
-            (newValue, oldValue) => {
-                this.messageBus.postMessage({
-                    message: ENGINE_STATE_CHANGED_MESSAGE,
-                    payload: {
-                        oldState: oldValue,
-                        newState: newValue
-                    }
-                })
-            }
-        )
-        this.initializeMessageListeners()
+        this.lifecycleManager = deps.lifecycleManager
+        this.handlerRegistry = deps.handlerRegistry
+        this.stateController = deps.stateController
     }
 
     public async start(): Promise<void> {
-        this.state.value = GameEngineState.loading
-        await this.loader.reset()
-        await this.registerGameHandlers()
-        await this.virtualInputHandler.load()
-        const language = (this.currentLanguage ?? this.stateManager?.state.language) ?? fatalError('GameEngine', 'No language set!')
-        this.currentLanguage = language
-        this.translationService.setLanguage(await this.loader.loadLanguage(language))
-        this.state.value = GameEngineState.running
-        this.messageBus.postMessage({
-            message: SWITCH_PAGE_MESSAGE,
-            payload: this.loader.Game.initialData.startPage
-        })
+        await this.lifecycleManager.start()
     }
 
     public cleanup(): void {
-        this.pageManager.cleanup()
-        this.mapManager.cleanup()
-        this.virtualInputHandler.cleanup()
-        this.inputManager.cleanup()
-        this.outputManager.cleanup()
-        this.dialogManager.cleanup()
-        this.cleanupHandlers()
+        this.lifecycleManager.cleanup()
     }
 
     public registerActionHandler(handler: IActionHandler): void {
-        this.actionHandlers.set(handler.type, handler)
+        this.handlerRegistry.registerActionHandler(handler)
     }
 
     public registerConditionResolver(resolver: IConditionResolver): void {
-        this.conditionResolvers.set(resolver.type, resolver)
+        this.handlerRegistry.registerConditionResolver(resolver)
     }
 
     public executeAction(action: Action): void {
-        const handler = this.actionHandlers.get(action.type)
-        if (handler === undefined) {
-            fatalError('GameEngine', `No action handler for type: ${action.type}`)
-        }
-        handler.handle(this, action)
+        this.handlerRegistry.executeAction(this, action)
     }
 
     public resolveCondition(condition: Condition | null): boolean {
-        if (condition === null) return true
-        const resolver = this.conditionResolvers.get(condition.type)
-        if (resolver === undefined) {
-            fatalError('GameEngine', `No condition resolver for type: ${condition.type}`)
-        }
-        return resolver.resolve(this, condition)
+        return this.handlerRegistry.resolveCondition(this, condition)
     }
 
     public setIsLoading(): void {
-        this.loadCounter += 1
-        if (this.loadCounter === 1) {
-            this.State.value = GameEngineState.loading
-        }
+        this.stateController.setIsLoading()
     }
 
     public setIsRunning(): void {
-        this.loadCounter -= 1
-        if (this.loadCounter < 0) {
-            fatalError('GameEngine', 'loadCounter cannot be negative')
-        }
-        if (this.loadCounter === 0) {
-            this.State.value = GameEngineState.running
-        }
+        this.stateController.setIsRunning()
     }
 
     public get StateManager(): IStateManager<ContextData> {
@@ -188,7 +136,7 @@ export class GameEngine implements IGameEngine {
     }
 
     public get State(): ITrackedValue<GameEngineState> {
-        return this.state
+        return this.stateController.State
     }
 
     public get TranslationService(): ITranslationService {
@@ -231,32 +179,6 @@ export class GameEngine implements IGameEngine {
         return this.dialogManager
     }
 
-    private initializeMessageListeners(): void {
-        this.messageBus.registerNotificationMessage(END_TURN_MESSAGE)
-        this.messageBus.registerNotificationMessage(ENGINE_STATE_CHANGED_MESSAGE)
-        this.messageBus.registerNotificationMessage(MAP_SWITCHED_MESSAGE)
-    }
-
-    private cleanupHandlers() {
-        this.handlerCleanupList.forEach(c => c())
-        this.handlerCleanupList = []
-    }
-
-    private async registerGameHandlers(): Promise<void> {
-        this.cleanupHandlers()
-        const handlerFiles = this.loader.Game.handlers
-        for (const path of handlerFiles) {
-            const handlers = await this.loader.loadHandlers(path)
-            handlers.forEach((handler: Handler) => {
-                const cleanup = this.messageBus.registerMessageListener(
-                    handler.message,
-                    () => this.executeAction(handler.action)
-                )
-                this.handlerCleanupList.push(cleanup)
-            })
-        }
-    }
-
     public createScriptContext(): ScriptContext {
         const context: ScriptContext = {
             state: this.StateManager.state,
@@ -267,4 +189,6 @@ export class GameEngine implements IGameEngine {
         return context
     }
 }
+
+export { GameEngineState } from './stateController'
 

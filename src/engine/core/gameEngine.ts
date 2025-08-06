@@ -19,6 +19,7 @@ import type { IConditionResolver } from '../conditions/conditionResolver'
 import type { IHandlerRegistry } from './handlerRegistry'
 import type { ILifecycleManager } from './lifecycleManager'
 import type { IStateController, GameEngineState } from './stateController'
+import type { EngineContext } from './engineContext'
 
 export interface IGameEngine {
     start(): Promise<void>
@@ -63,36 +64,22 @@ export class GameEngine implements IGameEngine {
 
     constructor(
         loader: IGameLoader & ILanguageLoader & IHandlerLoader,
-        deps: {
-            messageBus: MessageBus
-            stateManager: IStateManager<ContextData>
-            translationService: ITranslationService
-            pageManager: IPageManager
-            mapManager: IMapManager
-            virtualInputHandler: IVirtualInputHandler
-            inputManager: IInputManager
-            outputManager: IOutputManager
-            dialogManager: IDialogManager
-            scriptRunner: IScriptRunner
-            lifecycleManager: ILifecycleManager
-            handlerRegistry: IHandlerRegistry
-            stateController: IStateController
-        }
+        context: EngineContext
     ) {
         this.loader = loader
-        this.messageBus = deps.messageBus
-        this.stateManager = deps.stateManager
-        this.translationService = deps.translationService
-        this.pageManager = deps.pageManager
-        this.mapManager = deps.mapManager
-        this.virtualInputHandler = deps.virtualInputHandler
-        this.inputManager = deps.inputManager
-        this.outputManager = deps.outputManager
-        this.dialogManager = deps.dialogManager
-        this.scriptRunner = deps.scriptRunner
-        this.lifecycleManager = deps.lifecycleManager
-        this.handlerRegistry = deps.handlerRegistry
-        this.stateController = deps.stateController
+        this.messageBus = context.messageBus
+        this.stateManager = context.stateManager
+        this.translationService = context.translationService
+        this.pageManager = context.pageManager
+        this.mapManager = context.mapManager
+        this.virtualInputHandler = context.virtualInputHandler
+        this.inputManager = context.inputManager
+        this.outputManager = context.outputManager
+        this.dialogManager = context.dialogManager
+        this.scriptRunner = context.scriptRunner
+        this.lifecycleManager = context.lifecycleManager
+        this.handlerRegistry = context.handlerRegistry
+        this.stateController = context.stateController
     }
 
     public async start(): Promise<void> {

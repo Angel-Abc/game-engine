@@ -1,7 +1,20 @@
+import type { IStateManager } from '@engine/core/stateManager'
 import type { IGameEngine } from '../core/gameEngine'
-import { DialogManager, type IDialogManager } from './dialogManager'
+import { DialogManager, type DialogManagerServices, type IDialogManager } from './dialogManager'
 import type { IMessageBus } from '@utils/messageBus'
+import type { ContextData } from '@engine/core/context'
 
-export function createDialogManager(_engine: IGameEngine, messageBus: IMessageBus): IDialogManager {
-    return new DialogManager({ messageBus })
+export function createDialogManager(
+    engine: IGameEngine,
+    messageBus: IMessageBus,
+    stateManager: IStateManager<ContextData>
+): IDialogManager {
+    const services: DialogManagerServices = {
+        loader: engine.Loader,
+        messageBus,
+        stateManager,
+        setIsLoading: () => engine.setIsLoading(),
+        setIsRunning: () => engine.setIsRunning(),
+    }
+    return new DialogManager(services)
 }

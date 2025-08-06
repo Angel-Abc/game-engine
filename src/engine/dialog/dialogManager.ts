@@ -3,6 +3,7 @@ import type { IMessageBus } from '@utils/messageBus'
 import { DIALOG_STARTED, START_DIALOG } from '../messages/messages'
 import type { IStateManager } from '@engine/core/stateManager'
 import type { ContextData } from '@engine/core/context'
+import type { ILoader } from '@loader/loader'
 
 export interface IDialogManager {
     initialize(): void
@@ -10,6 +11,7 @@ export interface IDialogManager {
 }
 
 export type DialogManagerServices = {
+    loader: ILoader
     messageBus: IMessageBus
     stateManager: IStateManager<ContextData>
     setIsLoading: () => void

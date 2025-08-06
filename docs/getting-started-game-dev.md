@@ -35,6 +35,10 @@ The output appears in the `dist/` directory.
      ```powershell
      Copy-Item -Recurse sample-game my-game
      ```
+   * Windows Command Prompt
+     ```cmd
+     xcopy /E /I sample-game my-game
+     ```
 2. Point the engine to your game folder during development or build:
    * macOS/Linux
      ```bash
@@ -45,6 +49,10 @@ The output appears in the `dist/` directory.
      ```powershell
      $env:GAME_FOLDER="my-game"
      npm run dev    # or npm run build
+     ```
+   * Windows Command Prompt
+     ```cmd
+     set GAME_FOLDER=my-game && npm run dev    # or npm run build
      ```
 3. Edit the JSON files, images, and other assets in your game folder. The dev server reloads when files change.
 4. Build with `GAME_FOLDER` set to your game folder when you're ready to deploy. The `dist/` folder contains the final files you can host.

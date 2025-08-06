@@ -1,6 +1,7 @@
 import { fatalError } from '@utils/logMessage'
 import { MessageBus, type IMessageBus } from '@utils/messageBus'
-import type { ILoader } from '@loader/loader'
+import type { ILoader, IGameLoader, ILanguageLoader, IHandlerLoader } from '@loader/loader'
+import type { Handler } from '@loader/data/handler'
 import { END_TURN_MESSAGE, ENGINE_STATE_CHANGED_MESSAGE, MAP_SWITCHED_MESSAGE, SWITCH_PAGE_MESSAGE } from '../messages/messages'
 import type { IStateManager } from './stateManager'
 import { TrackedValue, type ITrackedValue } from '@utils/trackedState'
@@ -51,7 +52,7 @@ export interface IGameEngine {
 }
 
 export class GameEngine implements IGameEngine {
-    private loader: ILoader
+    private loader: IGameLoader & ILanguageLoader & IHandlerLoader
     private messageBus!: MessageBus
     private stateManager: IStateManager<ContextData> | null = null
     private translationService!: ITranslationService
@@ -70,7 +71,7 @@ export class GameEngine implements IGameEngine {
     private actionHandlers = new Map<string, IActionHandler>()
     private conditionResolvers = new Map<string, IConditionResolver>()
 
-    constructor(loader: ILoader) {
+    constructor(loader: IGameLoader & ILanguageLoader & IHandlerLoader) {
         this.loader = loader
     }
 
@@ -195,7 +196,7 @@ export class GameEngine implements IGameEngine {
     }
 
     public get Loader(): ILoader {
-        return this.loader
+        return this.loader as ILoader
     }
 
     public get MessageBus(): IMessageBus {
@@ -246,7 +247,7 @@ export class GameEngine implements IGameEngine {
         const handlerFiles = this.loader.Game.handlers
         for (const path of handlerFiles) {
             const handlers = await this.loader.loadHandlers(path)
-            handlers.forEach(handler => {
+            handlers.forEach((handler: Handler) => {
                 const cleanup = this.messageBus.registerMessageListener(
                     handler.message,
                     () => this.executeAction(handler.action)

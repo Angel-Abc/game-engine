@@ -3,6 +3,10 @@ import type { TileSet as TileSetData } from './data/tile'
 import { tileSetSchema, type TileSet as SchemaTileSet } from './schema/tile'
 import { mapTile } from './mappers/tile'
 
+export interface ITileLoader {
+    loadTileSet(id: string): Promise<TileSetData>
+}
+
 function getDirectory(path: string): string {
     const idx = path.lastIndexOf('/')
     if (idx === -1) return ''

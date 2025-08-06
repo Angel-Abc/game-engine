@@ -3,7 +3,7 @@ import type { IMessageBus } from '@utils/messageBus'
 import { DIALOG_STARTED, START_DIALOG } from '../messages/messages'
 import type { IStateManager } from '@engine/core/stateManager'
 import type { ContextData } from '@engine/core/context'
-import type { ILoader } from '@loader/loader'
+import type { IDialogLoader } from '@loader/dialogLoader'
 import { loadOnce } from '@utils/loadOnce'
 import type { Condition } from '@loader/data/condition'
 
@@ -13,7 +13,7 @@ export interface IDialogManager {
 }
 
 export type DialogManagerServices = {
-    loader: ILoader
+    dialogLoader: IDialogLoader
     messageBus: IMessageBus
     stateManager: IStateManager<ContextData>
     setIsLoading: () => void
@@ -51,7 +51,7 @@ export class DialogManager implements IDialogManager {
             context.dialogs,
             dialogId,
             async () => {
-                const loadedDialog = await this.services.loader.loadDialog(dialogId)
+                const loadedDialog = await this.services.dialogLoader.loadDialog(dialogId)
                 logDebug('DialogManager', 'DialogSet {0} loaded as {1}', dialogId, loadedDialog)
                 return loadedDialog
             },

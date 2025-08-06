@@ -20,6 +20,7 @@ import { GameEngine, type IGameEngine } from './gameEngine'
 import { HandlerRegistry, type IHandlerRegistry } from './handlerRegistry'
 import { StateController } from './stateController'
 import { LifecycleManager } from './lifecycleManager'
+import type { EngineContext } from './engineContext'
 
 export interface IEngineManagerFactory {
     createPageManager(engine: IGameEngine, messageBus: MessageBus, stateManager: IStateManager<ContextData>): IPageManager
@@ -111,7 +112,7 @@ export class GameEngineInitializer {
 
         turnScheduler = new TurnScheduler(stateManager, inputManager, messageBus)
 
-        engine = new GameEngine(loader, {
+        const engineContext: EngineContext = {
             messageBus,
             stateManager,
             translationService,
@@ -125,7 +126,9 @@ export class GameEngineInitializer {
             lifecycleManager,
             handlerRegistry,
             stateController
-        })
+        }
+
+        engine = new GameEngine(loader, engineContext)
 
         pageManager.initialize()
         mapManager.initialize()

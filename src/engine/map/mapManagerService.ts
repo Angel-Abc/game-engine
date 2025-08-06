@@ -6,20 +6,28 @@ import type { IMessageBus } from '@utils/messageBus'
 import type { Action } from '@loader/data/action'
 import type { IMapLoader } from '@loader/mapLoader'
 import type { ITileLoader } from '@loader/tileLoader'
+import { MapLoaderService, type MapLoaderServiceDependencies } from './mapLoaderService'
 
 export function createMapManager(
     engine: IGameEngine,
     messageBus: IMessageBus,
     stateManager: IStateManager<ContextData>
 ): IMapManager {
-    const services: MapManagerServices = {
+    const loaderServices: MapLoaderServiceDependencies = {
         mapLoader: engine.Loader as IMapLoader,
         tileLoader: engine.Loader as ITileLoader,
         messageBus,
         stateManager,
         setIsLoading: () => engine.setIsLoading(),
         setIsRunning: () => engine.setIsRunning(),
-        executeAction: (action: Action) => engine.executeAction(action)
+    }
+    const mapLoaderService = new MapLoaderService(loaderServices)
+
+    const services: MapManagerServices = {
+        messageBus,
+        stateManager,
+        executeAction: (action: Action) => engine.executeAction(action),
+        mapLoaderService,
     }
     return new MapManager(services)
 }

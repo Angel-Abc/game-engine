@@ -53,19 +53,20 @@ export class GameEngineInitializer {
     ): GameEngine {
         let engine: GameEngine // eslint-disable-line prefer-const
 
-        const engineProxy = {
-            get Loader() { return loader },
-            setIsLoading: () => engine.setIsLoading(),
-            setIsRunning: () => engine.setIsRunning(),
-            executeAction: (action: Action) => engine.executeAction(action),
-            resolveCondition: (condition: Condition | null) => engine.resolveCondition(condition)
-        } as unknown as IGameEngine
-
         // Turn scheduler is defined later so it can be referenced by the message queue callback
         // eslint-disable-next-line prefer-const
         let turnScheduler: TurnScheduler
         const messageQueue = new MessageQueue(() => turnScheduler.onQueueEmpty())
         const messageBus = new MessageBus(messageQueue)
+
+        const engineProxy = {
+            get Loader() { return loader },
+            get MessageBus() { return messageBus },
+            setIsLoading: () => engine.setIsLoading(),
+            setIsRunning: () => engine.setIsRunning(),
+            executeAction: (action: Action) => engine.executeAction(action),
+            resolveCondition: (condition: Condition | null) => engine.resolveCondition(condition)
+        } as unknown as IGameEngine
 
         const contextData: ContextData = {
             language: loader.Game.initialData.language,

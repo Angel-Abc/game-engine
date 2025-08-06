@@ -51,7 +51,7 @@ export class PageManager implements IPageManager {
             page,
             async () => {
                 const pageData = await this.services.loader.loadPage(page)
-                logDebug('page {0} loaded as {1}', page, pageData)
+                logDebug('PageManager', 'page {0} loaded as {1}', page, pageData)
                 return pageData
             },
             this.services.setIsLoading,

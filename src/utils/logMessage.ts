@@ -1,10 +1,4 @@
-export const LogLevel = {
-    debug: 0,
-    info: 1,
-    warning: 2,
-    error: 3
-} as const
-export type LogLevel = typeof LogLevel[keyof typeof LogLevel]
+import { LogLevel, type LogLevel as LogLevelType, isCategoryEnabled, isLevelEnabled } from './logConfig'
 
 function formatMessageForConsole(
     message: string,
@@ -34,47 +28,55 @@ function formatMessageForConsole(
 }
 
 export function logMessage(
-    logLevel: LogLevel,
+    logLevel: LogLevelType,
+    category: string | undefined,
     message: string,
     ...args: unknown[]
 ): string {
-    // Prepare the message and extra arguments for console logging.
     const { formattedMessage, extraArgs } = formatMessageForConsole(message, ...args)
+    if (!isLevelEnabled(logLevel)) return formattedMessage
+    if (logLevel === LogLevel.debug && !isCategoryEnabled(category)) return formattedMessage
 
-    // Log using the appropriate console method.
+    const finalMessage = category ? `[${category}] ${formattedMessage}` : formattedMessage
+
     switch (logLevel) {
         case LogLevel.debug:
-            console.debug('\x1B[37m' + formattedMessage, ...extraArgs)
+            console.debug('\x1B[37m' + finalMessage, ...extraArgs)
             break
         case LogLevel.info:
-            console.info('\x1B[30m' + formattedMessage, ...extraArgs)
+            console.info('\x1B[30m' + finalMessage, ...extraArgs)
             break
         case LogLevel.warning:
-            console.warn('\x1B[1m\x1B[33m' + formattedMessage, ...extraArgs)
+            console.warn('\x1B[1m\x1B[33m' + finalMessage, ...extraArgs)
             break
         case LogLevel.error:
-            console.error('\x1B[1m\x1B[31m' + formattedMessage, ...extraArgs)
+            console.error('\x1B[1m\x1B[31m' + finalMessage, ...extraArgs)
             break
         default:
-            console.log(formattedMessage, ...extraArgs)
+            console.log(finalMessage, ...extraArgs)
             break
     }
 
-    return formattedMessage
+    return finalMessage
 }
 
-export function logDebug(message: string, ...args: unknown[]): string {
-    return logMessage(LogLevel.debug, message, ...args)
+function createLogger(level: LogLevelType) {
+    return (categoryOrMessage: string, messageOrArg?: unknown, ...args: unknown[]): string => {
+        if (typeof messageOrArg === 'string') {
+            return logMessage(level, categoryOrMessage, messageOrArg, ...args)
+        }
+        const params = messageOrArg === undefined ? args : [messageOrArg, ...args]
+        return logMessage(level, undefined, categoryOrMessage, ...params)
+    }
 }
 
-export function logInfo(message: string, ...args: unknown[]): string {
-    return logMessage(LogLevel.info, message, ...args)
-}
-
-export function logWarning(message: string, ...args: unknown[]): string {
-    return logMessage(LogLevel.warning, message, ...args)
-}
-
-export function fatalError(message: string, ...args: unknown[]): never {
-    throw new Error(logMessage(LogLevel.error, message, ...args))
+export const logDebug = createLogger(LogLevel.debug)
+export const logInfo = createLogger(LogLevel.info)
+export const logWarning = createLogger(LogLevel.warning)
+export function fatalError(categoryOrMessage: string, messageOrArg?: unknown, ...args: unknown[]): never {
+    if (typeof messageOrArg === 'string') {
+        throw new Error(logMessage(LogLevel.error, categoryOrMessage, messageOrArg, ...args))
+    }
+    const params = messageOrArg === undefined ? args : [messageOrArg, ...args]
+    throw new Error(logMessage(LogLevel.error, undefined, categoryOrMessage, ...params))
 }

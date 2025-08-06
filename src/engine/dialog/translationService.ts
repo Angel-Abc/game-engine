@@ -14,7 +14,7 @@ export class TranslationService implements ITranslationService {
     }
 
     public translate(key: string): string {
-        if (this.language === null) fatalError('No language was set!')
+        if (this.language === null) fatalError('TranslationService', 'No language was set!')
         return this.language.translations[key] ?? key
     }
 }

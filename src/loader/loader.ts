@@ -61,7 +61,7 @@ export class Loader implements ILoader {
 
     public async loadRoot(): Promise<void> {
         await this.reset()
-        logDebug('Root loaded: {0}', this.root)
+        logDebug('Loader', 'Root loaded: {0}', this.root)
     }
 
     public async reset(): Promise<void> {
@@ -81,7 +81,7 @@ export class Loader implements ILoader {
     public async loadLanguage(language: string): Promise<LanguageData> {
         return this.loadWithCache(this.languages, language, async () => {
             const paths = this.game?.languages[language]
-            if (!paths) fatalError('Language {0} was not found!', language)
+            if (!paths) fatalError('Loader', 'Language {0} was not found!', language)
             const result: LanguageData = {
                 id: '',
                 translations: {}
@@ -90,7 +90,7 @@ export class Loader implements ILoader {
                 const schemaData = await loadJsonResource<Language>(`${this.basePath}/${path}`, languageSchema)
                 const languageData = mapLanguage(schemaData)
                 if (result.id === '') result.id = languageData.id
-                if (result.id !== languageData.id) logWarning('Unexpected language match {0} !== {1}', result.id, languageData.id)
+                if (result.id !== languageData.id) logWarning('Loader', 'Unexpected language match {0} !== {1}', result.id, languageData.id)
                 result.translations = { ...result.translations, ...languageData.translations }
             }
             return result
@@ -99,28 +99,28 @@ export class Loader implements ILoader {
 
     public async loadPage(page: string): Promise<PageData> {
         return this.loadWithCache(this.pages, page, async () => {
-            const path = this.game?.pages[page] ?? fatalError('Unknown page: {0}', page)
+            const path = this.game?.pages[page] ?? fatalError('Loader', 'Unknown page: {0}', page)
             return pageLoader({ basePath: this.basePath, path })
         })
     }
 
     public async loadTileSet(id: string): Promise<TileSetData> {
         return this.loadWithCache(this.tileSets, id, async () => {
-            const path = this.game?.tiles[id] ?? fatalError('Unknown tile set: {0}', id)
+            const path = this.game?.tiles[id] ?? fatalError('Loader', 'Unknown tile set: {0}', id)
             return tileLoader({ basePath: this.basePath, path })
         })
     }
 
     public async loadMap(id: string): Promise<MapData> {
         return this.loadWithCache(this.maps, id, async () => {
-            const path = this.game?.maps[id] ?? fatalError('Unknown map: {0}', id)
+            const path = this.game?.maps[id] ?? fatalError('Loader', 'Unknown map: {0}', id)
             return mapLoader({ basePath: this.basePath, path })
         })
     }
 
     public async loadDialog(id: string): Promise<DialogSet> {
         return this.loadWithCache(this.dialogs, id, async () => {
-            const path = this.game?.dialogs[id] ?? fatalError('Unknown dialog: {0}', id)
+            const path = this.game?.dialogs[id] ?? fatalError('Loader', 'Unknown dialog: {0}', id)
             return dialogLoader({ basePath: this.basePath, path })
         })
     }
@@ -139,7 +139,7 @@ export class Loader implements ILoader {
 
     public get Game(): GameData {
         if (this.game) return this.game
-        fatalError('No game root loaded yet')
+        fatalError('Loader', 'No game root loaded yet')
     }
 
     public get Styling(): string[] {

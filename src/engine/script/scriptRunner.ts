@@ -19,9 +19,9 @@ export class ScriptRunner implements IScriptRunner {
             return scriptFunction(context, data) as T
         } catch (error) {
             const message = error instanceof Error ? error.message : String(error)
-            logInfo('Script content: {0}', script)
-            logInfo('Script context: {0}', context)
-            fatalError('Error executing script {0}', message)
+            logInfo('ScriptRunner', 'Script content: {0}', script)
+            logInfo('ScriptRunner', 'Script context: {0}', context)
+            fatalError('ScriptRunner', 'Error executing script {0}', message)
         }
     }
 }

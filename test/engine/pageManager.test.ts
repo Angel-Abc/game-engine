@@ -18,6 +18,7 @@ function createPageManagerInstance() {
     language: 'en',
     pages: {},
     maps: {},
+    dialogs: {},
     tiles: {},
     tileSets: {},
     data: {

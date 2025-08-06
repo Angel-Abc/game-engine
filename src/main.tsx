@@ -19,7 +19,7 @@ import './style/reset.css'
 import './style/variables.css'
 import './style/game.css'
 
-logDebug('Application starting ...')
+logDebug('Main', 'Application starting ...')
 
 const loader: ILoader = new Loader()
 await loader.loadRoot()

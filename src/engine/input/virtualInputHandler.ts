@@ -69,7 +69,7 @@ export class VirtualInputHandler implements IVirtualInputHandler {
         const key = this.createKey(code, alt, ctrl, shift)
         const virtualKey = this.virtualKeys.get(key)
         if (virtualKey) {
-            logDebug('Virtual key: {0}', virtualKey.virtualKey)
+            logDebug('VirtualInputHandler', 'Virtual key: {0}', virtualKey.virtualKey)
             const virtualInput = this.virtualInputsByVirtualKey.get(virtualKey.virtualKey)
             if (virtualInput) {
                 this.services.messageBus.postMessage({
@@ -78,7 +78,7 @@ export class VirtualInputHandler implements IVirtualInputHandler {
                 })
             }
         } else {
-            logDebug('No virtual key for: code {0}, alt {1}, ctrl {2}, shift {3}', code, alt, ctrl, shift)
+            logDebug('VirtualInputHandler', 'No virtual key for: code {0}, alt {1}, ctrl {2}, shift {3}', code, alt, ctrl, shift)
         }
     }
 

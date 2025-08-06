@@ -61,7 +61,7 @@ export class MapManager implements IMapManager {
             mapName,
             async () => {
                 const loadedMap = await this.services.loader.loadMap(mapName)
-                logDebug('map {0} loaded as {1}', mapName, loadedMap)
+                logDebug('MapManager', 'map {0} loaded as {1}', mapName, loadedMap)
                 return loadedMap
             },
             this.services.setIsLoading,
@@ -96,7 +96,7 @@ export class MapManager implements IMapManager {
             message: POSITION_CHANGED_MESSAGE,
             payload: { x: position.x, y: position.y },
         })
-        logDebug('Position set to x: {0}, y: {1}', position.x, position.y)
+        logDebug('MapManager', 'Position set to x: {0}, y: {1}', position.x, position.y)
         if (location.mapName === null) return
         const gameMap = context.maps[location.mapName]
         const tileId = gameMap.map[position.y][position.x]
@@ -115,7 +115,7 @@ export class MapManager implements IMapManager {
                 tileSetName,
                 async () => {
                     const tileSet = await this.services.loader.loadTileSet(tileSetName)
-                    logDebug('tile set {0} loaded as {1}', tileSetName, tileSet)
+                    logDebug('MapManager', 'tile set {0} loaded as {1}', tileSetName, tileSet)
                     tileSet.tiles.forEach(tile => context.tiles[tile.key] = tile)
                     return true
                 },

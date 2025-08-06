@@ -52,7 +52,7 @@ export class DialogManager implements IDialogManager {
             dialogId,
             async () => {
                 const loadedDialog = await this.services.loader.loadDialog(dialogId)
-                logDebug('DialogSet {0} loaded as {1}', dialogId, loadedDialog)
+                logDebug('DialogManager', 'DialogSet {0} loaded as {1}', dialogId, loadedDialog)
                 return loadedDialog
             },
             this.services.setIsLoading,
@@ -63,7 +63,7 @@ export class DialogManager implements IDialogManager {
 
         context.data.activeDialog = dialogId
 
-        logDebug('TODO: startDialog called with id = {0}', dialogId)
+        logDebug('DialogManager', 'TODO: startDialog called with id = {0}', dialogId)
         this.services.messageBus.postMessage({
             message: DIALOG_STARTED,
             payload: dialogId

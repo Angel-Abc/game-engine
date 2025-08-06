@@ -29,7 +29,7 @@ export class MessageBus implements IMessageBus {
     }
 
     postMessage(message: Message): void {
-        logDebug('Push message: {0}', message)
+        logDebug('MessageBus', 'Push message: {0}', message)
         this.queue.push(message)
         if (this.emptyQueueAfterPost === 0) {
             this.emptyQueue()
@@ -74,7 +74,9 @@ export class MessageBus implements IMessageBus {
         if (!message) return
         const listeners = this.listeners.get(message.message)
         if (!listeners || listeners.length === 0) {
-            const logger = this.silentMessages.has(message.message) ? logDebug : logWarning
+            const logger = this.silentMessages.has(message.message)
+                ? (msg: string, ...args: unknown[]) => logDebug('MessageBus', msg, ...args)
+                : (msg: string, ...args: unknown[]) => logWarning('MessageBus', msg, ...args)
             logger('No message listener for message: {0}', message)
             return
         }
@@ -84,11 +86,11 @@ export class MessageBus implements IMessageBus {
                 const result = listener.handler(message)
                 if (result && typeof (result as Promise<void>).then === 'function') {
                     promises.push((result as Promise<void>).catch(err => {
-                        logWarning('Error processing listener for message {0}: {1}', message.message, err)
+                        logWarning('MessageBus', 'Error processing listener for message {0}: {1}', message.message, err)
                     }))
                 }
             } catch (err) {
-                logWarning('Error processing listener for message {0}: {1}', message.message, err)
+                logWarning('MessageBus', 'Error processing listener for message {0}: {1}', message.message, err)
             }
         })
         if (promises.length > 0) {
@@ -118,6 +120,6 @@ export class MessageBus implements IMessageBus {
         this.silentMessages.clear()
         this.emptyingQueue = false
         this.emptyQueueAfterPost = 0
-        logDebug('MessageBus shut down')
+        logDebug('MessageBus', 'MessageBus shut down')
     }
 }

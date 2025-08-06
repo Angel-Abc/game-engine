@@ -3,6 +3,7 @@ import { MapManager, type IMapManager, type MapManagerServices } from './mapMana
 import type { IStateManager } from '../core/stateManager'
 import type { ContextData } from '../core/context'
 import type { IMessageBus } from '@utils/messageBus'
+import type { Action } from '@loader/data/action'
 
 export function createMapManager(
     engine: IGameEngine,
@@ -14,7 +15,8 @@ export function createMapManager(
         messageBus,
         stateManager,
         setIsLoading: () => engine.setIsLoading(),
-        setIsRunning: () => engine.setIsRunning()
+        setIsRunning: () => engine.setIsRunning(),
+        executeAction: (action: Action) => engine.executeAction(action)
     }
     return new MapManager(services)
 }

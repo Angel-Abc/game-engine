@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { InputManager, type InputManagerServices } from '@engine/input/inputManager'
 import { InputSourceTracker } from '@engine/input/inputSourceTracker'
 import { InputMatrixBuilder } from '@engine/input/inputMatrixBuilder'
-import { VIRTUAL_INPUT_MESSAGE } from '@engine/dialog/messages'
+import { VIRTUAL_INPUT_MESSAGE } from '@engine/messages/messages'
 import type { ContextData } from '@engine/core/context'
 import type { Input } from '@loader/data/inputs'
 

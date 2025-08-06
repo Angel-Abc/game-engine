@@ -1,5 +1,6 @@
 import { fatalError, logInfo } from '@utils/logMessage'
 import type { ContextData } from '../core/context'
+import type { Message } from '@utils/types'
 
 export interface IScriptRunner {
     run<T>(script: string, context: ScriptContext): T
@@ -7,7 +8,7 @@ export interface IScriptRunner {
 
 export type ScriptContext = {
     state: ContextData,
-    setPosition: (x: number, y: number) => void
+    postMessage: (message: Message) => void
 }
 
 export class ScriptRunner implements IScriptRunner {

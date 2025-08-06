@@ -4,7 +4,7 @@ import { ChangeTracker } from '@engine/core/changeTracker'
 import { StateManager } from '@engine/core/stateManager'
 import { TrackedValue } from '@utils/trackedState'
 import { GameEngineState } from '@engine/core/gameEngine'
-import { MAP_SWITCHED_MESSAGE } from '@engine/dialog/messages'
+import { MAP_SWITCHED_MESSAGE } from '@engine/messages/messages'
 import type { ContextData } from '@engine/core/context'
 
 function createMapManagerInstance() {

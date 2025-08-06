@@ -1,6 +1,6 @@
 import { logDebug } from '@utils/logMessage'
 import type { IMessageBus } from '@utils/messageBus'
-import { DIALOG_STARTED, START_DIALOG } from './messages'
+import { DIALOG_STARTED, START_DIALOG } from '../messages/messages'
 
 export interface IDialogManager {
     initialize(): void

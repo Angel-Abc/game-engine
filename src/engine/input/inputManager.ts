@@ -1,5 +1,5 @@
 import type { IMessageBus } from '@utils/messageBus'
-import { VIRTUAL_INPUT_MESSAGE } from '../dialog/messages'
+import { VIRTUAL_INPUT_MESSAGE } from '../messages/messages'
 import type { Action } from '@loader/data/action'
 import { InputSourceTracker } from './inputSourceTracker'
 import { InputMatrixBuilder, type MatrixInputItem } from './inputMatrixBuilder'

@@ -1,5 +1,5 @@
 import type { IMessageBus } from '@utils/messageBus'
-import { ADD_LINE_TO_OUTPUT_LOG, OUTPUT_LOG_LINE_ADDED } from '../dialog/messages'
+import { ADD_LINE_TO_OUTPUT_LOG, OUTPUT_LOG_LINE_ADDED } from '../messages/messages'
 
 export interface IOutputManager {
     initialize(): void

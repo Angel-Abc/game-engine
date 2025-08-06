@@ -1,4 +1,4 @@
-import { ADD_LINE_TO_OUTPUT_LOG, END_TURN_MESSAGE } from '../dialog/messages'
+import { ADD_LINE_TO_OUTPUT_LOG, END_TURN_MESSAGE } from '../messages/messages'
 import type { IMessageBus } from '@utils/messageBus'
 import type { IStateManager } from './stateManager'
 import type { ContextData } from './context'

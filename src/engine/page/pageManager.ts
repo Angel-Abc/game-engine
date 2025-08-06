@@ -3,7 +3,7 @@ import type { ILoader } from '@loader/loader'
 import type { IMessageBus } from '@utils/messageBus'
 import type { IStateManager } from '../core/stateManager'
 import type { ContextData } from '../core/context'
-import { PAGE_SWITCHED_MESSAGE, SWITCH_PAGE_MESSAGE } from '../dialog/messages'
+import { PAGE_SWITCHED_MESSAGE, SWITCH_PAGE_MESSAGE } from '../messages/messages'
 
 export interface IPageManager {
     initialize(): void

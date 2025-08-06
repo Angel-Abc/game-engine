@@ -12,7 +12,13 @@
         "action": {
             "type": "post-message",
             "message": "SYSTEM.SWITCH-MAP",
-            "payload": "start-beach"
+            "payload": {
+                "mapName": "start-beach",
+                "position": {
+                    "x": 9,
+                    "y": 6
+                }
+            } 
         }
     }
 

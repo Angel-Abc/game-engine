@@ -4,7 +4,7 @@ import type { ContextData } from '../core/context'
 import type { Input } from '@loader/data/inputs'
 import type { Condition } from '@loader/data/condition'
 import { hasMapChanged, updateMap } from '@utils/map'
-import { INPUTHANDLER_INPUTS_CHANGED } from '../dialog/messages'
+import { INPUTHANDLER_INPUTS_CHANGED } from '../messages/messages'
 
 export type InputItem = {
     input: Input

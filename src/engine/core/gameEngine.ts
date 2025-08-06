@@ -1,13 +1,13 @@
-import { fatalError, logDebug } from '@utils/logMessage'
+import { fatalError } from '@utils/logMessage'
 import { MessageBus, type IMessageBus } from '@utils/messageBus'
 import type { ILoader } from '@loader/loader'
-import { END_TURN_MESSAGE, ENGINE_STATE_CHANGED_MESSAGE, MAP_SWITCHED_MESSAGE, POSITION_CHANGED_MESSAGE, SWITCH_PAGE_MESSAGE } from '../dialog/messages'
+import { END_TURN_MESSAGE, ENGINE_STATE_CHANGED_MESSAGE, MAP_SWITCHED_MESSAGE, SWITCH_PAGE_MESSAGE } from '../messages/messages'
 import type { IStateManager } from './stateManager'
 import { TrackedValue, type ITrackedValue } from '@utils/trackedState'
 import type { ITranslationService } from '../dialog/translationService'
 import type { IPageManager } from '../page/pageManager'
 import type { Action } from '@loader/data/action'
-import type { CleanUp } from '@utils/types'
+import type { CleanUp, Message } from '@utils/types'
 import type { IMapManager } from '../map/mapManager'
 import type { IVirtualInputHandler } from '../input/virtualInputHandler'
 import type { IInputManager } from '../input/inputManager'
@@ -259,15 +259,9 @@ export class GameEngine implements IGameEngine {
     public createScriptContext(): ScriptContext {
         const context: ScriptContext = {
             state: this.StateManager.state,
-            setPosition: (x: number, y: number) => {
-                this.StateManager.state.data.location.position = { x, y }
-                this.messageBus.postMessage({
-                    message: POSITION_CHANGED_MESSAGE,
-                    payload: { x, y },
-                })
-                logDebug('Position set to x: {0}, y: {1}', x, y)
-            },
-
+            postMessage: (message: Message) => {
+                this.MessageBus.postMessage(message)
+            }
         }
         return context
     }

@@ -1,6 +1,6 @@
 import { useEffect, useState, useSyncExternalStore } from 'react'
 import { GameEngineState, type IGameEngine } from '@engine/core/gameEngine'
-import { PAGE_SWITCHED_MESSAGE } from '@engine/dialog/messages'
+import { PAGE_SWITCHED_MESSAGE } from '@engine/messages/messages'
 import type { Page as PageData } from '@loader/data/page'
 import { Page } from './controls/page'
 

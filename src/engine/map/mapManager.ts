@@ -3,13 +3,14 @@ import type { ILoader } from '@loader/loader'
 import type { IMessageBus } from '@utils/messageBus'
 import type { IStateManager } from '../core/stateManager'
 import type { ContextData } from '../core/context'
-import { MAP_SWITCHED_MESSAGE, SWITCH_MAP_MESSAGE } from '../dialog/messages'
+import { CHANGE_POSITION_MESSAGE, MAP_SWITCHED_MESSAGE, POSITION_CHANGED_MESSAGE, SWITCH_MAP_MESSAGE } from '../messages/messages'
 import type { GameMap } from '@loader/data/map'
+import type { ChangePositionPayload, SwitchMapPayload } from '@engine/messages/types'
+import type { Action } from '@loader/data/action'
 
 export interface IMapManager {
     initialize(): void
     cleanup(): void
-    switchMap(map: string): Promise<void>
 }
 
 export type MapManagerServices = {
@@ -18,6 +19,7 @@ export type MapManagerServices = {
     stateManager: IStateManager<ContextData>
     setIsLoading: () => void
     setIsRunning: () => void
+    executeAction: (action: Action) => void
 }
 
 export class MapManager implements IMapManager {
@@ -32,7 +34,13 @@ export class MapManager implements IMapManager {
         this.unregisterEventHandlers.push(
             this.services.messageBus.registerMessageListener(
                 SWITCH_MAP_MESSAGE,
-                async (message) => this.switchMap(message.payload as string)
+                async (message) => this.switchMap(message.payload as unknown as SwitchMapPayload)
+            )
+        )
+        this.unregisterEventHandlers.push(
+            this.services.messageBus.registerMessageListener(
+                CHANGE_POSITION_MESSAGE,
+                async (message) => this.changePosition(message.payload as unknown as ChangePositionPayload)
             )
         )
     }
@@ -42,31 +50,61 @@ export class MapManager implements IMapManager {
         this.unregisterEventHandlers = []
     }
 
-    public async switchMap(map: string): Promise<void> {
+    private async switchMap(switchMap: SwitchMapPayload): Promise<void> {
         const context = this.services.stateManager.state
-        if (context.data.location.mapName === map) return
+        const mapName = switchMap.mapName
+        if (context.data.location.mapName === mapName) return
 
         this.services.setIsLoading()
-        if (!context.maps[map]){
-            const mapData = await this.services.loader.loadMap(map)
-            logDebug('map {0} loaded as {1}', map, mapData)
-            context.maps[map] = mapData
+        if (!context.maps[mapName]) {
+            const mapData = await this.services.loader.loadMap(mapName)
+            logDebug('map {0} loaded as {1}', mapName, mapData)
+            context.maps[mapName] = mapData
         }
-        context.data.location.mapName = map
-        context.data.location.mapSize.width = context.maps[map].width
-        context.data.location.mapSize.height = context.maps[map].height
-        await this.loadAdditionalMapData(context.maps[map])
+        context.data.location.mapName = mapName
+        context.data.location.mapSize.width = context.maps[mapName].width
+        context.data.location.mapSize.height = context.maps[mapName].height
+        await this.loadAdditionalMapData(context.maps[mapName])
         this.services.messageBus.postMessage({
             message: MAP_SWITCHED_MESSAGE,
-            payload: map
+            payload: mapName
         })
+        if (switchMap.position) {
+            this.services.messageBus.postMessage({
+                message: CHANGE_POSITION_MESSAGE,
+                payload: {
+                    x: switchMap.position.x,
+                    y: switchMap.position.y
+                }
+            })
+        }
         this.services.setIsRunning()
     }
+
+    private async changePosition(position: { x: number; y: number }): Promise<void> {
+        const context = this.services.stateManager.state
+        const location = context.data.location
+        if (location.position.x === position.x && location.position.y === position.y) return
+        location.position = { x: position.x, y: position.y }
+        this.services.messageBus.postMessage({
+            message: POSITION_CHANGED_MESSAGE,
+            payload: { x: position.x, y: position.y },
+        })
+        logDebug('Position set to x: {0}, y: {1}', position.x, position.y)
+        if (location.mapName === null) return
+        const gameMap = context.maps[location.mapName]
+        const tileId = gameMap.map[position.y][position.x]
+        const tile = gameMap.tiles[tileId]
+        if (tile.onEnter) {
+            this.services.executeAction(tile.onEnter)
+        }
+    }
+
 
     private async loadAdditionalMapData(mapData: GameMap): Promise<void> {
         const context = this.services.stateManager.state
         for (const tileSetName of mapData.tileSets) {
-            if (!context.tileSets[tileSetName]){
+            if (!context.tileSets[tileSetName]) {
                 const tileSet = await this.services.loader.loadTileSet(tileSetName)
                 logDebug('tile set {0} loaded as {1}', tileSetName, tileSet)
                 context.tileSets[tileSetName] = true

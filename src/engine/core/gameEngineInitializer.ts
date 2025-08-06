@@ -57,7 +57,7 @@ export class GameEngineInitializer {
                 activePage: null,
                 location: {
                     mapName: null,
-                    position: { x: 9, y: 6 },
+                    position: { x: 0, y: 0 },
                     mapSize: { width: 10, height: 10 }
                 }
             }

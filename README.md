@@ -34,6 +34,20 @@ The build step copies the game data from the directory specified by the
 `GAME_FOLDER` environment variable into `dist/data`. If this variable is not
 set, the `sample-game` folder is used.
 
+On Windows, set the variable before running the build:
+
+```cmd
+set GAME_FOLDER=path\to\your\game && npm run build
+```
+
+```powershell
+$env:GAME_FOLDER='path\\to\\your\\game'; npm run build
+```
+
+Windows users may need to use `set`, PowerShell's `$env:` syntax, or a tool like
+[`cross-env`](https://github.com/kentcdodds/cross-env) when running npm
+scripts that rely on environment variables.
+
 During development the same files are served via `vite-plugin-static-copy`,
 allowing JSON resources from `resources/` or your game folder to be accessible
 while running `npm run dev`.
@@ -77,7 +91,19 @@ Examples:
 # enable all debug logs
 LOG_LEVEL=debug npm run dev
 
+# Command Prompt
+set LOG_LEVEL=debug && npm run dev
+
+# PowerShell
+$env:LOG_LEVEL='debug'; npm run dev
+
 # enable debug logs only for MessageBus and MapManager
 LOG_LEVEL=debug LOG_DEBUG=MessageBus,MapManager npm run dev
+
+# Command Prompt
+set LOG_LEVEL=debug && set LOG_DEBUG=MessageBus,MapManager && npm run dev
+
+# PowerShell
+$env:LOG_LEVEL='debug'; $env:LOG_DEBUG='MessageBus,MapManager'; npm run dev
 ```
 

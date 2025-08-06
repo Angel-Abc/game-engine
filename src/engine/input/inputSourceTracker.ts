@@ -29,9 +29,8 @@ export class InputSourceTracker {
     }
 
     public update(): void {
-        if (!this.loadInputs()) {
-            this.recalculateInputConditions()
-        }
+        this.loadInputs()
+        this.recalculateInputConditions()
     }
 
     public getInput(virtualInput: string): InputItem | undefined {
@@ -42,16 +41,14 @@ export class InputSourceTracker {
         return Array.from(this.inputs.values()).filter(item => item.visible)
     }
 
-    private loadInputs(): boolean {
+    private loadInputs(): void {
         const activePage = this.services.stateManager.state.data.activePage
-        if (this.currentPage === activePage) {
-            return false
-        }
+        if (this.currentPage === activePage) return
+
         this.inputs.clear()
         this.currentPage = activePage
-        if (activePage === null) {
-            return false
-        }
+        if (activePage === null) return
+
         const page = this.services.stateManager.state.pages[activePage]
         page.inputs.forEach(input => {
             this.inputs.set(input.virtualInput, {
@@ -60,7 +57,6 @@ export class InputSourceTracker {
                 visible: this.services.resolveCondition(input.visible ?? null)
             })
         })
-        return true
     }
 
     private recalculateInputConditions(): void {

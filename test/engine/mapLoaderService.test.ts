@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { MapManager, type MapManagerServices } from '@engine/map/mapManager'
+import { MapLoaderService, type MapLoaderServiceDependencies } from '@engine/map/mapLoaderService'
 import { ChangeTracker } from '@engine/core/changeTracker'
 import { StateManager } from '@engine/core/stateManager'
 import { TrackedValue } from '@utils/trackedState'
@@ -7,7 +7,7 @@ import { GameEngineState } from '@engine/core/gameEngine'
 import { MAP_SWITCHED_MESSAGE } from '@engine/messages/messages'
 import type { ContextData } from '@engine/core/context'
 
-function createMapManagerInstance() {
+function createMapLoaderServiceInstance() {
   const loader = {
     loadMap: vi.fn(async (_map: string) => ({
       key: _map,
@@ -55,34 +55,33 @@ function createMapManagerInstance() {
   }, new ChangeTracker<ContextData>())
   const state = new TrackedValue<GameEngineState>('state', GameEngineState.init)
 
-  const services: MapManagerServices = {
+  const deps: MapLoaderServiceDependencies = {
     mapLoader: loader as any,
     tileLoader: loader as any,
     messageBus: messageBus as any,
     stateManager,
     setIsLoading: () => { state.value = GameEngineState.loading },
     setIsRunning: () => { state.value = GameEngineState.running },
-    executeAction: vi.fn()
   }
 
-  const mapManager = new MapManager(services)
-  return { mapManager, loader, stateManager, state, messageBus }
+  const mapLoaderService = new MapLoaderService(deps)
+  return { mapLoaderService, loader, stateManager, state, messageBus }
 }
 
-describe('MapManager', () => {
+describe('MapLoaderService', () => {
   it('loads a map only once', async () => {
-    const { mapManager, loader } = createMapManagerInstance()
+    const { mapLoaderService, loader } = createMapLoaderServiceInstance()
 
-    await (mapManager as any).switchMap({ mapName: 'map1' })
-    await (mapManager as any).switchMap({ mapName: 'map1' })
+    await (mapLoaderService as any).switchMap({ mapName: 'map1' })
+    await (mapLoaderService as any).switchMap({ mapName: 'map1' })
 
     expect(loader.loadMap).toHaveBeenCalledTimes(1)
   })
 
   it('loads tile sets and populates context.tiles', async () => {
-    const { mapManager, loader, stateManager } = createMapManagerInstance()
+    const { mapLoaderService, loader, stateManager } = createMapLoaderServiceInstance()
 
-    await (mapManager as any).switchMap({ mapName: 'map1' })
+    await (mapLoaderService as any).switchMap({ mapName: 'map1' })
 
     expect(loader.loadTileSet).toHaveBeenCalledWith('tileset')
     expect(stateManager.state.tiles['tile1']).toEqual({
@@ -93,11 +92,11 @@ describe('MapManager', () => {
   })
 
   it('posts MAP_SWITCHED_MESSAGE and updates state', async () => {
-    const { mapManager, messageBus, state } = createMapManagerInstance()
+    const { mapLoaderService, messageBus, state } = createMapLoaderServiceInstance()
     const transitions: GameEngineState[] = []
     state.subscribe(() => transitions.push(state.value))
 
-    await (mapManager as any).switchMap({ mapName: 'map1' })
+    await (mapLoaderService as any).switchMap({ mapName: 'map1' })
 
     expect(messageBus.postMessage).toHaveBeenCalledWith({
       message: MAP_SWITCHED_MESSAGE,

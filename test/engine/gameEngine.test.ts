@@ -23,7 +23,7 @@ function createEngine() {
       void engine
       void messageBus
       void stateManager
-      return { initialize: vi.fn(), switchMap: vi.fn(), cleanup: vi.fn() } as any
+      return { initialize: vi.fn(), cleanup: vi.fn() } as any
     },
     createVirtualInputHandler: (engine, messageBus) => {
       void engine

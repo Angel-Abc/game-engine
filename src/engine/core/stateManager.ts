@@ -1,10 +1,11 @@
 import { fatalError } from '@utils/logMessage'
-import type { IChangeTracker, Primitive, SaveData } from './changeTracker'
+import type { IChangeTracker, SaveData } from './changeTracker'
+import { buildPath, cacheProxy, getCachedProxy, trackChange } from './stateProxyHelpers'
 
 export interface IStateManager<TData extends Record<string, unknown>> {
     rollbackTurn(): void
     commitTurn(): void
-    save(): string 
+    save(): string
     load(saveString: string): void
     get state(): TData
     untrackedModify(update: (data: TData) => void): void
@@ -54,22 +55,19 @@ export class StateManager<TData extends Record<string, unknown>> implements ISta
     }
 
     private createStateProxy(target: Record<string, unknown>, path: string | null = null): Record<string, unknown> {
-        // non-object types don’t need a proxy
         if (target === null || typeof target !== 'object') {
             return target
         }
 
-        // already cached? return the cached version
-        if (this.proxyObjectCache.has(target)) {
-            return this.proxyObjectCache.get(target) as Record<string, unknown>
+        const cached = getCachedProxy(this.proxyObjectCache, target)
+        if (cached) {
+            return cached
         }
 
-        // create the result proxy
         const proxy = new Proxy(target, {
             get: (targetObj: Record<string, unknown>, prop: string | symbol, receiver: unknown) => {
                 let value: unknown = Reflect.get(targetObj, prop, receiver as object)
-
-                const currentPath = path ? `${path}.${String(prop)}` : String(prop)
+                const currentPath = buildPath(path, prop)
 
                 if (value !== null && typeof value === 'function') {
                     const isArrayMethod =
@@ -83,18 +81,20 @@ export class StateManager<TData extends Record<string, unknown>> implements ISta
                     if (isArrayMethod) {
                         return value.bind(targetObj) as unknown
                     }
-                    
-                    fatalError('StateManager', 'State proxy cannot contain functions. Please use a different approach for {0}', currentPath)
+
+                    fatalError(
+                        'StateManager',
+                        'State proxy cannot contain functions. Please use a different approach for {0}',
+                        currentPath
+                    )
                 } else if (value !== null && typeof value === 'object') {
-                    // create a proxy for the object
                     value = this.createStateProxy(value as Record<string, unknown>, currentPath)
                 }
 
                 return value
             },
             set: (targetObj: Record<string, unknown>, prop: string | symbol, value: unknown, receiver: unknown) => {
-                const currentPath = path ? `${path}.${String(prop)}` : String(prop)
-
+                const currentPath = buildPath(path, prop)
                 const oldValue: unknown = Reflect.get(targetObj, prop, receiver as object)
 
                 if (value !== null && typeof value === 'object') {
@@ -102,20 +102,12 @@ export class StateManager<TData extends Record<string, unknown>> implements ISta
                 }
 
                 const result = Reflect.set(targetObj, prop, value, receiver as object)
-
-                if (value !== null && typeof value === 'object') {
-                    const oldClone = oldValue === undefined ? null : JSON.parse(JSON.stringify(oldValue))
-                    const newClone = JSON.parse(JSON.stringify(value))
-                    this.changeTracker.trackChange({ path: currentPath, newValue: newClone as Primitive, oldValue: oldClone as Primitive })
-                } else if (oldValue === null || oldValue === undefined || typeof oldValue === 'string' || typeof oldValue === 'number' || typeof oldValue === 'boolean') {
-                    this.changeTracker.trackChange({ path: currentPath, newValue: value as Primitive, oldValue: (oldValue ?? null) as Primitive })
-                }
+                trackChange(this.changeTracker, currentPath, value, oldValue)
                 return result
-            }
-
+            },
         })
 
-        this.proxyObjectCache.set(target, proxy)
+        cacheProxy(this.proxyObjectCache, target, proxy)
         return proxy
     }
 }

@@ -7,6 +7,10 @@
 - Prefer dependency injection over global singletons.
 - Emphasize single responsibility for classes/modules.
 
+## Documentation Guidelines
+- Include Windows-specific examples alongside Unix commands.
+- Update files in `docs/` whenever relevant documentation changes are made elsewhere.
+
 ## Required Checks
 Before marking any code task as complete, ensure the following commands are run and pass:
 

@@ -34,7 +34,7 @@ function createPageManagerInstance() {
   const state = new TrackedValue<GameEngineState>('state', GameEngineState.init)
 
   const services: PageManagerServices = {
-    loader: loader as any,
+    pageLoader: loader as any,
     messageBus: messageBus as any,
     stateManager,
     setIsLoading: () => { state.value = GameEngineState.loading },

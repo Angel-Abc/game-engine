@@ -3,6 +3,10 @@ import type { DialogSet as DialogSetData } from './data/dialog'
 import { dialogSetSchema, type DialogSet as DialogSetSchema } from './schema/dialog'
 import { mapDialogSet } from './mappers/dialog'
 
+export interface IDialogLoader {
+    loadDialog(id: string): Promise<DialogSetData>
+}
+
 interface Context {
     basePath: string
     path: string

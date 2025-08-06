@@ -55,7 +55,8 @@ function createMapManagerInstance() {
   const state = new TrackedValue<GameEngineState>('state', GameEngineState.init)
 
   const services: MapManagerServices = {
-    loader: loader as any,
+    mapLoader: loader as any,
+    tileLoader: loader as any,
     messageBus: messageBus as any,
     stateManager,
     setIsLoading: () => { state.value = GameEngineState.loading },

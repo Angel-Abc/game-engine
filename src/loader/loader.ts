@@ -1,38 +1,42 @@
 import { loadJsonResource } from '@utils/loadJsonResource'
 import { gameSchema, type Game } from './schema/game'
-import { languageSchema, type Language } from './schema/language'
-import { fatalError, logDebug, logWarning } from '@utils/logMessage'
+import { fatalError, logDebug } from '@utils/logMessage'
 import { type Game as GameData } from './data/game'
-import { type Language as LanguageData } from './data/language'
-import { mapLanguage } from './mappers/language'
-import { type Page as PageData } from './data/page'
-import { pageLoader } from './pageLoader'
+import type { Language as LanguageData } from './data/language'
+import type { Page as PageData } from './data/page'
+import { pageLoader, type IPageLoader } from './pageLoader'
 import type { Handlers } from './data/handler'
 import { handlerLoader } from './handlerLoader'
 import type { TileSet as TileSetData } from './data/tile'
-import { tileLoader } from './tileLoader'
+import { tileLoader, type ITileLoader } from './tileLoader'
 import type { GameMap as MapData } from './data/map'
-import { mapLoader } from './mapLoader'
+import { mapLoader, type IMapLoader } from './mapLoader'
 import type { VirtualKeys as VirtualKeysData, VirtualInputs as VirtualInputsData } from './data/inputs'
-import { virtualKeysLoader, virtualInputsLoader } from './inputsLoader'
+import { virtualKeysLoader, virtualInputsLoader, type IInputLoader } from './inputsLoader'
 import { mapGame } from './mappers/game'
 import type { DialogSet } from './data/dialog'
-import { dialogLoader } from './dialogLoader'
+import { dialogLoader, type IDialogLoader } from './dialogLoader'
+import { languageLoader, type ILanguageLoader } from './languageLoader'
 
-export interface ILoader {
-    loadPage(page: string): Promise<PageData>
+export type { IPageLoader } from './pageLoader'
+export type { ITileLoader } from './tileLoader'
+export type { IMapLoader } from './mapLoader'
+export type { IDialogLoader } from './dialogLoader'
+export type { IInputLoader } from './inputsLoader'
+export type { ILanguageLoader } from './languageLoader'
+
+export interface IGameLoader {
     loadRoot(): Promise<void>
     reset(): Promise<void>
-    get Game(): GameData
-    get Styling(): string[]
-    loadLanguage(language: string): Promise<LanguageData>
-    loadHandlers(path: string): Promise<Handlers>
-    loadTileSet(id: string): Promise<TileSetData>
-    loadMap(id: string): Promise<MapData>
-    loadDialog(id: string): Promise<DialogSet>
-    loadVirtualKeys(path: string): Promise<VirtualKeysData>
-    loadVirtualInputs(path: string): Promise<VirtualInputsData>
+    readonly Game: GameData
+    readonly Styling: string[]
 }
+
+export interface IHandlerLoader {
+    loadHandlers(path: string): Promise<Handlers>
+}
+
+export type ILoader = IGameLoader & IPageLoader & ITileLoader & IMapLoader & IDialogLoader & IInputLoader & ILanguageLoader & IHandlerLoader
 
 export class Loader implements ILoader {
     private basePath: string
@@ -82,18 +86,7 @@ export class Loader implements ILoader {
         return this.loadWithCache(this.languages, language, async () => {
             const paths = this.game?.languages[language]
             if (!paths) fatalError('Loader', 'Language {0} was not found!', language)
-            const result: LanguageData = {
-                id: '',
-                translations: {}
-            }
-            for (const path of paths) {
-                const schemaData = await loadJsonResource<Language>(`${this.basePath}/${path}`, languageSchema)
-                const languageData = mapLanguage(schemaData)
-                if (result.id === '') result.id = languageData.id
-                if (result.id !== languageData.id) logWarning('Loader', 'Unexpected language match {0} !== {1}', result.id, languageData.id)
-                result.translations = { ...result.translations, ...languageData.translations }
-            }
-            return result
+            return languageLoader(this.basePath, paths)
         })
     }
 

@@ -1,7 +1,8 @@
 import type { VirtualInput, VirtualKey } from '@loader/data/inputs'
 import { logDebug } from '@utils/logMessage'
 import { VIRTUAL_INPUT_MESSAGE } from '../messages/messages'
-import type { ILoader } from '@loader/loader'
+import type { IInputLoader } from '@loader/inputsLoader'
+import type { IGameLoader } from '@loader/loader'
 import type { IMessageBus } from '@utils/messageBus'
 
 export interface IVirtualInputHandler {
@@ -12,7 +13,8 @@ export interface IVirtualInputHandler {
 }
 
 export type VirtualInputHandlerServices = {
-    loader: ILoader
+    gameLoader: IGameLoader
+    inputLoader: IInputLoader
     messageBus: IMessageBus
 }
 
@@ -36,8 +38,8 @@ export class VirtualInputHandler implements IVirtualInputHandler {
 
     public async load(): Promise<void> {
         this.virtualKeys.clear()
-        for (const path of this.services.loader.Game.virtualKeys) {
-            const virtualKeys = await this.services.loader.loadVirtualKeys(path)
+        for (const path of this.services.gameLoader.Game.virtualKeys) {
+            const virtualKeys = await this.services.inputLoader.loadVirtualKeys(path)
             virtualKeys.forEach(virtualKey => {
                 const key = this.createKey(virtualKey.keyCode, virtualKey.alt, virtualKey.ctrl, virtualKey.shift)
                 this.virtualKeys.set(key, virtualKey)
@@ -46,8 +48,8 @@ export class VirtualInputHandler implements IVirtualInputHandler {
 
         this.virtualInputsByVirtualKey.clear()
         this.virtualInputs.clear()
-        for (const path of this.services.loader.Game.virtualInputs) {
-            const virtualInputs = await this.services.loader.loadVirtualInputs(path)
+        for (const path of this.services.gameLoader.Game.virtualInputs) {
+            const virtualInputs = await this.services.inputLoader.loadVirtualInputs(path)
             virtualInputs.forEach(virtualInput => {
                 this.virtualInputs.set(virtualInput.virtualInput, virtualInput)
                 virtualInput.virtualKeys.forEach(virtualKey => {

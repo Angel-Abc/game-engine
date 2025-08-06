@@ -14,5 +14,5 @@ export type DialogSet = {
     id: string
     startCondition: Condition
     startWith: string
-    dialogs: Dialog[]
+    dialogs: Record<string, Dialog>
 }

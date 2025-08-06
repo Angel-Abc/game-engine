@@ -1,6 +1,6 @@
 import { logDebug } from '@utils/logMessage'
 import type { IMessageBus } from '@utils/messageBus'
-import { DIALOG_STARTED, START_DIALOG } from '../messages/messages'
+import { DIALOG_SHOW_DIALOG, DIALOG_START_DIALOG } from '../messages/messages'
 import type { IStateManager } from '@engine/core/stateManager'
 import type { ContextData } from '@engine/core/context'
 import type { ILoader } from '@loader/loader'
@@ -32,7 +32,7 @@ export class DialogManager implements IDialogManager {
     public initialize(): void {
         this.unregisterEventHandlers.push(
             this.services.messageBus.registerMessageListener(
-                START_DIALOG,
+                DIALOG_START_DIALOG,
                 async (message) => this.startDialog(message.payload as string)
             )
         )
@@ -63,18 +63,10 @@ export class DialogManager implements IDialogManager {
 
         context.data.activeDialog = dialogId
 
-        logDebug('DialogManager', 'TODO: startDialog called with id = {0}', dialogId)
         this.services.messageBus.postMessage({
-            message: DIALOG_STARTED,
-            payload: dialogId
+            message: DIALOG_SHOW_DIALOG,
+            payload: dialogSet.startWith
         })
     }
 
-    /*
-            this.messageBus.postMessage({
-                message: ADD_LINE_TO_OUTPUT_LOG,
-                payload: `<p>This is test line <bold>${this.counter++}</bold>.</p>`
-            })
-    
-    */
 }

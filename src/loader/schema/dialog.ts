@@ -15,6 +15,7 @@ export const dialogSetSchema = z.object({
     id: z.string(),
     'default-behavior': behaviorSchema,
     'start-condition': conditionSchema,
+    'start-with': z.string(),
     dialogs: z.array(dialogSchema)
 })
 

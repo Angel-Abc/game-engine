@@ -13,5 +13,6 @@ export type Dialog = {
 export type DialogSet = {
     id: string
     startCondition: Condition
+    startWith: string
     dialogs: Dialog[]
 }

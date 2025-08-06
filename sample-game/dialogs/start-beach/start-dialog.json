@@ -7,6 +7,7 @@
         "type": "script",
         "script": "return true"
     },
+    "start-with": "intro",
     "dialogs": [
         {
             "id": "intro",

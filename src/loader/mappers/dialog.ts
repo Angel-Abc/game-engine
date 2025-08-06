@@ -7,7 +7,8 @@ export function mapDialogSet(dialogSet: DialogSet): DialogSetData {
     return {
         id: dialogSet.id,
         startCondition: mapCondition(dialogSet['start-condition']),
-        dialogs: dialogSet.dialogs.map(dialog => mapDialog(dialog, defaultBehavior))
+        dialogs: dialogSet.dialogs.map(dialog => mapDialog(dialog, defaultBehavior)),
+        startWith: dialogSet['start-with']
     }
 }
 

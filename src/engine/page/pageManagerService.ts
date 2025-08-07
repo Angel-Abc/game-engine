@@ -8,10 +8,11 @@ import type { IPageLoader } from '@loader/pageLoader'
 export function createPageManager(
     engine: IGameEngine,
     messageBus: IMessageBus,
-    stateManager: IStateManager<ContextData>
+    stateManager: IStateManager<ContextData>,
+    pageLoader: IPageLoader
 ): IPageManager {
     const services: PageManagerServices = {
-        pageLoader: engine.Loader as IPageLoader,
+        pageLoader,
         messageBus,
         stateManager,
         setIsLoading: () => engine.setIsLoading(),

@@ -11,11 +11,13 @@ import { MapLoaderService, type MapLoaderServiceDependencies } from './mapLoader
 export function createMapManager(
     engine: IGameEngine,
     messageBus: IMessageBus,
-    stateManager: IStateManager<ContextData>
+    stateManager: IStateManager<ContextData>,
+    mapLoader: IMapLoader,
+    tileLoader: ITileLoader
 ): IMapManager {
     const loaderServices: MapLoaderServiceDependencies = {
-        mapLoader: engine.Loader as IMapLoader,
-        tileLoader: engine.Loader as ITileLoader,
+        mapLoader,
+        tileLoader,
         messageBus,
         stateManager,
         setIsLoading: () => engine.setIsLoading(),

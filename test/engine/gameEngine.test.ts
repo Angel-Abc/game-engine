@@ -1,32 +1,49 @@
 import { describe, it, expect, vi } from 'vitest'
 import { type IEngineManagerFactory, GameEngineInitializer } from '@engine/core/gameEngineInitializer'
-import type { ILoader } from '@loader/loader'
 import type { Action } from '@loader/data/action'
+import type { Loader } from '@loader/loader'
 import { PostMessageActionHandler } from '@engine/actions/postMessageActionHandler'
 
 function createEngine() {
   const loader = {
     Game: {
       initialData: {
-        language: 'en'
+        language: 'en',
+        startPage: 'start',
+        handlers: []
       }
-    }
-  } as unknown as ILoader
+    },
+    pageLoader: {} as any,
+    mapLoader: {} as any,
+    languageLoader: { loadLanguage: vi.fn(), reset: vi.fn() },
+    loadRoot: vi.fn(),
+    reset: vi.fn(),
+    loadHandlers: vi.fn(),
+    loadTileSet: vi.fn(),
+    loadDialog: vi.fn(),
+    loadVirtualKeys: vi.fn(),
+    loadVirtualInputs: vi.fn(),
+    Styling: []
+  } as unknown as Loader
   const factory: IEngineManagerFactory = {
-    createPageManager: (engine, messageBus, stateManager) => {
+    createPageManager: (engine, messageBus, stateManager, pageLoader) => {
       void engine
       void messageBus
       void stateManager
+      void pageLoader
       return { initialize: vi.fn(), switchPage: vi.fn(), cleanup: vi.fn() } as any
     },
-    createMapManager: (engine, messageBus, stateManager) => {
+    createMapManager: (engine, messageBus, stateManager, mapLoader, tileLoader) => {
       void engine
       void messageBus
       void stateManager
+      void mapLoader
+      void tileLoader
       return { initialize: vi.fn(), cleanup: vi.fn() } as any
     },
-    createVirtualInputHandler: (engine, messageBus) => {
-      void engine
+    createVirtualInputHandler: (gameLoader, inputLoader, messageBus) => {
+      void gameLoader
+      void inputLoader
       void messageBus
       return { initialize: vi.fn(), cleanup: vi.fn(), load: vi.fn(), getVirtualInput: vi.fn() } as any
     },
@@ -43,10 +60,12 @@ function createEngine() {
       void messageBus
       return { initialize: vi.fn(), cleanup: vi.fn(), getLastLines: vi.fn() } as any
     },
-    createDialogManager: (engine, messageBus, stateManager) => {
+    createDialogManager: (engine, messageBus, stateManager, translationService, dialogLoader) => {
       void engine
       void messageBus
       void stateManager
+      void translationService
+      void dialogLoader
       return { initialize: vi.fn(), cleanup: vi.fn() } as any
     },
     createTranslationService: () => ({ translate: vi.fn(), setLanguage: vi.fn() }) as any,

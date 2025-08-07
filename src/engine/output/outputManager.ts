@@ -1,5 +1,5 @@
 import type { IMessageBus } from '@utils/messageBus'
-import { ADD_LINE_TO_OUTPUT_LOG, OUTPUT_LOG_LINE_ADDED } from '../messages/messages'
+import { ADD_LINE_TO_OUTPUT_LOG, FINALIZE_END_TURN_MESSAGE, OUTPUT_LOG_LINE_ADDED } from '../messages/messages'
 import { EventHandlerManager } from '@engine/common/eventHandlerManager'
 
 export interface IOutputManager {
@@ -17,6 +17,7 @@ export class OutputManager implements IOutputManager {
     private eventHandlerManager = new EventHandlerManager()
     private outputLogLines: string[] = []
     private currentMaxSize: number = 0
+    private lastLineCount: number = -1
 
     constructor(services: OutputManagerServices) {
         this.services = services
@@ -26,7 +27,13 @@ export class OutputManager implements IOutputManager {
         this.eventHandlerManager.addListener(
             this.services.messageBus.registerMessageListener(
                 ADD_LINE_TO_OUTPUT_LOG,
-                (message) => this.newLine(message.payload as string)
+                (message) => this.addLine(message.payload as string)
+            )
+        )
+        this.eventHandlerManager.addListener(
+            this.services.messageBus.registerMessageListener(
+                FINALIZE_END_TURN_MESSAGE,
+                () => this.addNewDayLine()
             )
         )
     }
@@ -41,7 +48,13 @@ export class OutputManager implements IOutputManager {
         return this.outputLogLines.slice(-1 * maxCount)
     }
 
-    private async newLine(line: string): Promise<void> {
+    private async addNewDayLine(): Promise<void> {
+        if (this.lastLineCount === this.outputLogLines.length) return
+        await this.addLine('<hr/>')
+        this.lastLineCount = this.outputLogLines.length
+    }
+
+    private async addLine(line: string): Promise<void> {
         this.outputLogLines.push(line)
         if (this.currentMaxSize > 0 && this.outputLogLines.length > 2 * this.currentMaxSize){
             this.outputLogLines = this.outputLogLines.slice(-1 * this.currentMaxSize)

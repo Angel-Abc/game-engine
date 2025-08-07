@@ -1,6 +1,6 @@
 import { fatalError } from '@utils/logMessage'
 import type { IMessageBus } from '@utils/messageBus'
-import { SWITCH_PAGE_MESSAGE, END_TURN_MESSAGE, ENGINE_STATE_CHANGED_MESSAGE, MAP_SWITCHED_MESSAGE } from '../messages/messages'
+import { SWITCH_PAGE_MESSAGE, END_TURN_MESSAGE, ENGINE_STATE_CHANGED_MESSAGE, MAP_SWITCHED_MESSAGE, FINALIZE_END_TURN_MESSAGE, POSITION_CHANGED_MESSAGE } from '../messages/messages'
 import type { IGameLoader, IHandlerLoader } from '@loader/loader'
 import type { ILanguageLoader } from '@loader/languageLoader'
 import type { IStateManager } from './stateManager'
@@ -99,7 +99,9 @@ export class LifecycleManager implements ILifecycleManager {
 
     private initializeMessageListeners(): void {
         this.messageBus.registerNotificationMessage(END_TURN_MESSAGE)
+        this.messageBus.registerNotificationMessage(FINALIZE_END_TURN_MESSAGE)
         this.messageBus.registerNotificationMessage(ENGINE_STATE_CHANGED_MESSAGE)
         this.messageBus.registerNotificationMessage(MAP_SWITCHED_MESSAGE)
+        this.messageBus.registerNotificationMessage(POSITION_CHANGED_MESSAGE)
     }
 }

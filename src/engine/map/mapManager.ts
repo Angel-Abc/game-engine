@@ -48,15 +48,15 @@ export class MapManager implements IMapManager {
         const location = context.data.location
         if (location.position.x === position.x && location.position.y === position.y) return
         location.position = { x: position.x, y: position.y }
+        if (location.mapName === null) return
+        const gameMap = context.maps[location.mapName]
+        const tileId = gameMap.map[position.y][position.x]
+        const tile = gameMap.tiles[tileId]
         this.services.messageBus.postMessage({
             message: POSITION_CHANGED_MESSAGE,
             payload: { x: position.x, y: position.y },
         })
         logDebug('MapManager', 'Position set to x: {0}, y: {1}', position.x, position.y)
-        if (location.mapName === null) return
-        const gameMap = context.maps[location.mapName]
-        const tileId = gameMap.map[position.y][position.x]
-        const tile = gameMap.tiles[tileId]
         if (tile.onEnter) {
             this.services.executeAction(tile.onEnter)
         }

@@ -7,7 +7,7 @@
             "payload": "main-game"
         }
     },
-        {
+    {
         "message": "SYSTEM.START-GAME",
         "action": {
             "type": "post-message",
@@ -18,8 +18,15 @@
                     "x": 9,
                     "y": 6
                 }
-            } 
+            }
+        }
+    },
+    {
+        "message": "SYSTEM.POSITION-CHANGED",
+        "action": {
+            "type": "post-message",
+            "message": "SYSTEM.ADD-LINE-TO-OUTPUT-LOG",
+            "payload": "<p>This will have to be done by script<p>"
         }
     }
-
 ]

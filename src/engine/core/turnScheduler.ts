@@ -1,4 +1,4 @@
-import { END_TURN_MESSAGE } from '../messages/messages'
+import { END_TURN_MESSAGE, FINALIZE_END_TURN_MESSAGE } from '../messages/messages'
 import type { IMessageBus } from '@utils/messageBus'
 import type { IStateManager } from './stateManager'
 import type { ContextData } from './context'
@@ -8,8 +8,15 @@ export interface ITurnScheduler {
     onQueueEmpty(): void
 }
 
+export const EndingTurnState = {
+    NOT_STARTED: 0,
+    STARTED: 1,
+    FINALIZING: 2
+} as const
+export type EndingTurnState = typeof EndingTurnState[keyof typeof EndingTurnState]
+
 export class TurnScheduler implements ITurnScheduler {
-    private endingTurn = false
+    private endingTurn: EndingTurnState = EndingTurnState.NOT_STARTED
     private stateManager: IStateManager<ContextData>
     private inputManager: IInputManager
     private messageBus: IMessageBus
@@ -25,17 +32,29 @@ export class TurnScheduler implements ITurnScheduler {
     }
 
     onQueueEmpty(): void {
-        if (this.endingTurn) {
-            this.stateManager.commitTurn()
-            this.inputManager.update()
-            this.endingTurn = false
-            return
+        switch (this.endingTurn) {
+            case EndingTurnState.NOT_STARTED:
+                this.endingTurn = EndingTurnState.STARTED
+                this.messageBus.postMessage({
+                    message: END_TURN_MESSAGE,
+                    payload: null
+                })
+                break
+            case EndingTurnState.STARTED:
+                this.stateManager.commitTurn()
+                this.inputManager.update()
+                this.endingTurn = EndingTurnState.FINALIZING
+                this.messageBus.postMessage({
+                    message: FINALIZE_END_TURN_MESSAGE,
+                    payload: null
+                })
+                return
+                break
+            case EndingTurnState.FINALIZING:
+                this.endingTurn = EndingTurnState.NOT_STARTED
+                break
         }
-        this.endingTurn = true
-        this.messageBus.postMessage({
-            message: END_TURN_MESSAGE,
-            payload: null
-        })
+
     }
 }
 

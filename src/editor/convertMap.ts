@@ -1,5 +1,6 @@
 import type { GameMap as DataGameMap, MapTile as DataMapTile } from '@loader/data/map'
 import type { SquaresMap as SchemaSquaresMap } from '@loader/schema/map'
+import { mapMapTile } from '@loader/mappers/map'
 
 export function toSchemaMap(map: DataGameMap): SchemaSquaresMap {
   return {
@@ -30,7 +31,7 @@ export function fromAnyMap(map: SchemaSquaresMap | DataGameMap): DataGameMap {
   const schema = map as SchemaSquaresMap
   const tilesRecord: Record<string, DataMapTile> = {}
   schema.tiles.forEach((t) => {
-    tilesRecord[t.key] = t
+    tilesRecord[t.key] = mapMapTile(t)
   })
   return {
     key: schema.key,

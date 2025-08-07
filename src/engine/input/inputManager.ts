@@ -1,6 +1,7 @@
 import type { IMessageBus } from '@utils/messageBus'
 import { VIRTUAL_INPUT_MESSAGE } from '../messages/messages'
 import type { Action } from '@loader/data/action'
+import type { Message } from '@utils/types'
 import { InputSourceTracker } from './inputSourceTracker'
 import { InputMatrixBuilder, type MatrixInputItem } from './inputMatrixBuilder'
 import { EventHandlerManager } from '@engine/common/eventHandlerManager'
@@ -19,7 +20,7 @@ export type InputManagerServices = {
     messageBus: IMessageBus
     inputSourceTracker: InputSourceTracker
     inputMatrixBuilder: InputMatrixBuilder
-    executeAction: (action: Action) => void
+    executeAction: (action: Action, message?: Message) => void
 }
 
 export class InputManager implements IInputManager {
@@ -55,7 +56,7 @@ export class InputManager implements IInputManager {
     private onInput(input: string): void {
         const inputItem = this.services.inputSourceTracker.getInput(input)
         if (inputItem && inputItem.enabled && inputItem.input.action) {
-            this.services.executeAction(inputItem.input.action)
+            this.services.executeAction(inputItem.input.action, undefined)
         }
     }
 }

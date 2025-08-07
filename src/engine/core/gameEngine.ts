@@ -23,7 +23,7 @@ export interface IGameEngine {
     resolveCondition(condition: Condition | null): boolean
     registerActionHandler(handler: IActionHandler): void
     registerConditionResolver(resolver: IConditionResolver): void
-    createScriptContext(): ScriptContext
+    createScriptContext(message?: Message): ScriptContext
     setIsLoading(): void
     setIsRunning(): void
     get StateManager(): IStateManager<ContextData>
@@ -78,7 +78,7 @@ export class GameEngine implements IGameEngine {
     }
 
     public executeAction(action: Action): void {
-        this.handlerRegistry.executeAction(this, action)
+        this.handlerRegistry.executeAction(this, action, undefined)
     }
 
     public resolveCondition(condition: Condition | null): boolean {
@@ -121,12 +121,14 @@ export class GameEngine implements IGameEngine {
         return this.outputManager
     }
 
-    public createScriptContext(): ScriptContext {
+    public createScriptContext(message?: Message): ScriptContext {
         const context: ScriptContext = {
             state: this.StateManager.state,
-            postMessage: (message: Message) => {
-                this.MessageBus.postMessage(message)
-            }
+            postMessage: (msg: Message) => {
+                this.MessageBus.postMessage(msg)
+            },
+            triggerMessage: message?.message,
+            triggerPayload: message?.payload
         }
         return context
     }

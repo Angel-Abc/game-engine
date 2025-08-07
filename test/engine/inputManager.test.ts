@@ -68,7 +68,7 @@ function createInputManager(actionFn = vi.fn()) {
     messageBus: messageBus as any,
     inputSourceTracker,
     inputMatrixBuilder,
-    executeAction: actionFn
+    executeAction: actionFn as any
   }
 
   const inputManager = new InputManager(services)

@@ -22,6 +22,7 @@ import type { IActionHandler } from '../actions/actionHandler'
 import type { IConditionResolver } from '../conditions/conditionResolver'
 import type { Action } from '@loader/data/action'
 import type { Condition } from '@loader/data/condition'
+import type { Message } from '@utils/types'
 import { TurnScheduler } from './turnScheduler'
 import { GameEngine } from './gameEngine'
 import { HandlerRegistry, type IHandlerRegistry } from './handlerRegistry'
@@ -42,7 +43,7 @@ export interface IEngineManagerFactory {
         stateManager: IStateManager<ContextData>,
         mapLoader: IMapLoader,
         tileLoader: ITileLoader,
-        executeAction: (action: Action) => void,
+        executeAction: (action: Action, message?: Message) => void,
         setIsLoading: () => void,
         setIsRunning: () => void
     ): IMapManager
@@ -56,7 +57,7 @@ export interface IEngineManagerFactory {
         stateManager: IStateManager<ContextData>,
         translationService: ITranslationService,
         virtualInputHandler: IVirtualInputHandler,
-        executeAction: (action: Action) => void,
+        executeAction: (action: Action, message?: Message) => void,
         resolveCondition: (condition: Condition | null) => boolean
     ): IInputManager
     createOutputManager(messageBus: IMessageBus): IOutputManager
@@ -118,7 +119,7 @@ export class GameEngineInitializer {
 
         const setIsLoading = () => stateController.setIsLoading()
         const setIsRunning = () => stateController.setIsRunning()
-        const executeAction = (action: Action) => handlerRegistry.executeAction(engine, action)
+        const executeAction = (action: Action, message?: Message) => handlerRegistry.executeAction(engine, action, message)
         const resolveCondition = (condition: Condition | null) => handlerRegistry.resolveCondition(engine, condition)
 
         const pageManager = factory.createPageManager(messageBus, stateManager, loader.pageLoader, setIsLoading, setIsRunning)

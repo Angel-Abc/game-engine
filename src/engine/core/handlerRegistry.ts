@@ -6,13 +6,13 @@ import type { IActionHandler } from '../actions/actionHandler'
 import type { IConditionResolver } from '../conditions/conditionResolver'
 import type { Action } from '@loader/data/action'
 import type { Condition } from '@loader/data/condition'
-import type { CleanUp } from '@utils/types'
+import type { CleanUp, Message } from '@utils/types'
 import type { IGameEngine } from './gameEngine'
 
 export interface IHandlerRegistry {
     registerActionHandler(handler: IActionHandler): void
     registerConditionResolver(resolver: IConditionResolver): void
-    executeAction(engine: IGameEngine, action: Action): void
+    executeAction(engine: IGameEngine, action: Action, message?: Message): void
     resolveCondition(engine: IGameEngine, condition: Condition | null): boolean
     registerGameHandlers(engine: IGameEngine, gameLoader: IGameLoader, handlerLoader: IHandlerLoader, messageBus: IMessageBus): Promise<void>
     cleanup(): void
@@ -31,12 +31,12 @@ export class HandlerRegistry implements IHandlerRegistry {
         this.conditionResolvers.set(resolver.type, resolver)
     }
 
-    public executeAction(engine: IGameEngine, action: Action): void {
+    public executeAction(engine: IGameEngine, action: Action, message?: Message): void {
         const handler = this.actionHandlers.get(action.type)
         if (handler === undefined) {
             fatalError('HandlerRegistry', `No action handler for type: ${action.type}`)
         }
-        handler.handle(engine, action)
+        handler.handle(engine, action, message)
     }
 
     public resolveCondition(engine: IGameEngine, condition: Condition | null): boolean {
@@ -56,7 +56,7 @@ export class HandlerRegistry implements IHandlerRegistry {
             handlers.forEach((handler: Handler) => {
                 const cleanup = messageBus.registerMessageListener(
                     handler.message,
-                    () => this.executeAction(engine, handler.action)
+                    (msg) => this.executeAction(engine, handler.action, msg)
                 )
                 this.handlerCleanupList.push(cleanup)
             })

@@ -7,7 +7,7 @@ export class ScriptConditionResolver implements IConditionResolver {
 
     resolve(engine: IGameEngine, condition: Condition): boolean {
         const { script } = condition as ScriptCondition
-        return engine.ScriptRunner.run<boolean>(script, engine.createScriptContext())
+        return engine.ScriptRunner.run<boolean>(script, engine.createScriptContext(undefined))
     }
 }
 

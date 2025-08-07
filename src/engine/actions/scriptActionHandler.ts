@@ -1,13 +1,14 @@
 import type { IActionHandler } from './actionHandler'
 import type { Action, ScriptAction } from '@loader/data/action'
 import type { IGameEngine } from '@engine/core/gameEngine'
+import type { Message } from '@utils/types'
 
 export class ScriptActionHandler implements IActionHandler {
     readonly type = 'script' as const
 
-    handle(engine: IGameEngine, action: Action): void {
+    handle(engine: IGameEngine, action: Action, message?: Message): void {
         const { script } = action as ScriptAction
-        engine.ScriptRunner.run<void>(script, engine.createScriptContext())
+        engine.ScriptRunner.run<void>(script, engine.createScriptContext(message))
     }
 }
 

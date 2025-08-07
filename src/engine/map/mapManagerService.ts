@@ -3,6 +3,7 @@ import type { IStateManager } from '../core/stateManager'
 import type { ContextData } from '../core/context'
 import type { IMessageBus } from '@utils/messageBus'
 import type { Action } from '@loader/data/action'
+import type { Message } from '@utils/types'
 import type { IMapLoader } from '@loader/mapLoader'
 import type { ITileLoader } from '@loader/tileLoader'
 import { MapLoaderService, type MapLoaderServiceDependencies } from './mapLoaderService'
@@ -12,7 +13,7 @@ export function createMapManager(
     stateManager: IStateManager<ContextData>,
     mapLoader: IMapLoader,
     tileLoader: ITileLoader,
-    executeAction: (action: Action) => void,
+    executeAction: (action: Action, message?: Message) => void,
     setIsLoading: () => void,
     setIsRunning: () => void
 ): IMapManager {

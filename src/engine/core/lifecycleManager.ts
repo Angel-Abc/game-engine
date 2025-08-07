@@ -1,5 +1,5 @@
 import { fatalError } from '@utils/logMessage'
-import { MessageBus } from '@utils/messageBus'
+import type { IMessageBus } from '@utils/messageBus'
 import { SWITCH_PAGE_MESSAGE, END_TURN_MESSAGE, ENGINE_STATE_CHANGED_MESSAGE, MAP_SWITCHED_MESSAGE } from '../messages/messages'
 import type { IGameLoader, ILanguageLoader, IHandlerLoader } from '@loader/loader'
 import type { IStateManager } from './stateManager'
@@ -24,7 +24,7 @@ export interface ILifecycleManager {
 export class LifecycleManager implements ILifecycleManager {
     private engine: IGameEngine
     private loader: IGameLoader & ILanguageLoader & IHandlerLoader
-    private messageBus: MessageBus
+    private messageBus: IMessageBus
     private stateManager: IStateManager<ContextData>
     private translationService: ITranslationService
     private pageManager: IPageManager
@@ -39,7 +39,7 @@ export class LifecycleManager implements ILifecycleManager {
 
     constructor(engine: IGameEngine, deps: {
         loader: IGameLoader & ILanguageLoader & IHandlerLoader
-        messageBus: MessageBus
+        messageBus: IMessageBus
         stateManager: IStateManager<ContextData>
         translationService: ITranslationService
         pageManager: IPageManager

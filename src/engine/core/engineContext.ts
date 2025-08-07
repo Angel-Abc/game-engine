@@ -1,4 +1,4 @@
-import { MessageBus } from '@utils/messageBus'
+import type { IMessageBus } from '@utils/messageBus'
 import type { IStateManager } from './stateManager'
 import type { ContextData } from './context'
 import type { ITranslationService } from '../dialog/translationService'
@@ -14,7 +14,7 @@ import type { IHandlerRegistry } from './handlerRegistry'
 import type { IStateController } from './stateController'
 
 export interface EngineContext {
-    messageBus: MessageBus
+    messageBus: IMessageBus
     stateManager: IStateManager<ContextData>
     translationService: ITranslationService
     pageManager: IPageManager

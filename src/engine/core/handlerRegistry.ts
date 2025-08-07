@@ -1,5 +1,5 @@
 import { fatalError } from '@utils/logMessage'
-import { MessageBus } from '@utils/messageBus'
+import type { IMessageBus } from '@utils/messageBus'
 import type { IGameLoader, IHandlerLoader } from '@loader/loader'
 import type { Handler } from '@loader/data/handler'
 import type { IActionHandler } from '../actions/actionHandler'
@@ -14,7 +14,7 @@ export interface IHandlerRegistry {
     registerConditionResolver(resolver: IConditionResolver): void
     executeAction(engine: IGameEngine, action: Action): void
     resolveCondition(engine: IGameEngine, condition: Condition | null): boolean
-    registerGameHandlers(engine: IGameEngine, loader: IGameLoader & IHandlerLoader, messageBus: MessageBus): Promise<void>
+    registerGameHandlers(engine: IGameEngine, loader: IGameLoader & IHandlerLoader, messageBus: IMessageBus): Promise<void>
     cleanup(): void
 }
 
@@ -48,7 +48,7 @@ export class HandlerRegistry implements IHandlerRegistry {
         return resolver.resolve(engine, condition)
     }
 
-    public async registerGameHandlers(engine: IGameEngine, loader: IGameLoader & IHandlerLoader, messageBus: MessageBus): Promise<void> {
+    public async registerGameHandlers(engine: IGameEngine, loader: IGameLoader & IHandlerLoader, messageBus: IMessageBus): Promise<void> {
         this.cleanup()
         const handlerFiles = loader.Game.handlers
         for (const path of handlerFiles) {

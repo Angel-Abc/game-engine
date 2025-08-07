@@ -1,5 +1,6 @@
 import type { GameMap as GameMapData, MapTile as MapTileData } from '@loader/data/map'
 import { type GameMap, type MapTile } from '@loader/schema/map'
+import { mapAction } from './action'
 
 
 export function mapGameMap(gameMap: GameMap): GameMapData {
@@ -21,7 +22,7 @@ export function mapMapTile(mapTile: MapTile): MapTileData {
     return {
         key: mapTile.key,
         tile: mapTile.tile,
-        onEnter: mapTile.onEnter
+        onEnter: mapTile.onEnter ? mapAction(mapTile.onEnter) : undefined
     }
 }
 

@@ -84,8 +84,36 @@ export class GameEngineInitializer {
     static initialize(
         loader: Loader,
         factory: IEngineManagerFactory,
-        options: GameEngineOptions = {}
+        options: GameEngineOptions = {},
     ): GameEngine {
+        const {
+            engine,
+            pageManager,
+            mapManager,
+            virtualInputHandler,
+            inputManager,
+            outputManager,
+            dialogManager
+        } = this.setupDependencies(loader, factory)
+
+        this.initializeManagers(
+            pageManager,
+            mapManager,
+            virtualInputHandler,
+            inputManager,
+            outputManager,
+            dialogManager
+        )
+
+        this.registerHandlers(engine, options)
+
+        return engine
+    }
+
+    private static setupDependencies(
+        loader: Loader,
+        factory: IEngineManagerFactory
+    ) {
         let engine: GameEngine // eslint-disable-line prefer-const
 
         // Turn scheduler is defined later so it can be referenced by the message queue callback
@@ -112,7 +140,10 @@ export class GameEngineInitializer {
                 }
             }
         }
-        const stateManager: IStateManager<ContextData> = new StateManager<ContextData>(contextData, new ChangeTracker<ContextData>())
+        const stateManager: IStateManager<ContextData> = new StateManager<ContextData>(
+            contextData,
+            new ChangeTracker<ContextData>()
+        )
         const translationService = factory.createTranslationService()
         const scriptRunner = factory.createScriptRunner()
         const stateController = new StateController(messageBus)
@@ -124,11 +155,35 @@ export class GameEngineInitializer {
         const resolveCondition = (condition: Condition | null) => handlerRegistry.resolveCondition(engine, condition)
 
         const pageManager = factory.createPageManager(messageBus, stateManager, loader.pageLoader, setIsLoading, setIsRunning)
-        const mapManager = factory.createMapManager(messageBus, stateManager, loader.mapLoader, loader, translationService, executeAction, setIsLoading, setIsRunning)
+        const mapManager = factory.createMapManager(
+            messageBus,
+            stateManager,
+            loader.mapLoader,
+            loader,
+            translationService,
+            executeAction,
+            setIsLoading,
+            setIsRunning
+        )
         const virtualInputHandler = factory.createVirtualInputHandler(loader, loader, messageBus)
-        const inputManager = factory.createInputManager(messageBus, stateManager, translationService, virtualInputHandler, executeAction, resolveCondition)
+        const inputManager = factory.createInputManager(
+            messageBus,
+            stateManager,
+            translationService,
+            virtualInputHandler,
+            executeAction,
+            resolveCondition
+        )
         const outputManager = factory.createOutputManager(messageBus)
-        const dialogManager = factory.createDialogManager(messageBus, stateManager, translationService, loader, setIsLoading, setIsRunning, resolveCondition)
+        const dialogManager = factory.createDialogManager(
+            messageBus,
+            stateManager,
+            translationService,
+            loader,
+            setIsLoading,
+            setIsRunning,
+            resolveCondition
+        )
         const lifecycleManager = new LifecycleManager({
             gameLoader: loader,
             languageLoader: loader.languageLoader,
@@ -162,17 +217,35 @@ export class GameEngineInitializer {
 
         engine = new GameEngine(engineContext)
 
+        return {
+            engine,
+            pageManager,
+            mapManager,
+            virtualInputHandler,
+            inputManager,
+            outputManager,
+            dialogManager
+        }
+    }
+
+    private static initializeManagers(
+        pageManager: IPageManager,
+        mapManager: IMapManager,
+        virtualInputHandler: IVirtualInputHandler,
+        inputManager: IInputManager,
+        outputManager: IOutputManager,
+        dialogManager: IDialogManager
+    ) {
         pageManager.initialize()
         mapManager.initialize()
         virtualInputHandler.initialize()
         inputManager.initialize()
         outputManager.initialize()
         dialogManager.initialize()
+    }
 
+    private static registerHandlers(engine: GameEngine, options: GameEngineOptions) {
         options.actionHandlers?.forEach(h => engine.registerActionHandler(h))
         options.conditionResolvers?.forEach(r => engine.registerConditionResolver(r))
-
-        return engine
     }
 }
-

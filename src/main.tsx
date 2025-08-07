@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client'
 import { logDebug } from '@utils/logMessage'
-import { Loader, type ILoader } from '@loader/loader'
+import { Loader } from '@loader/loader'
 import { type IGameEngine } from '@engine/core/gameEngine'
 import { GameEngineInitializer, type IEngineManagerFactory } from '@engine/core/gameEngineInitializer'
 import { PostMessageActionHandler } from '@engine/actions/postMessageActionHandler'
@@ -21,7 +21,7 @@ import './style/game.css'
 
 logDebug('Main', 'Application starting ...')
 
-const loader: ILoader = new Loader()
+const loader = new Loader()
 await loader.loadRoot()
 
 // add css files to the header
@@ -34,13 +34,17 @@ loader.Styling.forEach(css => {
 })
 
 const factory: IEngineManagerFactory = {
-  createPageManager: (engine, messageBus, stateManager) => createPageManager(engine, messageBus, stateManager),
-  createMapManager: (engine, messageBus, stateManager) => createMapManager(engine, messageBus, stateManager),
-  createVirtualInputHandler: (engine, messageBus) => createVirtualInputHandler(engine, messageBus),
+  createPageManager: (engine, messageBus, stateManager, pageLoader) =>
+    createPageManager(engine, messageBus, stateManager, pageLoader),
+  createMapManager: (engine, messageBus, stateManager, mapLoader, tileLoader) =>
+    createMapManager(engine, messageBus, stateManager, mapLoader, tileLoader),
+  createVirtualInputHandler: (gameLoader, inputLoader, messageBus) =>
+    createVirtualInputHandler(gameLoader, inputLoader, messageBus),
   createInputManager: (engine, messageBus, stateManager, translationService, virtualInputHandler) =>
     createInputManager(engine, messageBus, stateManager, translationService, virtualInputHandler),
   createOutputManager: (engine, messageBus) => createOutputManager(engine, messageBus),
-  createDialogManager: (engine, messageBus, stateManager, translationService) => createDialogManager(engine, messageBus, stateManager, translationService),
+  createDialogManager: (engine, messageBus, stateManager, translationService, dialogLoader) =>
+    createDialogManager(engine, messageBus, stateManager, translationService, dialogLoader),
   createTranslationService: () => createTranslationService(),
   createScriptRunner: () => createScriptRunner()
 }

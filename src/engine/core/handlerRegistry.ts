@@ -14,7 +14,7 @@ export interface IHandlerRegistry {
     registerConditionResolver(resolver: IConditionResolver): void
     executeAction(engine: IGameEngine, action: Action): void
     resolveCondition(engine: IGameEngine, condition: Condition | null): boolean
-    registerGameHandlers(engine: IGameEngine, loader: IGameLoader & IHandlerLoader, messageBus: IMessageBus): Promise<void>
+    registerGameHandlers(engine: IGameEngine, gameLoader: IGameLoader, handlerLoader: IHandlerLoader, messageBus: IMessageBus): Promise<void>
     cleanup(): void
 }
 
@@ -48,11 +48,11 @@ export class HandlerRegistry implements IHandlerRegistry {
         return resolver.resolve(engine, condition)
     }
 
-    public async registerGameHandlers(engine: IGameEngine, loader: IGameLoader & IHandlerLoader, messageBus: IMessageBus): Promise<void> {
+    public async registerGameHandlers(engine: IGameEngine, gameLoader: IGameLoader, handlerLoader: IHandlerLoader, messageBus: IMessageBus): Promise<void> {
         this.cleanup()
-        const handlerFiles = loader.Game.handlers
+        const handlerFiles = gameLoader.Game.handlers
         for (const path of handlerFiles) {
-            const handlers = await loader.loadHandlers(path)
+            const handlers = await handlerLoader.loadHandlers(path)
             handlers.forEach((handler: Handler) => {
                 const cleanup = messageBus.registerMessageListener(
                     handler.message,

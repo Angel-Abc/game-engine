@@ -104,8 +104,8 @@ describe('Loader', () => {
     const loader = new Loader('/data')
     await loader.loadRoot()
 
-    const first = await loader.loadPage('page1')
-    const second = await loader.loadPage('page1')
+    const first = await loader.pageLoader.loadPage('page1')
+    const second = await loader.pageLoader.loadPage('page1')
 
     expect(first).toEqual(pageData)
     expect(second).toBe(first)
@@ -125,7 +125,7 @@ describe('Loader', () => {
     const loader = new Loader('/data')
     await loader.loadRoot()
 
-    await expect(loader.loadPage('missing')).rejects.toThrow()
+    await expect(loader.pageLoader.loadPage('missing')).rejects.toThrow()
   })
 
   it('caches loaded languages', async () => {
@@ -143,8 +143,8 @@ describe('Loader', () => {
     const loader = new Loader('/data')
     await loader.loadRoot()
 
-    const first = await loader.loadLanguage('en')
-    const second = await loader.loadLanguage('en')
+    const first = await loader.languageLoader.loadLanguage('en')
+    const second = await loader.languageLoader.loadLanguage('en')
 
     expect(first).toEqual(languageData)
     expect(second).toBe(first)
@@ -215,8 +215,8 @@ describe('Loader', () => {
     const loader = new Loader('/data')
     await loader.loadRoot()
 
-    const first = await loader.loadMap('start')
-    const second = await loader.loadMap('start')
+    const first = await loader.mapLoader.loadMap('start')
+    const second = await loader.mapLoader.loadMap('start')
 
     expect(first).toEqual(mapData)
     expect(second).toBe(first)

@@ -1,7 +1,8 @@
 import { fatalError } from '@utils/logMessage'
 import type { IMessageBus } from '@utils/messageBus'
 import { SWITCH_PAGE_MESSAGE, END_TURN_MESSAGE, ENGINE_STATE_CHANGED_MESSAGE, MAP_SWITCHED_MESSAGE } from '../messages/messages'
-import type { IGameLoader, ILanguageLoader, IHandlerLoader } from '@loader/loader'
+import type { IGameLoader, IHandlerLoader } from '@loader/loader'
+import type { ILanguageLoader } from '@loader/languageLoader'
 import type { IStateManager } from './stateManager'
 import type { ContextData } from './context'
 import type { ITranslationService } from '../dialog/translationService'
@@ -23,7 +24,9 @@ export interface ILifecycleManager {
 
 export class LifecycleManager implements ILifecycleManager {
     private engine: IGameEngine
-    private loader: IGameLoader & ILanguageLoader & IHandlerLoader
+    private gameLoader: IGameLoader
+    private languageLoader: ILanguageLoader
+    private handlerLoader: IHandlerLoader
     private messageBus: IMessageBus
     private stateManager: IStateManager<ContextData>
     private translationService: ITranslationService
@@ -38,7 +41,9 @@ export class LifecycleManager implements ILifecycleManager {
     private currentLanguage: string | null = null
 
     constructor(engine: IGameEngine, deps: {
-        loader: IGameLoader & ILanguageLoader & IHandlerLoader
+        gameLoader: IGameLoader
+        languageLoader: ILanguageLoader
+        handlerLoader: IHandlerLoader
         messageBus: IMessageBus
         stateManager: IStateManager<ContextData>
         translationService: ITranslationService
@@ -52,7 +57,9 @@ export class LifecycleManager implements ILifecycleManager {
         stateController: IStateController
     }) {
         this.engine = engine
-        this.loader = deps.loader
+        this.gameLoader = deps.gameLoader
+        this.languageLoader = deps.languageLoader
+        this.handlerLoader = deps.handlerLoader
         this.messageBus = deps.messageBus
         this.stateManager = deps.stateManager
         this.translationService = deps.translationService
@@ -69,16 +76,16 @@ export class LifecycleManager implements ILifecycleManager {
 
     public async start(): Promise<void> {
         this.stateController.State.value = GameEngineState.loading
-        await this.loader.reset()
-        await this.handlerRegistry.registerGameHandlers(this.engine, this.loader, this.messageBus)
+        await this.gameLoader.reset()
+        await this.handlerRegistry.registerGameHandlers(this.engine, this.gameLoader, this.handlerLoader, this.messageBus)
         await this.virtualInputHandler.load()
         const language = (this.currentLanguage ?? this.stateManager.state.language) ?? fatalError('LifecycleManager', 'No language set!')
         this.currentLanguage = language
-        this.translationService.setLanguage(await this.loader.loadLanguage(language))
+        this.translationService.setLanguage(await this.languageLoader.loadLanguage(language))
         this.stateController.State.value = GameEngineState.running
         this.messageBus.postMessage({
             message: SWITCH_PAGE_MESSAGE,
-            payload: this.loader.Game.initialData.startPage
+            payload: this.gameLoader.Game.initialData.startPage
         })
     }
 

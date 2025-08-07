@@ -1,5 +1,4 @@
 import type { IMessageBus } from '@utils/messageBus'
-import type { ILoader, IGameLoader, ILanguageLoader, IHandlerLoader } from '@loader/loader'
 import type { IStateManager } from './stateManager'
 import type { ITrackedValue } from '@utils/trackedState'
 import type { ITranslationService } from '../dialog/translationService'
@@ -34,7 +33,6 @@ export interface IGameEngine {
     get StateManager(): IStateManager<ContextData>
     get State(): ITrackedValue<GameEngineState>
     get TranslationService(): ITranslationService
-    get Loader(): ILoader
     get MessageBus(): IMessageBus
     get PageManager(): IPageManager
     get MapManager(): IMapManager
@@ -46,7 +44,6 @@ export interface IGameEngine {
 }
 
 export class GameEngine implements IGameEngine {
-    private loader: IGameLoader & ILanguageLoader & IHandlerLoader
     private messageBus: IMessageBus
     private stateManager: IStateManager<ContextData>
     private translationService: ITranslationService
@@ -63,10 +60,8 @@ export class GameEngine implements IGameEngine {
     private stateController: IStateController
 
     constructor(
-        loader: IGameLoader & ILanguageLoader & IHandlerLoader,
         context: EngineContext
     ) {
-        this.loader = loader
         this.messageBus = context.messageBus
         this.stateManager = context.stateManager
         this.translationService = context.translationService
@@ -124,10 +119,6 @@ export class GameEngine implements IGameEngine {
 
     public get TranslationService(): ITranslationService {
         return this.translationService
-    }
-
-    public get Loader(): ILoader {
-        return this.loader as ILoader
     }
 
     public get MessageBus(): IMessageBus {

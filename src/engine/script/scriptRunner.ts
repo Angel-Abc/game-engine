@@ -8,7 +8,9 @@ export interface IScriptRunner {
 
 export type ScriptContext = {
     state: ContextData,
-    postMessage: (message: Message) => void
+    postMessage: (message: Message) => void,
+    triggerMessage?: string,
+    triggerPayload?: Message['payload']
 }
 
 export class ScriptRunner implements IScriptRunner {

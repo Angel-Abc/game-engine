@@ -3,6 +3,7 @@ import { InputSourceTracker } from './inputSourceTracker'
 import { InputMatrixBuilder } from './inputMatrixBuilder'
 import type { Action } from '@loader/data/action'
 import type { Condition } from '@loader/data/condition'
+import type { Message } from '@utils/types'
 import type { IStateManager } from '../core/stateManager'
 import type { ContextData } from '../core/context'
 import type { IMessageBus } from '@utils/messageBus'
@@ -14,7 +15,7 @@ export function createInputManager(
     stateManager: IStateManager<ContextData>,
     translationService: ITranslationService,
     virtualInputHandler: IVirtualInputHandler,
-    executeAction: (action: Action) => void,
+    executeAction: (action: Action, message?: Message) => void,
     resolveCondition: (condition: Condition | null) => boolean
 ): IInputManager {
     const inputSourceTracker = new InputSourceTracker({

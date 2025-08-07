@@ -17,7 +17,7 @@ export class OutputManager implements IOutputManager {
     private eventHandlerManager = new EventHandlerManager()
     private outputLogLines: string[] = []
     private currentMaxSize: number = 0
-    private needsnewDayLine: boolean = false
+    private needsNewDayLine: boolean = false
 
     constructor(services: OutputManagerServices) {
         this.services = services
@@ -33,7 +33,7 @@ export class OutputManager implements IOutputManager {
         this.eventHandlerManager.addListener(
             this.services.messageBus.registerMessageListener(
                 FINALIZE_END_TURN_MESSAGE,
-                () => { this.needsnewDayLine = true }
+                () => { this.needsNewDayLine = true }
             )
         )
     }
@@ -48,10 +48,10 @@ export class OutputManager implements IOutputManager {
         return this.outputLogLines.slice(-1 * maxCount)
     }
 
-    private async addLine(line: string): Promise<void> {
-        if (this.needsnewDayLine) {
+    private addLine(line: string): void {
+        if (this.needsNewDayLine) {
             this.outputLogLines.push('<hr/>')
-            this.needsnewDayLine = false
+            this.needsNewDayLine = false
         }
         this.outputLogLines.push(line)
         if (this.currentMaxSize > 0 && this.outputLogLines.length > 2 * this.currentMaxSize) {

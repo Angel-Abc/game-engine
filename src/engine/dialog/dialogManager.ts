@@ -7,6 +7,7 @@ import type { IDialogLoader } from '@loader/dialogLoader'
 import { loadOnce } from '@utils/loadOnce'
 import type { Condition } from '@loader/data/condition'
 import type { ITranslationService } from './translationService'
+import { EventHandlerManager } from '@engine/common/eventHandlerManager'
 
 export interface IDialogManager {
     initialize(): void
@@ -24,21 +25,21 @@ export type DialogManagerServices = {
 }
 
 export class DialogManager implements IDialogManager {
-    private unregisterEventHandlers: (() => void)[] = []
     private services: DialogManagerServices
+    private eventHandlerManager = new EventHandlerManager()
 
     constructor(services: DialogManagerServices) {
         this.services = services
     }
 
     public initialize(): void {
-        this.unregisterEventHandlers.push(
+        this.eventHandlerManager.addListener(
             this.services.messageBus.registerMessageListener(
                 DIALOG_START_DIALOG,
                 async (message) => this.startDialog(message.payload as string)
             )
         )
-        this.unregisterEventHandlers.push(
+        this.eventHandlerManager.addListener(
             this.services.messageBus.registerMessageListener(
                 DIALOG_SHOW_DIALOG,
                 async (message) => this.showDialog(message.payload as string)
@@ -47,8 +48,7 @@ export class DialogManager implements IDialogManager {
     }
 
     public cleanup(): void {
-        this.unregisterEventHandlers.forEach(unregister => unregister())
-        this.unregisterEventHandlers = []
+        this.eventHandlerManager.clearListeners()
     }
 
     private async startDialog(dialogSetId: string): Promise<void> {

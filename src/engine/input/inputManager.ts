@@ -3,6 +3,7 @@ import { VIRTUAL_INPUT_MESSAGE } from '../messages/messages'
 import type { Action } from '@loader/data/action'
 import { InputSourceTracker } from './inputSourceTracker'
 import { InputMatrixBuilder, type MatrixInputItem } from './inputMatrixBuilder'
+import { EventHandlerManager } from '@engine/common/eventHandlerManager'
 
 export type { MatrixInputItem } from './inputMatrixBuilder'
 export { nullMatrixInputItem } from './inputMatrixBuilder'
@@ -22,15 +23,15 @@ export type InputManagerServices = {
 }
 
 export class InputManager implements IInputManager {
-    private unregisterEventHandlers: (() => void)[] = []
     private services: InputManagerServices
+    private eventHandlerManager = new EventHandlerManager()
 
     constructor(services: InputManagerServices) {
         this.services = services
     }
 
     public initialize(): void {
-        this.unregisterEventHandlers.push(
+        this.eventHandlerManager.addListener(
             this.services.messageBus.registerMessageListener(
                 VIRTUAL_INPUT_MESSAGE,
                 (message) => this.onInput(message.payload as string)
@@ -39,8 +40,7 @@ export class InputManager implements IInputManager {
     }
 
     public cleanup(): void {
-        this.unregisterEventHandlers.forEach(unregister => unregister())
-        this.unregisterEventHandlers = []
+        this.eventHandlerManager.clearListeners()
     }
 
     public update(): void {

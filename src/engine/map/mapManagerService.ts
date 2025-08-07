@@ -7,12 +7,14 @@ import type { Message } from '@utils/types'
 import type { IMapLoader } from '@loader/mapLoader'
 import type { ITileLoader } from '@loader/tileLoader'
 import { MapLoaderService, type MapLoaderServiceDependencies } from './mapLoaderService'
+import type { ITranslationService } from '@engine/dialog/translationService'
 
 export function createMapManager(
     messageBus: IMessageBus,
     stateManager: IStateManager<ContextData>,
     mapLoader: IMapLoader,
     tileLoader: ITileLoader,
+    translationService: ITranslationService,
     executeAction: (action: Action, message?: Message) => void,
     setIsLoading: () => void,
     setIsRunning: () => void
@@ -32,6 +34,7 @@ export function createMapManager(
         stateManager,
         executeAction,
         mapLoaderService,
+        translationService
     }
     return new MapManager(services)
 }

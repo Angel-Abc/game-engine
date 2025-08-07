@@ -8,7 +8,7 @@ export const postMessageActionSchema = z.object({
 
 export const scriptActionSchema = z.object({
     type: z.literal('script'),
-    script: z.string()
+    script: z.union([z.string(), z.array(z.string())])  
 })
 
 export const actionSchema = z.discriminatedUnion('type', [postMessageActionSchema, scriptActionSchema])

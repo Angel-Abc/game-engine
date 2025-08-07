@@ -12,7 +12,7 @@ export function mapAction(action: Action): ActionData {
         case 'script':
             return {
                 type: 'script',
-                script: action.script
+                script: Array.isArray(action.script) ? action.script.join('\n') : action.script
             }
     }
 }

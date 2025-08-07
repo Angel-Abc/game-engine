@@ -43,6 +43,7 @@ export interface IEngineManagerFactory {
         stateManager: IStateManager<ContextData>,
         mapLoader: IMapLoader,
         tileLoader: ITileLoader,
+        translationService: ITranslationService,
         executeAction: (action: Action, message?: Message) => void,
         setIsLoading: () => void,
         setIsRunning: () => void
@@ -123,7 +124,7 @@ export class GameEngineInitializer {
         const resolveCondition = (condition: Condition | null) => handlerRegistry.resolveCondition(engine, condition)
 
         const pageManager = factory.createPageManager(messageBus, stateManager, loader.pageLoader, setIsLoading, setIsRunning)
-        const mapManager = factory.createMapManager(messageBus, stateManager, loader.mapLoader, loader, executeAction, setIsLoading, setIsRunning)
+        const mapManager = factory.createMapManager(messageBus, stateManager, loader.mapLoader, loader, translationService, executeAction, setIsLoading, setIsRunning)
         const virtualInputHandler = factory.createVirtualInputHandler(loader, loader, messageBus)
         const inputManager = factory.createInputManager(messageBus, stateManager, translationService, virtualInputHandler, executeAction, resolveCondition)
         const outputManager = factory.createOutputManager(messageBus)

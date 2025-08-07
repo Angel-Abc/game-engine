@@ -8,6 +8,7 @@ import type { Action } from '@loader/data/action'
 import type { Message } from '@utils/types'
 import type { IMapLoaderService } from './mapLoaderService'
 import { EventHandlerManager } from '@engine/common/eventHandlerManager'
+import type { ITranslationService } from '@engine/dialog/translationService'
 
 export interface IMapManager {
     initialize(): void
@@ -19,6 +20,7 @@ export type MapManagerServices = {
     stateManager: IStateManager<ContextData>
     executeAction: (action: Action, message?: Message) => void
     mapLoaderService: IMapLoaderService
+    translationService: ITranslationService
 }
 
 export class MapManager implements IMapManager {
@@ -52,14 +54,19 @@ export class MapManager implements IMapManager {
         if (location.mapName === null) return
         const gameMap = context.maps[location.mapName]
         const tileId = gameMap.map[position.y][position.x]
-        const tile = gameMap.tiles[tileId]
+        const mapTile = gameMap.tiles[tileId]
+        const tile = context.tiles[mapTile.tile]
         this.services.messageBus.postMessage({
             message: POSITION_CHANGED_MESSAGE,
-            payload: { x: position.x, y: position.y },
+            payload: { 
+                x: position.x, 
+                y: position.y,
+                tile: this.services.translationService.translate(tile.description)
+            },
         })
         logDebug('MapManager', 'Position set to x: {0}, y: {1}', position.x, position.y)
-        if (tile.onEnter) {
-            this.services.executeAction(tile.onEnter, undefined)
+        if (mapTile.onEnter) {
+            this.services.executeAction(mapTile.onEnter, undefined)
         }
     }
 }

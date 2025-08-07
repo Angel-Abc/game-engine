@@ -36,8 +36,8 @@ loader.Styling.forEach(css => {
 const factory: IEngineManagerFactory = {
   createPageManager: (messageBus, stateManager, pageLoader, setIsLoading, setIsRunning) =>
     createPageManager(messageBus, stateManager, pageLoader, setIsLoading, setIsRunning),
-  createMapManager: (messageBus, stateManager, mapLoader, tileLoader, executeAction, setIsLoading, setIsRunning) =>
-    createMapManager(messageBus, stateManager, mapLoader, tileLoader, executeAction, setIsLoading, setIsRunning),
+  createMapManager: (messageBus, stateManager, mapLoader, tileLoader, translationService, executeAction, setIsLoading, setIsRunning) =>
+    createMapManager(messageBus, stateManager, mapLoader, tileLoader, translationService, executeAction, setIsLoading, setIsRunning),
   createVirtualInputHandler: (gameLoader, inputLoader, messageBus) =>
     createVirtualInputHandler(gameLoader, inputLoader, messageBus),
   createInputManager: (messageBus, stateManager, translationService, virtualInputHandler, executeAction, resolveCondition) =>

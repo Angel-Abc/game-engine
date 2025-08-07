@@ -6,6 +6,7 @@ import { CHANGE_POSITION_MESSAGE, POSITION_CHANGED_MESSAGE } from '../messages/m
 import type { ChangePositionPayload } from '@engine/messages/types'
 import type { Action } from '@loader/data/action'
 import type { IMapLoaderService } from './mapLoaderService'
+import { EventHandlerManager } from '@engine/common/eventHandlerManager'
 
 export interface IMapManager {
     initialize(): void
@@ -20,7 +21,7 @@ export type MapManagerServices = {
 }
 
 export class MapManager implements IMapManager {
-    private unregisterEventHandlers: (() => void)[] = []
+    private eventHandlerManager = new EventHandlerManager()
     private services: MapManagerServices
 
     constructor(services: MapManagerServices) {
@@ -29,7 +30,7 @@ export class MapManager implements IMapManager {
 
     public initialize(): void {
         this.services.mapLoaderService.initialize()
-        this.unregisterEventHandlers.push(
+        this.eventHandlerManager.addListener(
             this.services.messageBus.registerMessageListener(
                 CHANGE_POSITION_MESSAGE,
                 async (message) => this.changePosition(message.payload as unknown as ChangePositionPayload)
@@ -39,8 +40,7 @@ export class MapManager implements IMapManager {
 
     public cleanup(): void {
         this.services.mapLoaderService.cleanup()
-        this.unregisterEventHandlers.forEach(unregister => unregister())
-        this.unregisterEventHandlers = []
+        this.eventHandlerManager.clearListeners()
     }
 
     private async changePosition(position: { x: number; y: number }): Promise<void> {

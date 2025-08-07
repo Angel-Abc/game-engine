@@ -8,15 +8,17 @@
   "license": "MPL-2.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"npm run dev:server\" \"vite --port 5173\"",
-    "dev:editor": "concurrently \"npm run dev:server\" \"vite --port 5174 --open /editor.html\"",
+    "dev": "concurrently \"npm run dev:server\" \"vite --port 5173\" \"npm run typecheck:watch\"",
+    "dev:editor": "concurrently \"npm run dev:server\" \"vite --port 5174 --open /editor.html\" \"npm run typecheck:watch\"",
     "dev:server": "node src/server/index.js",
     "build": "tsc && vite build",
     "build:release": "cross-env WITH_EDITOR=false npm run build",
     "preview": "vite preview",
     "test": "vitest run",
     "lint": "eslint . --ext .ts,.tsx",
-    "lint:fix": "eslint . --ext .ts,.tsx --fix"
+    "lint:fix": "eslint . --ext .ts,.tsx --fix",
+    "typecheck": "tsc --noEmit",
+    "typecheck:watch": "npm run typecheck -- --watch"
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",

@@ -18,12 +18,11 @@ import type { IStateController } from './stateController'
 import type { IGameEngine } from './gameEngine'
 
 export interface ILifecycleManager {
-    start(): Promise<void>
+    start(engine: IGameEngine): Promise<void>
     cleanup(): void
 }
 
 export class LifecycleManager implements ILifecycleManager {
-    private engine: IGameEngine
     private gameLoader: IGameLoader
     private languageLoader: ILanguageLoader
     private handlerLoader: IHandlerLoader
@@ -40,7 +39,7 @@ export class LifecycleManager implements ILifecycleManager {
     private stateController: IStateController
     private currentLanguage: string | null = null
 
-    constructor(engine: IGameEngine, deps: {
+    constructor(deps: {
         gameLoader: IGameLoader
         languageLoader: ILanguageLoader
         handlerLoader: IHandlerLoader
@@ -56,7 +55,6 @@ export class LifecycleManager implements ILifecycleManager {
         handlerRegistry: IHandlerRegistry
         stateController: IStateController
     }) {
-        this.engine = engine
         this.gameLoader = deps.gameLoader
         this.languageLoader = deps.languageLoader
         this.handlerLoader = deps.handlerLoader
@@ -74,10 +72,10 @@ export class LifecycleManager implements ILifecycleManager {
         this.initializeMessageListeners()
     }
 
-    public async start(): Promise<void> {
+    public async start(engine: IGameEngine): Promise<void> {
         this.stateController.State.value = GameEngineState.loading
         await this.gameLoader.reset()
-        await this.handlerRegistry.registerGameHandlers(this.engine, this.gameLoader, this.handlerLoader, this.messageBus)
+        await this.handlerRegistry.registerGameHandlers(engine, this.gameLoader, this.handlerLoader, this.messageBus)
         await this.virtualInputHandler.load()
         const language = (this.currentLanguage ?? this.stateManager.state.language) ?? fatalError('LifecycleManager', 'No language set!')
         this.currentLanguage = language

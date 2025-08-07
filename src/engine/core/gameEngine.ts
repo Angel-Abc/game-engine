@@ -2,16 +2,12 @@ import type { IMessageBus } from '@utils/messageBus'
 import type { IStateManager } from './stateManager'
 import type { ITrackedValue } from '@utils/trackedState'
 import type { ITranslationService } from '../dialog/translationService'
-import type { IPageManager } from '../page/pageManager'
 import type { Action } from '@loader/data/action'
 import type { Message } from '@utils/types'
-import type { IMapManager } from '../map/mapManager'
-import type { IVirtualInputHandler } from '../input/virtualInputHandler'
 import type { IInputManager } from '../input/inputManager'
 import type { IScriptRunner, ScriptContext } from '../script/scriptRunner'
 import type { Condition } from '@loader/data/condition'
 import type { IOutputManager } from '../output/outputManager'
-import type { IDialogManager } from '../dialog/dialogManager'
 import type { ContextData } from './context'
 import type { IActionHandler } from '../actions/actionHandler'
 import type { IConditionResolver } from '../conditions/conditionResolver'
@@ -34,26 +30,18 @@ export interface IGameEngine {
     get State(): ITrackedValue<GameEngineState>
     get TranslationService(): ITranslationService
     get MessageBus(): IMessageBus
-    get PageManager(): IPageManager
-    get MapManager(): IMapManager
     get InputManager(): IInputManager
     get ScriptRunner(): IScriptRunner
-    get VirtualInputHandler(): IVirtualInputHandler
     get OutputManager(): IOutputManager
-    get DialogManager(): IDialogManager
 }
 
 export class GameEngine implements IGameEngine {
     private messageBus: IMessageBus
     private stateManager: IStateManager<ContextData>
     private translationService: ITranslationService
-    private pageManager: IPageManager
-    private mapManager: IMapManager
-    private virtualInputHandler: IVirtualInputHandler
     private inputManager: IInputManager
     private scriptRunner: IScriptRunner
     private outputManager: IOutputManager
-    private dialogManager: IDialogManager
 
     private lifecycleManager: ILifecycleManager
     private handlerRegistry: IHandlerRegistry
@@ -65,12 +53,8 @@ export class GameEngine implements IGameEngine {
         this.messageBus = context.messageBus
         this.stateManager = context.stateManager
         this.translationService = context.translationService
-        this.pageManager = context.pageManager
-        this.mapManager = context.mapManager
-        this.virtualInputHandler = context.virtualInputHandler
         this.inputManager = context.inputManager
         this.outputManager = context.outputManager
-        this.dialogManager = context.dialogManager
         this.scriptRunner = context.scriptRunner
         this.lifecycleManager = context.lifecycleManager
         this.handlerRegistry = context.handlerRegistry
@@ -78,7 +62,7 @@ export class GameEngine implements IGameEngine {
     }
 
     public async start(): Promise<void> {
-        await this.lifecycleManager.start()
+        await this.lifecycleManager.start(this)
     }
 
     public cleanup(): void {
@@ -125,14 +109,6 @@ export class GameEngine implements IGameEngine {
         return this.messageBus
     }
 
-    public get PageManager(): IPageManager {
-        return this.pageManager
-    }
-
-    public get MapManager(): IMapManager {
-        return this.mapManager
-    }
-
     public get InputManager(): IInputManager {
         return this.inputManager
     }
@@ -141,16 +117,8 @@ export class GameEngine implements IGameEngine {
         return this.scriptRunner
     }
 
-    public get VirtualInputHandler(): IVirtualInputHandler {
-        return this.virtualInputHandler
-    }
-
     public get OutputManager(): IOutputManager {
         return this.outputManager
-    }
-
-    public get DialogManager(): IDialogManager {
-        return this.dialogManager
     }
 
     public createScriptContext(): ScriptContext {

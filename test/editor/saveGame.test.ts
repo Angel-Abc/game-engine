@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { saveGame } from '../../src/editor/main'
+import { saveGame } from '../../src/editor/services/api'
 
 describe('saveGame', () => {
   it('returns error message when json is invalid and does not fetch', async () => {

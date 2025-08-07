@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
-import { gameSchema } from '@loader/schema/game'
 import type { Game } from '@loader/data/game'
-import { saveGame } from '../main'
+import { fetchGame as defaultFetchGame, saveGame as defaultSaveGame } from '../services/api'
 
 export interface UseGameDataResult {
   game: Game | null
@@ -15,7 +14,10 @@ export interface UseGameDataResult {
   save: () => Promise<void>
 }
 
-export function useGameData(): UseGameDataResult {
+export function useGameData(
+  fetchGame: typeof defaultFetchGame = defaultFetchGame,
+  saveGame: typeof defaultSaveGame = defaultSaveGame,
+): UseGameDataResult {
   const [game, setGame] = useState<Game | null>(null)
   const [styling, setStyling] = useState<string[]>([])
   const [statusMessage, setStatusMessage] = useState('')
@@ -27,51 +29,9 @@ export function useGameData(): UseGameDataResult {
 
     const load = async () => {
       try {
-        const response = await fetch('/api/game', {
-          signal: controller.signal,
-        })
-
-        if (!response.ok) {
-          setLoadError('Failed to load game data.')
-          setGame({
-            title: '',
-            description: '',
-            version: '',
-            initialData: { language: '', startPage: '' },
-            languages: {},
-            pages: {},
-            maps: {},
-            tiles: {},
-            dialogs: {},
-            handlers: [],
-            virtualKeys: [],
-            virtualInputs: [],
-          })
-          setStyling([])
-          return
-        }
-
-        const data = await response.json()
-        const parsed = gameSchema.parse(data)
-        const result: Game = {
-          title: parsed.title,
-          description: parsed.description,
-          version: parsed.version,
-          initialData: {
-            language: parsed['initial-data'].language,
-            startPage: parsed['initial-data']['start-page'],
-          },
-          languages: { ...parsed.languages },
-          pages: { ...parsed.pages },
-          maps: { ...parsed.maps },
-          tiles: { ...parsed.tiles },
-          dialogs: { ...parsed.dialogs },
-          handlers: [...parsed.handlers],
-          virtualKeys: [...parsed['virtual-keys']],
-          virtualInputs: [...parsed['virtual-inputs']],
-        }
-        setGame(result)
-        setStyling(parsed.styling)
+        const { game: loadedGame, styling: styles } = await fetchGame(controller.signal)
+        setGame(loadedGame)
+        setStyling(styles)
       } catch (err) {
         if ((err as Error).name === 'AbortError') return
         setLoadError('Failed to load game data.')
@@ -95,7 +55,7 @@ export function useGameData(): UseGameDataResult {
 
     load()
     return () => controller.abort()
-  }, [])
+  }, [fetchGame])
 
   const save = async () => {
     if (!game) return

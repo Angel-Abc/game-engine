@@ -23,7 +23,7 @@ import type { IConditionResolver } from '../conditions/conditionResolver'
 import type { Action } from '@loader/data/action'
 import type { Condition } from '@loader/data/condition'
 import { TurnScheduler } from './turnScheduler'
-import { GameEngine, type IGameEngine } from './gameEngine'
+import { GameEngine } from './gameEngine'
 import { HandlerRegistry, type IHandlerRegistry } from './handlerRegistry'
 import { StateController } from './stateController'
 import { LifecycleManager } from './lifecycleManager'
@@ -31,17 +31,20 @@ import type { EngineContext } from './engineContext'
 
 export interface IEngineManagerFactory {
     createPageManager(
-        engine: IGameEngine,
         messageBus: IMessageBus,
         stateManager: IStateManager<ContextData>,
-        pageLoader: IPageLoader
+        pageLoader: IPageLoader,
+        setIsLoading: () => void,
+        setIsRunning: () => void
     ): IPageManager
     createMapManager(
-        engine: IGameEngine,
         messageBus: IMessageBus,
         stateManager: IStateManager<ContextData>,
         mapLoader: IMapLoader,
-        tileLoader: ITileLoader
+        tileLoader: ITileLoader,
+        executeAction: (action: Action) => void,
+        setIsLoading: () => void,
+        setIsRunning: () => void
     ): IMapManager
     createVirtualInputHandler(
         gameLoader: IGameLoader,
@@ -49,20 +52,23 @@ export interface IEngineManagerFactory {
         messageBus: IMessageBus
     ): IVirtualInputHandler
     createInputManager(
-        engine: IGameEngine,
         messageBus: IMessageBus,
         stateManager: IStateManager<ContextData>,
         translationService: ITranslationService,
-        virtualInputHandler: IVirtualInputHandler
+        virtualInputHandler: IVirtualInputHandler,
+        executeAction: (action: Action) => void,
+        resolveCondition: (condition: Condition | null) => boolean
     ): IInputManager
-    createOutputManager(engine: IGameEngine, messageBus: IMessageBus): IOutputManager
+    createOutputManager(messageBus: IMessageBus): IOutputManager
     createTranslationService(): ITranslationService
     createDialogManager(
-        engine: IGameEngine,
         messageBus: IMessageBus,
         stateManager: IStateManager<ContextData>,
         translationService: ITranslationService,
-        dialogLoader: IDialogLoader
+        dialogLoader: IDialogLoader,
+        setIsLoading: () => void,
+        setIsRunning: () => void,
+        resolveCondition: (condition: Condition | null) => boolean
     ): IDialogManager
     createScriptRunner(): IScriptRunner
 }
@@ -86,14 +92,6 @@ export class GameEngineInitializer {
         const messageQueue = new MessageQueue(() => turnScheduler.onQueueEmpty())
         const messageBus: IMessageBus = new MessageBus(messageQueue)
 
-        const engineProxy = {
-            get MessageBus() { return messageBus },
-            setIsLoading: () => engine.setIsLoading(),
-            setIsRunning: () => engine.setIsRunning(),
-            executeAction: (action: Action) => engine.executeAction(action),
-            resolveCondition: (condition: Condition | null) => engine.resolveCondition(condition)
-        } as unknown as IGameEngine
-
         const contextData: ContextData = {
             language: loader.Game.initialData.language,
             pages: {},
@@ -115,16 +113,21 @@ export class GameEngineInitializer {
         const stateManager: IStateManager<ContextData> = new StateManager<ContextData>(contextData, new ChangeTracker<ContextData>())
         const translationService = factory.createTranslationService()
         const scriptRunner = factory.createScriptRunner()
-
-        const pageManager = factory.createPageManager(engineProxy, messageBus, stateManager, loader.pageLoader)
-        const mapManager = factory.createMapManager(engineProxy, messageBus, stateManager, loader.mapLoader, loader)
-        const virtualInputHandler = factory.createVirtualInputHandler(loader, loader, messageBus)
-        const inputManager = factory.createInputManager(engineProxy, messageBus, stateManager, translationService, virtualInputHandler)
-        const outputManager = factory.createOutputManager(engineProxy, messageBus)
-        const dialogManager = factory.createDialogManager(engineProxy, messageBus, stateManager, translationService, loader)
-        const handlerRegistry: IHandlerRegistry = new HandlerRegistry()
         const stateController = new StateController(messageBus)
-        const lifecycleManager = new LifecycleManager(engineProxy, {
+        const handlerRegistry: IHandlerRegistry = new HandlerRegistry()
+
+        const setIsLoading = () => stateController.setIsLoading()
+        const setIsRunning = () => stateController.setIsRunning()
+        const executeAction = (action: Action) => handlerRegistry.executeAction(engine, action)
+        const resolveCondition = (condition: Condition | null) => handlerRegistry.resolveCondition(engine, condition)
+
+        const pageManager = factory.createPageManager(messageBus, stateManager, loader.pageLoader, setIsLoading, setIsRunning)
+        const mapManager = factory.createMapManager(messageBus, stateManager, loader.mapLoader, loader, executeAction, setIsLoading, setIsRunning)
+        const virtualInputHandler = factory.createVirtualInputHandler(loader, loader, messageBus)
+        const inputManager = factory.createInputManager(messageBus, stateManager, translationService, virtualInputHandler, executeAction, resolveCondition)
+        const outputManager = factory.createOutputManager(messageBus)
+        const dialogManager = factory.createDialogManager(messageBus, stateManager, translationService, loader, setIsLoading, setIsRunning, resolveCondition)
+        const lifecycleManager = new LifecycleManager({
             gameLoader: loader,
             languageLoader: loader.languageLoader,
             handlerLoader: loader,
@@ -147,12 +150,8 @@ export class GameEngineInitializer {
             messageBus,
             stateManager,
             translationService,
-            pageManager,
-            mapManager,
-            virtualInputHandler,
             inputManager,
             outputManager,
-            dialogManager,
             scriptRunner,
             lifecycleManager,
             handlerRegistry,

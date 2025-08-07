@@ -34,17 +34,17 @@ loader.Styling.forEach(css => {
 })
 
 const factory: IEngineManagerFactory = {
-  createPageManager: (engine, messageBus, stateManager, pageLoader) =>
-    createPageManager(engine, messageBus, stateManager, pageLoader),
-  createMapManager: (engine, messageBus, stateManager, mapLoader, tileLoader) =>
-    createMapManager(engine, messageBus, stateManager, mapLoader, tileLoader),
+  createPageManager: (messageBus, stateManager, pageLoader, setIsLoading, setIsRunning) =>
+    createPageManager(messageBus, stateManager, pageLoader, setIsLoading, setIsRunning),
+  createMapManager: (messageBus, stateManager, mapLoader, tileLoader, executeAction, setIsLoading, setIsRunning) =>
+    createMapManager(messageBus, stateManager, mapLoader, tileLoader, executeAction, setIsLoading, setIsRunning),
   createVirtualInputHandler: (gameLoader, inputLoader, messageBus) =>
     createVirtualInputHandler(gameLoader, inputLoader, messageBus),
-  createInputManager: (engine, messageBus, stateManager, translationService, virtualInputHandler) =>
-    createInputManager(engine, messageBus, stateManager, translationService, virtualInputHandler),
-  createOutputManager: (engine, messageBus) => createOutputManager(engine, messageBus),
-  createDialogManager: (engine, messageBus, stateManager, translationService, dialogLoader) =>
-    createDialogManager(engine, messageBus, stateManager, translationService, dialogLoader),
+  createInputManager: (messageBus, stateManager, translationService, virtualInputHandler, executeAction, resolveCondition) =>
+    createInputManager(messageBus, stateManager, translationService, virtualInputHandler, executeAction, resolveCondition),
+  createOutputManager: (messageBus) => createOutputManager(messageBus),
+  createDialogManager: (messageBus, stateManager, translationService, dialogLoader, setIsLoading, setIsRunning, resolveCondition) =>
+    createDialogManager(messageBus, stateManager, translationService, dialogLoader, setIsLoading, setIsRunning, resolveCondition),
   createTranslationService: () => createTranslationService(),
   createScriptRunner: () => createScriptRunner()
 }

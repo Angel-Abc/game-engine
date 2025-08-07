@@ -26,19 +26,22 @@ function createEngine() {
     Styling: []
   } as unknown as Loader
   const factory: IEngineManagerFactory = {
-    createPageManager: (engine, messageBus, stateManager, pageLoader) => {
-      void engine
+    createPageManager: (messageBus, stateManager, pageLoader, setIsLoading, setIsRunning) => {
       void messageBus
       void stateManager
       void pageLoader
+      void setIsLoading
+      void setIsRunning
       return { initialize: vi.fn(), switchPage: vi.fn(), cleanup: vi.fn() } as any
     },
-    createMapManager: (engine, messageBus, stateManager, mapLoader, tileLoader) => {
-      void engine
+    createMapManager: (messageBus, stateManager, mapLoader, tileLoader, executeAction, setIsLoading, setIsRunning) => {
       void messageBus
       void stateManager
       void mapLoader
       void tileLoader
+      void executeAction
+      void setIsLoading
+      void setIsRunning
       return { initialize: vi.fn(), cleanup: vi.fn() } as any
     },
     createVirtualInputHandler: (gameLoader, inputLoader, messageBus) => {
@@ -47,25 +50,27 @@ function createEngine() {
       void messageBus
       return { initialize: vi.fn(), cleanup: vi.fn(), load: vi.fn(), getVirtualInput: vi.fn() } as any
     },
-    createInputManager: (engine, messageBus, stateManager, translationService, virtualInputHandler) => {
-      void engine
+    createInputManager: (messageBus, stateManager, translationService, virtualInputHandler, executeAction, resolveCondition) => {
       void messageBus
       void stateManager
       void translationService
       void virtualInputHandler
+      void executeAction
+      void resolveCondition
       return { initialize: vi.fn(), cleanup: vi.fn(), update: vi.fn(), getInputMatrix: vi.fn() } as any
     },
-    createOutputManager: (engine, messageBus) => {
-      void engine
+    createOutputManager: (messageBus) => {
       void messageBus
       return { initialize: vi.fn(), cleanup: vi.fn(), getLastLines: vi.fn() } as any
     },
-    createDialogManager: (engine, messageBus, stateManager, translationService, dialogLoader) => {
-      void engine
+    createDialogManager: (messageBus, stateManager, translationService, dialogLoader, setIsLoading, setIsRunning, resolveCondition) => {
       void messageBus
       void stateManager
       void translationService
       void dialogLoader
+      void setIsLoading
+      void setIsRunning
+      void resolveCondition
       return { initialize: vi.fn(), cleanup: vi.fn() } as any
     },
     createTranslationService: () => ({ translate: vi.fn(), setLanguage: vi.fn() }) as any,

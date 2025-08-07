@@ -4,7 +4,12 @@ import type { GameMap } from '@loader/data/map'
 import type { Tile } from '@loader/data/tile'
 import { resolveTileSet } from '../resolveTileSet'
 import { fromAnyMap, toSchemaMap } from '../convertMap'
-import { saveGame } from '../main'
+import type { SquaresMap as SchemaSquaresMap } from '@loader/schema/map'
+import {
+  saveGame as defaultSaveGame,
+  fetchMap as defaultFetchMap,
+  fetchTiles as defaultFetchTiles,
+} from '../services/api'
 
 export interface UseGameTabsResult {
   tab: 'game' | 'map'
@@ -18,6 +23,9 @@ export interface UseGameTabsResult {
 export function useGameTabs(
   game: Game | null,
   setStatusMessage: React.Dispatch<React.SetStateAction<string>>,
+  fetchMap: typeof defaultFetchMap = defaultFetchMap,
+  fetchTiles: typeof defaultFetchTiles = defaultFetchTiles,
+  saveGame: typeof defaultSaveGame = defaultSaveGame,
 ): UseGameTabsResult {
   const [tab, setTab] = useState<'game' | 'map'>('game')
   const [editingMap, setEditingMap] = useState<GameMap | null>(null)
@@ -30,19 +38,19 @@ export function useGameTabs(
     let mapData: GameMap
     let tiles: Record<string, Tile> = {}
     try {
-      const res = await fetch(`/api/map/${encodeURIComponent(path)}`)
-      if (!res.ok) throw new Error('failed')
-      const json = await res.json()
+      const json = (await fetchMap(path)) as SchemaSquaresMap | GameMap
       mapData = fromAnyMap(json)
       await Promise.all(
         (mapData.tileSets || []).map(async (setId: string) => {
           const tilePath = game.tiles[setId]
           if (!tilePath) return
-          const tRes = await fetch(`/api/map/${encodeURIComponent(tilePath)}`)
-          if (!tRes.ok) return
-          const tJson = await tRes.json()
-          if (Array.isArray(tJson.tiles)) {
-            Object.assign(tiles, resolveTileSet(tilePath, tJson.tiles as Tile[]))
+          try {
+            const tJson = (await fetchTiles(tilePath)) as { tiles?: Tile[] }
+            if (Array.isArray(tJson.tiles)) {
+              Object.assign(tiles, resolveTileSet(tilePath, tJson.tiles))
+            }
+          } catch {
+            // ignore tile loading errors
           }
         }),
       )

@@ -33,29 +33,37 @@ export class InputMatrixBuilder {
 
     public build(width: number, height: number, inputs: InputItem[]): MatrixInputItem[][] {
         const matrix: MatrixInputItem[][] = create2DArray<MatrixInputItem>(height, width, nullMatrixInputItem)
-        const itemsToProcess: InputItem[] = [...inputs]
+        const preferredIndex = new Map<string, InputItem>()
+        const itemsToProcess: InputItem[] = []
 
-        for (let y = 0; y < height; y++) {
-            for (let x = 0; x < width; x++) {
-                let found = false
-                for (let index = itemsToProcess.length - 1; index >= 0 && !found; index--) {
-                    const inputItem = itemsToProcess[index]
-                    if (inputItem.input.preferredCol === x && inputItem.input.preferredRow === y) {
-                        found = true
-                        matrix[y][x] = this.getMatrixInputItem(inputItem)
-                        itemsToProcess.splice(index, 1)
-                    }
-                }
-                if (!found) {
-                    matrix[y][x] = nullMatrixInputItem
-                }
+        for (const item of inputs) {
+            const { preferredRow, preferredCol } = item.input
+            if (
+                preferredRow !== undefined &&
+                preferredCol !== undefined &&
+                preferredRow >= 0 && preferredRow < height &&
+                preferredCol >= 0 && preferredCol < width
+            ) {
+                const key = `${preferredCol},${preferredRow}`
+                const existing = preferredIndex.get(key)
+                if (existing) itemsToProcess.push(existing)
+                preferredIndex.set(key, item)
+            } else {
+                itemsToProcess.push(item)
             }
         }
 
-        for (let y = height - 1; y >= 0 && itemsToProcess.length > 0; y--) {
-            for (let x = width - 1; x >= 0 && itemsToProcess.length > 0; x--) {
-                if (matrix[y][x] === nullMatrixInputItem) {
-                    matrix[y][x] = this.getMatrixInputItem(itemsToProcess.shift()!)
+        let fallbackIndex = 0
+        for (let y = 0; y < height; y++) {
+            for (let x = 0; x < width; x++) {
+                const key = `${x},${y}`
+                const indexedItem = preferredIndex.get(key)
+                if (indexedItem) {
+                    matrix[y][x] = this.getMatrixInputItem(indexedItem)
+                } else if (fallbackIndex < itemsToProcess.length) {
+                    matrix[y][x] = this.getMatrixInputItem(itemsToProcess[fallbackIndex++])
+                } else {
+                    matrix[y][x] = nullMatrixInputItem
                 }
             }
         }

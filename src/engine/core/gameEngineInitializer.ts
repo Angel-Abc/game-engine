@@ -1,5 +1,5 @@
 import type { IGameLoader, ILanguageLoader, IHandlerLoader } from '@loader/loader'
-import { MessageBus } from '@utils/messageBus'
+import { MessageBus, type IMessageBus } from '@utils/messageBus'
 import { MessageQueue } from '@utils/messageQueue'
 import { ChangeTracker } from './changeTracker'
 import { StateManager, type IStateManager } from './stateManager'
@@ -24,19 +24,19 @@ import { LifecycleManager } from './lifecycleManager'
 import type { EngineContext } from './engineContext'
 
 export interface IEngineManagerFactory {
-    createPageManager(engine: IGameEngine, messageBus: MessageBus, stateManager: IStateManager<ContextData>): IPageManager
-    createMapManager(engine: IGameEngine, messageBus: MessageBus, stateManager: IStateManager<ContextData>): IMapManager
-    createVirtualInputHandler(engine: IGameEngine, messageBus: MessageBus): IVirtualInputHandler
+    createPageManager(engine: IGameEngine, messageBus: IMessageBus, stateManager: IStateManager<ContextData>): IPageManager
+    createMapManager(engine: IGameEngine, messageBus: IMessageBus, stateManager: IStateManager<ContextData>): IMapManager
+    createVirtualInputHandler(engine: IGameEngine, messageBus: IMessageBus): IVirtualInputHandler
     createInputManager(
         engine: IGameEngine,
-        messageBus: MessageBus,
+        messageBus: IMessageBus,
         stateManager: IStateManager<ContextData>,
         translationService: ITranslationService,
         virtualInputHandler: IVirtualInputHandler
     ): IInputManager
-    createOutputManager(engine: IGameEngine, messageBus: MessageBus): IOutputManager
+    createOutputManager(engine: IGameEngine, messageBus: IMessageBus): IOutputManager
     createTranslationService(): ITranslationService
-    createDialogManager(engine: IGameEngine, messageBus: MessageBus, stateManager: IStateManager<ContextData>, translationService: ITranslationService): IDialogManager
+    createDialogManager(engine: IGameEngine, messageBus: IMessageBus, stateManager: IStateManager<ContextData>, translationService: ITranslationService): IDialogManager
     createScriptRunner(): IScriptRunner
 }
 
@@ -57,7 +57,7 @@ export class GameEngineInitializer {
         // eslint-disable-next-line prefer-const
         let turnScheduler: TurnScheduler
         const messageQueue = new MessageQueue(() => turnScheduler.onQueueEmpty())
-        const messageBus = new MessageBus(messageQueue)
+        const messageBus: IMessageBus = new MessageBus(messageQueue)
 
         const engineProxy = {
             get Loader() { return loader },

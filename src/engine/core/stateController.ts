@@ -1,5 +1,5 @@
 import { fatalError } from '@utils/logMessage'
-import { MessageBus } from '@utils/messageBus'
+import type { IMessageBus } from '@utils/messageBus'
 import { TrackedValue, type ITrackedValue } from '@utils/trackedState'
 import { ENGINE_STATE_CHANGED_MESSAGE } from '../messages/messages'
 
@@ -19,9 +19,9 @@ export interface IStateController {
 export class StateController implements IStateController {
     private state: ITrackedValue<GameEngineState>
     private loadCounter = 0
-    private messageBus: MessageBus
+    private messageBus: IMessageBus
 
-    constructor(messageBus: MessageBus) {
+    constructor(messageBus: IMessageBus) {
         this.messageBus = messageBus
         this.state = new TrackedValue<GameEngineState>(
             'GameEngine.State',

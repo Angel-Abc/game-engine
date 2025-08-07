@@ -1,4 +1,4 @@
-import { MessageBus, type IMessageBus } from '@utils/messageBus'
+import type { IMessageBus } from '@utils/messageBus'
 import type { ILoader, IGameLoader, ILanguageLoader, IHandlerLoader } from '@loader/loader'
 import type { IStateManager } from './stateManager'
 import type { ITrackedValue } from '@utils/trackedState'
@@ -47,7 +47,7 @@ export interface IGameEngine {
 
 export class GameEngine implements IGameEngine {
     private loader: IGameLoader & ILanguageLoader & IHandlerLoader
-    private messageBus: MessageBus
+    private messageBus: IMessageBus
     private stateManager: IStateManager<ContextData>
     private translationService: ITranslationService
     private pageManager: IPageManager

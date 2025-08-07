@@ -14,7 +14,33 @@
             "message": "START-BEACH.START-DIALOG.INTRO.MESSAGE",
             "behavior": {
                 "can-move": true
-            }
+            },
+            "choices": [
+                {
+                    "id": "intro-choice-1",
+                    "message": "START-BEACH.START-DIALOG.INTRO.CHOICE-1",
+                    "action": {
+                        "type": "goto",
+                        "target": "look-around"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "look-around",
+            "message": "START-BEACH.START-DIALOG.LOOK-AROUND.MESSAGE",
+            "behavior": {
+                "can-move": false
+            },
+            "choices": [
+                {
+                    "id": "look-around-choice-1",
+                    "message": "START-BEACH.START-DIALOG.LOOK-AROUND.CHOICE-1",
+                    "action": {
+                        "type": "end-dialog"
+                    }
+                }
+            ]
         }
     ]
 }

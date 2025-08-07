@@ -1,6 +1,7 @@
-import type { Dialog as DialogData, DialogSet as DialogSetData, Behavior as BehaviorData } from '@loader/data/dialog'
-import { type Dialog, type DialogSet, type Behavior } from '@loader/schema/dialog'
+import type { Dialog as DialogData, DialogSet as DialogSetData, Behavior as BehaviorData, DialogChoice as DialogChoiceData, DialogAction as DialogActionData } from '@loader/data/dialog'
+import { type Dialog, type DialogSet, type Behavior, type DialogChoice, type DialogAction } from '@loader/schema/dialog'
 import { mapCondition } from './condition'
+import { mapAction } from './action'
 
 export function mapDialogSet(dialogSet: DialogSet): DialogSetData {
     const defaultBehavior = mapBehavior(dialogSet['default-behavior'])
@@ -20,6 +21,36 @@ export function mapBehavior(behavior: Behavior): BehaviorData {
     }
 }
 
+export function mapDialogAction(action: DialogAction): DialogActionData {
+    switch (action.type) {
+        case 'goto':
+            return {
+                type: 'goto',
+                target: action.target
+            }
+        case 'end-dialog':
+            return {
+                type: 'end-dialog'
+            }
+        default:
+            return mapAction(action)
+        }
+}
+
+export function mapDialogChoice(choice: DialogChoice): DialogChoiceData {
+    return {
+        id: choice.id,
+        message: choice.message,
+        visible: choice.visible ? mapCondition(choice.visible) : undefined,
+        enabled: choice.enabled ? mapCondition(choice.enabled) : undefined,
+        action: mapDialogAction(choice.action)
+    }
+}
+
+export function mapDialogChoices(choices: DialogChoice[]): DialogChoiceData[] {
+    return choices.map(mapDialogChoice)
+}
+
 export function mapDialog(dialog: Dialog, defaultBehavior: BehaviorData): DialogData {
     const behavior = dialog.behavior ? mapBehavior(dialog.behavior) : {}
     return {
@@ -28,6 +59,7 @@ export function mapDialog(dialog: Dialog, defaultBehavior: BehaviorData): Dialog
         behavior: {
             ...defaultBehavior,
             ...behavior
-        }
+        },
+        choices: mapDialogChoices(dialog.choices)
     }
 }

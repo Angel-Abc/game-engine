@@ -1,5 +1,6 @@
 import type { IMessageBus } from '@utils/messageBus'
 import { ADD_LINE_TO_OUTPUT_LOG, OUTPUT_LOG_LINE_ADDED } from '../messages/messages'
+import { EventHandlerManager } from '@engine/common/eventHandlerManager'
 
 export interface IOutputManager {
     initialize(): void
@@ -13,7 +14,7 @@ export type OutputManagerServices = {
 
 export class OutputManager implements IOutputManager {
     private services: OutputManagerServices
-    private unregisterEventHandlers: (() => void)[] = []
+    private eventHandlerManager = new EventHandlerManager()
     private outputLogLines: string[] = []
     private currentMaxSize: number = 0
 
@@ -22,7 +23,7 @@ export class OutputManager implements IOutputManager {
     }
 
     public initialize(): void {
-        this.unregisterEventHandlers.push(
+        this.eventHandlerManager.addListener(
             this.services.messageBus.registerMessageListener(
                 ADD_LINE_TO_OUTPUT_LOG,
                 (message) => this.newLine(message.payload as string)
@@ -31,7 +32,7 @@ export class OutputManager implements IOutputManager {
     }
 
     public cleanup(): void {
-        this.unregisterEventHandlers.forEach(unregister => unregister())
+        this.eventHandlerManager.clearListeners()
         this.outputLogLines = []
     }
 

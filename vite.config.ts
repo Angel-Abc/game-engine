@@ -14,7 +14,6 @@ export default defineConfig({
     react(),
     viteStaticCopy({
       targets: [
-        { src: 'resources/**/*', dest: 'res' },
         { src: `${gameFolder}/**/*`, dest: 'data' },
       ],
       watch: {

@@ -1,30 +1,23 @@
-import { useEffect, useState } from 'react'
-import { fetchGame, saveGame } from '../services/api'
+import { useState } from 'react'
+import { useEditorContext } from '@editor/context/EditorContext'
+import { saveGame } from '../services/api'
 
 export const GameJsonPage: React.FC = () => {
-  const [json, setJson] = useState('')
+  const { game } = useEditorContext()
   const [status, setStatus] = useState('')
 
-  useEffect(() => {
-    const controller = new AbortController()
-    fetchGame(controller.signal)
-      .then((data) => {
-        setJson(JSON.stringify(data, null, 2))
-      })
-      .catch((err: Error) => {
-        setStatus(err.message)
-      })
-    return () => controller.abort()
-  }, [])
+  if (!game) {
+    return <div>Loading...</div>
+  }
 
   const handleSave = async () => {
-    const message = await saveGame(json)
+    const message = await saveGame(JSON.stringify(game))
     setStatus(message)
   }
 
   return (
     <div>
-      <textarea value={json} onChange={(e) => setJson(e.target.value)} />
+      <pre>{JSON.stringify(game, null, 2)}</pre>
       <div>
         <button type="button" onClick={handleSave}>
           Save

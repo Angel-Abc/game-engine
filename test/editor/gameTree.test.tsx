@@ -36,6 +36,7 @@ describe('GameTreeView', () => {
       )
     })
     const buttons = Array.from(container.querySelectorAll('button')).map((b) => b.textContent)
+    expect(buttons).toContain('game')
     expect(buttons).toContain('pages')
     expect(buttons).toContain('start')
     expect(buttons).toContain('maps')
@@ -58,7 +59,7 @@ describe('GameTreeView', () => {
     act(() => {
       startButton.dispatchEvent(new MouseEvent('click', { bubbles: true }))
     })
-    expect(onSelect).toHaveBeenCalledWith(['pages', 'start'])
+    expect(onSelect).toHaveBeenCalledWith(['game', 'pages', 'start'])
   })
 })
 

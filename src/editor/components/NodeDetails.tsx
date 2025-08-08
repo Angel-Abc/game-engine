@@ -21,11 +21,46 @@ type LanguageData = string[]
 export const NodeDetails: FC = () => {
   const { game, selectedPath, setGame } = useEditorContext()
 
-  if (!game || selectedPath.length < 2) {
+  if (!game) {
     return <div>Select a node</div>
   }
 
-  const [category, id] = selectedPath
+  const path = selectedPath[0] === 'game' ? selectedPath.slice(1) : selectedPath
+
+  if (path.length === 0) {
+    const handleChange = (field: 'title' | 'description') => (
+      e: ChangeEvent<HTMLInputElement>,
+    ) => {
+      const value = e.target.value
+      setGame({
+        ...game,
+        [field]: value,
+      })
+    }
+
+    return (
+      <form>
+        <label>
+          Title:
+          <input name="title" value={game.title} onChange={handleChange('title')} />
+        </label>
+        <label>
+          Description:
+          <input
+            name="description"
+            value={game.description}
+            onChange={handleChange('description')}
+          />
+        </label>
+      </form>
+    )
+  }
+
+  if (path.length < 2) {
+    return <div>Select a node</div>
+  }
+
+  const [category, id] = path
 
   if (category === 'pages') {
     const pageRecord = game.pages as unknown as Record<string, PageData>

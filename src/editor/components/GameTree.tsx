@@ -91,14 +91,16 @@ export const GameTreeView: React.FC<GameTreeViewProps> = ({
   onSelect,
 }) => {
   const root: Record<string, unknown> = {
-    pages: game.pages,
-    maps: game.maps,
-    tiles: game.tiles,
-    dialogs: game.dialogs,
-    handlers: game.handlers,
-    virtualKeys: game.virtualKeys,
-    virtualInputs: game.virtualInputs,
-    languages: game.languages,
+    game: {
+      pages: game.pages,
+      maps: game.maps,
+      tiles: game.tiles,
+      dialogs: game.dialogs,
+      handlers: game.handlers,
+      virtualKeys: game.virtualKeys,
+      virtualInputs: game.virtualInputs,
+      languages: game.languages,
+    },
   }
   return renderRecord(root, [], onSelect, selectedPath)
 }

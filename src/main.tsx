@@ -5,6 +5,8 @@ import { type IGameEngine } from '@engine/core/gameEngine'
 import { GameEngineInitializer, type IEngineManagerFactory } from '@engine/core/gameEngineInitializer'
 import { PostMessageActionHandler } from '@engine/actions/postMessageActionHandler'
 import { ScriptActionHandler } from '@engine/actions/scriptActionHandler'
+import { GotoDialogActionHandler } from '@engine/actions/gotoDialogActionHandler'
+import { EndDialogActionHandler } from '@engine/actions/endDialogActionHandler'
 import { ScriptConditionResolver } from '@engine/conditions/scriptConditionResolver'
 import { createPageManager } from '@engine/page/pageManagerService'
 import { createMapManager } from '@engine/map/mapManagerService'
@@ -50,7 +52,12 @@ const factory: IEngineManagerFactory = {
 }
 
 const engine: IGameEngine = GameEngineInitializer.initialize(loader, factory, {
-  actionHandlers: [new PostMessageActionHandler(), new ScriptActionHandler()],
+  actionHandlers: [
+    new PostMessageActionHandler(),
+    new ScriptActionHandler(),
+    new GotoDialogActionHandler(),
+    new EndDialogActionHandler()
+  ],
   conditionResolvers: [new ScriptConditionResolver()]
 })
 await engine.start()

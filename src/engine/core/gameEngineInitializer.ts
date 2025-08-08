@@ -18,7 +18,7 @@ import type { IOutputManager } from '../output/outputManager'
 import type { IDialogManager } from '../dialog/dialogManager'
 import type { ITranslationService } from '../dialog/translationService'
 import type { IScriptRunner } from '../script/scriptRunner'
-import type { IActionHandler } from '../actions/actionHandler'
+import type { IActionHandler, BaseAction } from '../actions/actionHandler'
 import type { IConditionResolver } from '../conditions/conditionResolver'
 import type { Action } from '@loader/data/action'
 import type { Condition } from '@loader/data/condition'
@@ -76,7 +76,7 @@ export interface IEngineManagerFactory {
 }
 
 export interface GameEngineOptions {
-    actionHandlers?: IActionHandler[]
+    actionHandlers?: IActionHandler<BaseAction>[]
     conditionResolvers?: IConditionResolver[]
 }
 

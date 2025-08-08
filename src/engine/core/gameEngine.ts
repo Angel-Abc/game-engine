@@ -9,7 +9,7 @@ import type { IScriptRunner, ScriptContext } from '../script/scriptRunner'
 import type { Condition } from '@loader/data/condition'
 import type { IOutputManager } from '../output/outputManager'
 import type { ContextData } from './context'
-import type { IActionHandler } from '../actions/actionHandler'
+import type { IActionHandler, BaseAction } from '../actions/actionHandler'
 import type { IConditionResolver } from '../conditions/conditionResolver'
 import type { IHandlerRegistry } from './handlerRegistry'
 import type { ILifecycleManager } from './lifecycleManager'
@@ -21,7 +21,7 @@ export interface IGameEngine {
     cleanup(): void
     executeAction(action: Action): void
     resolveCondition(condition: Condition | null): boolean
-    registerActionHandler(handler: IActionHandler): void
+    registerActionHandler(handler: IActionHandler<BaseAction>): void
     registerConditionResolver(resolver: IConditionResolver): void
     createScriptContext(message?: Message): ScriptContext
     setIsLoading(): void
@@ -69,7 +69,7 @@ export class GameEngine implements IGameEngine {
         this.lifecycleManager.cleanup()
     }
 
-    public registerActionHandler(handler: IActionHandler): void {
+    public registerActionHandler(handler: IActionHandler<BaseAction>): void {
         this.handlerRegistry.registerActionHandler(handler)
     }
 

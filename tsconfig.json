@@ -26,7 +26,8 @@
       "@app/*": ["src/app/*"],
       "@engine/*": ["src/engine/*"],
       "@loader/*": ["src/loader/*"],
-      "@utils/*": ["src/utils/*"]
+      "@utils/*": ["src/utils/*"],
+      "@editor/*": ["src/editor/*"]
     }
   },
   "include": ["src", "test"]

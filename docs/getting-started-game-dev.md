@@ -14,7 +14,6 @@ This guide helps you build a new game with this engine. It focuses on using the 
    npm run dev
    ```
 4. Open [http://localhost:5173](http://localhost:5173) in your browser to play the sample game.
-   The editor is available at [http://localhost:5174/editor.html](http://localhost:5174/editor.html).
 
 ### Build the Sample Game
 

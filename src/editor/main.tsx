@@ -1,12 +1,11 @@
 import { createRoot } from 'react-dom/client'
-import { GameEditor } from './components/GameEditor'
-import './editor.css'
+import { GameJsonPage } from './components/GameJsonPage'
 
 function EditorApp() {
   return (
     <div>
       <h1>Game JSON Editor</h1>
-      <GameEditor />
+      <GameJsonPage />
     </div>
   )
 }

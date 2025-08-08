@@ -8,7 +8,9 @@ const validGame = JSON.stringify({
   'initial-data': { language: '', 'start-page': '' },
   languages: {},
   pages: {},
-  maps: {},
+  maps: {
+    level1: { width: 1, height: 1, map: [['']] },
+  },
   tiles: {},
   dialogs: {},
   styling: [],

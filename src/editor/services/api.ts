@@ -25,7 +25,9 @@ export async function saveGame(
     return 'Invalid JSON'
   }
 
-  const parsed = gameSchema.safeParse(data)
+  const rest = { ...(data as Record<string, unknown>) }
+  delete (rest as Record<string, unknown>).maps
+  const parsed = gameSchema.safeParse({ ...rest, maps: {} })
   if (!parsed.success) {
     const message = parsed.error.issues
       .map((issue) => `${issue.path.join('.') || 'root'}: ${issue.message}`)
@@ -38,7 +40,7 @@ export async function saveGame(
     response = await fetchFn('/api/game', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(parsed.data),
+      body: JSON.stringify(data),
     })
   } catch (e) {
     return (e as Error).message

@@ -55,3 +55,15 @@ The output appears in the `dist/` directory.
      ```
 3. Edit the JSON files, images, and other assets in your game folder. The dev server reloads when files change.
 4. Build with `GAME_FOLDER` set to your game folder when you're ready to deploy. The `dist/` folder contains the final files you can host.
+
+## Using the Map Editor
+
+1. Select a map from the editor tree.
+2. Choose a tile from the palette.
+3. Place tiles with the primary mouse button:
+   * macOS/Linux: click or trackpad tap
+   * Windows: left-click
+4. Clear a tile with the secondary button:
+   * macOS: Control+click
+   * Windows/Linux: right-click
+5. Press **Ctrl+S** on Windows/Linux or **Cmd+S** on macOS to trigger save shortcuts in supporting browsers.

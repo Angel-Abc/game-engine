@@ -1,6 +1,7 @@
 export interface MapData {
   width?: number
   height?: number
+  map?: string[][]
 }
 
 export type Maps = Record<string, MapData>
@@ -10,6 +11,7 @@ export function isMapData(value: unknown): value is MapData {
     typeof value === 'object' &&
     value !== null &&
     ('width' in (value as Record<string, unknown>) ||
-      'height' in (value as Record<string, unknown>))
+      'height' in (value as Record<string, unknown>) ||
+      'map' in (value as Record<string, unknown>))
   )
 }

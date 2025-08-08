@@ -1,5 +1,5 @@
 import { gameSchema } from '@loader/schema/game'
-import type { Game } from '@loader/data/game'
+import type { Game } from '@editor/data/game'
 
 export async function saveGame(
   json: string,

@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client'
-import { GameJsonPage } from './components/GameJsonPage'
+import NodeDetails from './components/NodeDetails'
 import GameTree from './components/GameTree'
 import { EditorProvider } from './context/EditorContext'
 import '../style/reset.css'
@@ -15,7 +15,7 @@ function EditorApp() {
         </aside>
         <main className="editor-main">
           <h1>Game JSON Editor</h1>
-          <GameJsonPage />
+          <NodeDetails />
         </main>
       </div>
     </EditorProvider>

@@ -132,7 +132,7 @@ export class GameEngineInitializer {
             dialogs: {
                 activeDialog: null,
                 isModalDialog: false,
-                dialogSets: {}
+                dialogStates: {}
             },
             data: {
                 activePage: null,

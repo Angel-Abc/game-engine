@@ -10,7 +10,7 @@ export type DialogState = {
 export type DialogsState = {
     activeDialog: string | null
     isModalDialog: boolean
-    dialogSets: Record<string, DialogSet>
+    dialogStates: Record<string, DialogState>
 }
 
 export type ContextData = {

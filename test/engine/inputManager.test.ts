@@ -47,7 +47,7 @@ function createInputManager(actionFn = vi.fn()) {
     dialogs: {
       activeDialog: null,
       isModalDialog: false,
-      dialogSets: {}
+      dialogStates: {}
     },
     data: {
       activePage: 'page1',

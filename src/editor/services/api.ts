@@ -5,17 +5,27 @@ export async function saveGame(
   json: string,
   fetchFn: typeof fetch = fetch,
 ): Promise<string> {
+  let data: unknown
   try {
-    JSON.parse(json)
+    data = JSON.parse(json)
   } catch {
     return 'Invalid JSON'
   }
+
+  const parsed = gameSchema.safeParse(data)
+  if (!parsed.success) {
+    const message = parsed.error.issues
+      .map((issue) => `${issue.path.join('.') || 'root'}: ${issue.message}`)
+      .join('; ')
+    return `Validation error: ${message}`
+  }
+
   let response: Response
   try {
     response = await fetchFn('/api/game', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: json,
+      body: JSON.stringify(parsed.data),
     })
   } catch (e) {
     return (e as Error).message

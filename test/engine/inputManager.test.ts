@@ -32,7 +32,7 @@ function createInputManager(actionFn = vi.fn()) {
     description: 'desc',
     visible: { type: 'script', script: '' },
     enabled: { type: 'script', script: '' },
-    action: { type: 'script', script: '' }
+    action: { type: 'script' }
   }
 
   const state: ContextData = {

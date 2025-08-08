@@ -1,7 +1,7 @@
 import { InputManager, type IInputManager, type InputManagerServices } from './inputManager'
 import { InputSourceTracker } from './inputSourceTracker'
 import { InputMatrixBuilder } from './inputMatrixBuilder'
-import type { Action } from '@loader/data/action'
+import type { Action, BaseAction } from '@loader/data/action'
 import type { Condition } from '@loader/data/condition'
 import type { Message } from '@utils/types'
 import type { IStateManager } from '../core/stateManager'
@@ -15,7 +15,7 @@ export function createInputManager(
     stateManager: IStateManager<ContextData>,
     translationService: ITranslationService,
     virtualInputHandler: IVirtualInputHandler,
-    executeAction: (action: Action, message?: Message) => void,
+    executeAction: <T extends BaseAction = Action>(action: T, message?: Message) => void,
     resolveCondition: (condition: Condition | null) => boolean
 ): IInputManager {
     const inputSourceTracker = new InputSourceTracker({

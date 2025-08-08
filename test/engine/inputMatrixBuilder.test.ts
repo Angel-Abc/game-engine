@@ -65,7 +65,7 @@ describe('InputMatrixBuilder', () => {
         description: 'd',
         visible: { type: 'script', script: '' },
         enabled: { type: 'script', script: '' },
-        action: { type: 'script', script: '' }
+        action: { type: 'script' }
       }
       inputs.push({ input, enabled: true, visible: true })
     }

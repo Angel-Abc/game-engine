@@ -1,6 +1,6 @@
 import type { IMessageBus } from '@utils/messageBus'
 import { VIRTUAL_INPUT_MESSAGE } from '../messages/messages'
-import type { Action } from '@loader/data/action'
+import type { Action, BaseAction } from '@loader/data/action'
 import type { Message } from '@utils/types'
 import { InputSourceTracker } from './inputSourceTracker'
 import { InputMatrixBuilder, type MatrixInputItem } from './inputMatrixBuilder'
@@ -20,7 +20,7 @@ export type InputManagerServices = {
     messageBus: IMessageBus
     inputSourceTracker: InputSourceTracker
     inputMatrixBuilder: InputMatrixBuilder
-    executeAction: (action: Action, message?: Message) => void
+    executeAction: <T extends BaseAction = Action>(action: T, message?: Message) => void
 }
 
 export class InputManager implements IInputManager {

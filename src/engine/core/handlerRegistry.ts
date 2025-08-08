@@ -2,11 +2,12 @@ import { fatalError } from '@utils/logMessage'
 import type { IMessageBus } from '@utils/messageBus'
 import type { IGameLoader, IHandlerLoader } from '@loader/loader'
 import type { Handler } from '@loader/data/handler'
-import type { IActionHandler, BaseAction } from '../actions/actionHandler'
+import type { IActionHandler } from '../actions/actionHandler'
 import type { IConditionResolver } from '../conditions/conditionResolver'
 import type { Condition } from '@loader/data/condition'
 import type { CleanUp, Message } from '@utils/types'
 import type { IGameEngine } from './gameEngine'
+import type { BaseAction } from '@loader/data/action'
 
 export interface IHandlerRegistry {
     registerActionHandler<T extends BaseAction>(handler: IActionHandler<T>): void

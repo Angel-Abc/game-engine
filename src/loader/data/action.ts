@@ -10,3 +10,4 @@ export interface ScriptAction {
 }
 
 export type Action = PostMessageAction | ScriptAction
+export type BaseAction = { type: string }

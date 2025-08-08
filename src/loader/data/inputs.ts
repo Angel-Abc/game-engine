@@ -1,4 +1,4 @@
-import type { Action } from './action'
+import type { BaseAction } from './action'
 import type { Condition } from './condition'
 
 export interface VirtualKey {
@@ -25,5 +25,5 @@ export interface Input {
     description: string
     visible: Condition
     enabled: Condition
-    action: Action
+    action: BaseAction
 }

@@ -1,6 +1,7 @@
 import type { JSX } from 'react'
 import { useEditorContext } from '@editor/context/EditorContext'
 import type { NodePath } from '@editor/context/EditorContext'
+import { isMapData } from '@editor/data/map'
 import type { Game } from '../data/game'
 
 export interface GameTreeViewProps {
@@ -24,6 +25,8 @@ function renderRecord(
       {Object.entries(record).map(([key, value]) => {
         const nextPath = [...path, key]
         const selected = pathsEqual(nextPath, selectedPath)
+        const mapNode =
+          isMapData(value) && path[0] === 'game' && path[1] === 'maps'
         return (
           <li key={key}>
             <button
@@ -33,7 +36,7 @@ function renderRecord(
             >
               {key}
             </button>
-            {renderValue(value, nextPath, onSelect, selectedPath)}
+            {!mapNode && renderValue(value, nextPath, onSelect, selectedPath)}
           </li>
         )
       })}
@@ -80,6 +83,14 @@ function renderValue(
     return renderArray(value, path, onSelect, selectedPath)
   }
   if (typeof value === 'object' && value !== null) {
+    if (
+      isMapData(value) &&
+      path.length === 3 &&
+      path[0] === 'game' &&
+      path[1] === 'maps'
+    ) {
+      return null
+    }
     return renderRecord(value as Record<string, unknown>, path, onSelect, selectedPath)
   }
   return null

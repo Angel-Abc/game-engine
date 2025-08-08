@@ -1,6 +1,19 @@
 import { gameSchema } from '@loader/schema/game'
 import type { Game } from '@editor/data/game'
 
+export async function fetchJson<T>(
+  url: string,
+  fetchFn: typeof fetch = fetch,
+  init?: RequestInit,
+  errorMessage = 'Failed to fetch data.',
+): Promise<T> {
+  const response = await fetchFn(url, init)
+  if (!response.ok) {
+    throw new Error(errorMessage)
+  }
+  return response.json() as Promise<T>
+}
+
 export async function saveGame(
   json: string,
   fetchFn: typeof fetch = fetch,
@@ -38,12 +51,14 @@ export async function saveGame(
 
 export async function fetchGame(
   signal?: AbortSignal,
+  fetchFn: typeof fetch = fetch,
 ): Promise<{ game: Game; styling: string[] }> {
-  const response = await fetch('/api/game', { signal })
-  if (!response.ok) {
-    throw new Error('Failed to load game data.')
-  }
-  const data = await response.json()
+  const data = await fetchJson<unknown>(
+    '/api/game',
+    fetchFn,
+    { signal },
+    'Failed to load game data.',
+  )
   const parsed = gameSchema.parse(data)
   const game: Game = {
     title: parsed.title,
@@ -73,18 +88,26 @@ export async function fetchGame(
   return { game, styling: parsed.styling }
 }
 
-export async function fetchMap(path: string): Promise<unknown> {
-  const response = await fetch(`/api/map/${encodeURIComponent(path)}`)
-  if (!response.ok) {
-    throw new Error('Failed to fetch map')
-  }
-  return response.json()
+export async function fetchMap(
+  path: string,
+  fetchFn: typeof fetch = fetch,
+): Promise<unknown> {
+  return fetchJson(
+    `/api/map/${encodeURIComponent(path)}`,
+    fetchFn,
+    undefined,
+    'Failed to fetch map',
+  )
 }
 
-export async function fetchTiles(path: string): Promise<unknown> {
-  const response = await fetch(`/api/map/${encodeURIComponent(path)}`)
-  if (!response.ok) {
-    throw new Error('Failed to fetch tiles')
-  }
-  return response.json()
+export async function fetchTiles(
+  path: string,
+  fetchFn: typeof fetch = fetch,
+): Promise<unknown> {
+  return fetchJson(
+    `/api/map/${encodeURIComponent(path)}`,
+    fetchFn,
+    undefined,
+    'Failed to fetch tiles',
+  )
 }

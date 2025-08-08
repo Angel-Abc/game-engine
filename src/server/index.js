@@ -4,6 +4,7 @@ import express from 'express'
 import fs from 'fs'
 import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
+import { gameSchema } from '../loader/schema/game.ts'
 
 export function createApp(fsModule = fs) {
   const app = express()
@@ -29,6 +30,11 @@ export function createApp(fsModule = fs) {
   })
 
   app.post('/api/game', (req, res) => {
+    const parsed = gameSchema.safeParse(req.body)
+    if (!parsed.success) {
+      res.status(400).json(parsed.error.issues)
+      return
+    }
     const jsonString = JSON.stringify(req.body, null, 2)
     fsModule.writeFile(gamePath, jsonString, 'utf-8', (err) => {
       if (err) {

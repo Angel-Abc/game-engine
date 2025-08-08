@@ -2,6 +2,22 @@ import { describe, it, expect, vi } from 'vitest'
 import supertest from 'supertest'
 import { createApp } from '../../src/server/index.js'
 
+const validGame = {
+  title: 't',
+  description: 'd',
+  version: '1',
+  'initial-data': { language: 'en', 'start-page': 'start-page' },
+  languages: {},
+  pages: {},
+  maps: {},
+  tiles: {},
+  dialogs: {},
+  styling: [],
+  handlers: [],
+  'virtual-keys': [],
+  'virtual-inputs': [],
+}
+
 describe('server api', () => {
   it('GET /api/game returns parsed json', async () => {
     const fsMock = {
@@ -32,8 +48,21 @@ describe('server api', () => {
     } as any
     const app = createApp(fsMock)
 
-    await supertest(app).post('/api/game').send({ b: 2 }).expect(200, { ok: true })
+    await supertest(app).post('/api/game').send(validGame).expect(200, { ok: true })
     expect(fsMock.writeFile).toHaveBeenCalled()
+  })
+
+  it('POST /api/game rejects invalid data', async () => {
+    const fsMock = {
+      readFile: vi.fn(),
+      writeFile: vi.fn()
+    } as any
+    const app = createApp(fsMock)
+
+    const res = await supertest(app).post('/api/game').send({ ...validGame, title: 1 })
+    expect(res.status).toBe(400)
+    expect(res.body[0].path).toEqual(['title'])
+    expect(fsMock.writeFile).not.toHaveBeenCalled()
   })
 
   it('POST /api/game handles write errors', async () => {
@@ -43,7 +72,7 @@ describe('server api', () => {
     } as any
     const app = createApp(fsMock)
 
-    const res = await supertest(app).post('/api/game').send({})
+    const res = await supertest(app).post('/api/game').send(validGame)
     expect(res.status).toBe(500)
     expect(res.body).toEqual({ error: 'Failed to save game' })
   })

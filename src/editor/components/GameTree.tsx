@@ -1,30 +1,42 @@
-import { useEffect, useState } from 'react'
 import type { JSX } from 'react'
+import { useEditorContext } from '@editor/context/EditorContext'
+import type { NodePath } from '@editor/context/EditorContext'
 import type { Game } from '../data/game'
-import { fetchGame } from '../services/api'
-
-export type NodePath = string[]
 
 export interface GameTreeViewProps {
   game: Game
+  selectedPath: NodePath
   onSelect: (path: NodePath) => void
+}
+
+function pathsEqual(a: NodePath, b: NodePath): boolean {
+  return a.length === b.length && a.every((seg, i) => seg === b[i])
 }
 
 function renderRecord(
   record: Record<string, unknown>,
   path: NodePath,
   onSelect: (p: NodePath) => void,
+  selectedPath: NodePath,
 ): JSX.Element {
   return (
     <ul>
-      {Object.entries(record).map(([key, value]) => (
-        <li key={key}>
-          <button type="button" onClick={() => onSelect([...path, key])}>
-            {key}
-          </button>
-          {renderValue(value, [...path, key], onSelect)}
-        </li>
-      ))}
+      {Object.entries(record).map(([key, value]) => {
+        const nextPath = [...path, key]
+        const selected = pathsEqual(nextPath, selectedPath)
+        return (
+          <li key={key}>
+            <button
+              type="button"
+              onClick={() => onSelect(nextPath)}
+              style={selected ? { fontWeight: 'bold' } : undefined}
+            >
+              {key}
+            </button>
+            {renderValue(value, nextPath, onSelect, selectedPath)}
+          </li>
+        )
+      })}
     </ul>
   )
 }
@@ -33,18 +45,24 @@ function renderArray(
   arr: unknown[],
   path: NodePath,
   onSelect: (p: NodePath) => void,
+  selectedPath: NodePath,
 ): JSX.Element {
   return (
     <ul>
       {arr.map((value, index) => {
         const label = typeof value === 'string' ? value : String(index)
         const nextPath = [...path, label]
+        const selected = pathsEqual(nextPath, selectedPath)
         return (
           <li key={label}>
-            <button type="button" onClick={() => onSelect(nextPath)}>
+            <button
+              type="button"
+              onClick={() => onSelect(nextPath)}
+              style={selected ? { fontWeight: 'bold' } : undefined}
+            >
               {label}
             </button>
-            {renderValue(value, nextPath, onSelect)}
+            {renderValue(value, nextPath, onSelect, selectedPath)}
           </li>
         )
       })}
@@ -56,17 +74,22 @@ function renderValue(
   value: unknown,
   path: NodePath,
   onSelect: (p: NodePath) => void,
+  selectedPath: NodePath,
 ): JSX.Element | null {
   if (Array.isArray(value)) {
-    return renderArray(value, path, onSelect)
+    return renderArray(value, path, onSelect, selectedPath)
   }
   if (typeof value === 'object' && value !== null) {
-    return renderRecord(value as Record<string, unknown>, path, onSelect)
+    return renderRecord(value as Record<string, unknown>, path, onSelect, selectedPath)
   }
   return null
 }
 
-export const GameTreeView: React.FC<GameTreeViewProps> = ({ game, onSelect }) => {
+export const GameTreeView: React.FC<GameTreeViewProps> = ({
+  game,
+  selectedPath,
+  onSelect,
+}) => {
   const root: Record<string, unknown> = {
     pages: game.pages,
     maps: game.maps,
@@ -77,33 +100,21 @@ export const GameTreeView: React.FC<GameTreeViewProps> = ({ game, onSelect }) =>
     virtualInputs: game.virtualInputs,
     languages: game.languages,
   }
-  return renderRecord(root, [], onSelect)
+  return renderRecord(root, [], onSelect, selectedPath)
 }
+export const GameTree: React.FC = () => {
+  const { game, selectedPath, setSelectedPath } = useEditorContext()
 
-export interface GameTreeProps {
-  onSelect: (path: NodePath) => void
-  fetchFn?: typeof fetchGame
-}
-
-export const GameTree: React.FC<GameTreeProps> = ({ onSelect, fetchFn = fetchGame }) => {
-  const [game, setGame] = useState<Game | null>(null)
-  const [error, setError] = useState<string>('')
-
-  useEffect(() => {
-    const controller = new AbortController()
-    fetchFn(controller.signal)
-      .then((data) => setGame(data.game))
-      .catch((err: Error) => setError(err.message))
-    return () => controller.abort()
-  }, [fetchFn])
-
-  if (error) {
-    return <div>{error}</div>
-  }
   if (!game) {
     return <div>Loading...</div>
   }
-  return <GameTreeView game={game} onSelect={onSelect} />
+  return (
+    <GameTreeView
+      game={game}
+      selectedPath={selectedPath}
+      onSelect={setSelectedPath}
+    />
+  )
 }
 
 export default GameTree

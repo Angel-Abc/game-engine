@@ -31,7 +31,9 @@ describe('GameTreeView', () => {
     document.body.appendChild(container)
     const root = createRoot(container)
     act(() => {
-      root.render(<GameTreeView game={sampleGame} onSelect={onSelect} />)
+      root.render(
+        <GameTreeView game={sampleGame} selectedPath={[]} onSelect={onSelect} />,
+      )
     })
     const buttons = Array.from(container.querySelectorAll('button')).map((b) => b.textContent)
     expect(buttons).toContain('pages')
@@ -46,7 +48,9 @@ describe('GameTreeView', () => {
     document.body.appendChild(container)
     const root = createRoot(container)
     act(() => {
-      root.render(<GameTreeView game={sampleGame} onSelect={onSelect} />)
+      root.render(
+        <GameTreeView game={sampleGame} selectedPath={[]} onSelect={onSelect} />,
+      )
     })
     const startButton = Array.from(container.querySelectorAll('button')).find(
       (b) => b.textContent === 'start',

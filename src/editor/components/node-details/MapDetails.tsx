@@ -2,6 +2,7 @@ import type { ChangeEvent, FC } from 'react'
 import { useEditorContext } from '@editor/context/EditorContext'
 import type { MapData } from '@editor/data/map'
 import { isMapData } from '@editor/data/map'
+import MapEditor from '../MapEditor'
 
 export interface MapDetailsProps {
   id: string
@@ -28,26 +29,29 @@ export const MapDetails: FC<MapDetailsProps> = ({ id }) => {
   }
 
   return (
-    <form>
-      <label>
-        Width:
-        <input
-          name="width"
-          type="number"
-          value={map.width ?? 0}
-          onChange={handleChange('width')}
-        />
-      </label>
-      <label>
-        Height:
-        <input
-          name="height"
-          type="number"
-          value={map.height ?? 0}
-          onChange={handleChange('height')}
-        />
-      </label>
-    </form>
+    <div>
+      <form>
+        <label>
+          Width:
+          <input
+            name="width"
+            type="number"
+            value={map.width ?? 0}
+            onChange={handleChange('width')}
+          />
+        </label>
+        <label>
+          Height:
+          <input
+            name="height"
+            type="number"
+            value={map.height ?? 0}
+            onChange={handleChange('height')}
+          />
+        </label>
+      </form>
+      <MapEditor id={id} />
+    </div>
   )
 }
 

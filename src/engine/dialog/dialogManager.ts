@@ -1,11 +1,11 @@
-import { fatalError, logDebug } from '@utils/logMessage'
+import { fatalError, logDebug, logWarning } from '@utils/logMessage'
 import type { IMessageBus } from '@utils/messageBus'
 import { ADD_LINE_TO_OUTPUT_LOG, DIALOG_SHOW_DIALOG, DIALOG_START_DIALOG } from '../messages/messages'
 import type { IStateManager } from '@engine/core/stateManager'
 import type { ContextData } from '@engine/core/context'
 import type { IDialogLoader } from '@loader/dialogLoader'
 import { loadOnce } from '@utils/loadOnce'
-import type { Condition } from '@loader/data/condition'
+import { type Condition } from '@loader/data/condition'
 import type { ITranslationService } from './translationService'
 import { EventHandlerManager } from '@engine/common/eventHandlerManager'
 
@@ -70,6 +70,9 @@ export class DialogManager implements IDialogManager {
         if (!this.services.resolveCondition(dialogSet.startCondition)) return
 
         context.dialogs.activeDialog = dialogSetId
+        if (!context.dialogs.dialogStates[dialogSetId]) context.dialogs.dialogStates[dialogSetId] = {
+            activeChoices: []
+        }
 
         this.services.messageBus.postMessage({
             message: DIALOG_SHOW_DIALOG,
@@ -84,12 +87,16 @@ export class DialogManager implements IDialogManager {
         if (!dialogSet) fatalError('Dialog set {0} not found', context.dialogs.activeDialog)
         const dialog = dialogSet.dialogs[dialogId]
         if (!dialog) fatalError('Dialog with id {0} not found in dialog set {1}', dialogId, context.dialogs.activeDialog)
-
+        const dialogState = context.dialogs.dialogStates[context.dialogs.activeDialog]
+        if (!dialogState) fatalError('Dialog state for dialog set {0} not found', context.dialogs.activeDialog)
+        if (dialogState.activeChoices.length > 5) logWarning('DialogManager', 'Too many active choices in dialog {0}, only the first 5 will be used', dialogId)
+       
         context.dialogs.isModalDialog = !dialog.behavior.canMove
         this.services.messageBus.postMessage({
             message: ADD_LINE_TO_OUTPUT_LOG,
             payload: this.services.translationService.translate(dialog.message)
         })
         logDebug('dialogManager', 'Found dialog {0} = {1}', dialogId, dialog)
+
     }
 }

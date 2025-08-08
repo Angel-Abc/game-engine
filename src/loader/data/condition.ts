@@ -4,3 +4,8 @@ export interface ScriptCondition {
 }
 
 export type Condition = ScriptCondition
+
+export const trueCondition: Condition = {
+    type: 'script',
+    script: 'return true'
+}

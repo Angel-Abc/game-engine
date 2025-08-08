@@ -2,8 +2,15 @@ import type { Page } from '@loader/data/page'
 import type { GameMap } from '@loader/data/map'
 import type { Tile } from '@loader/data/tile'
 import type { DialogSet } from '@loader/data/dialog'
+import type { Input } from '@loader/data/inputs'
+
+export type DialogChoice = {
+    id: string
+    input: Input
+}
 
 export type DialogState = {
+    activeChoices: DialogChoice[]
     [key: string]: unknown
 }
 

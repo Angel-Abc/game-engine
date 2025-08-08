@@ -1,7 +1,7 @@
 import type { ChangeEvent, FC } from 'react'
 import { useEditorContext } from '@editor/context/EditorContext'
-
-type DialogData = string
+import type { Dialog } from '@editor/data/dialog'
+import { isDialog } from '@editor/data/dialog'
 
 export interface DialogDetailsProps {
   id: string
@@ -12,8 +12,7 @@ export const DialogDetails: FC<DialogDetailsProps> = ({ id }) => {
   if (!game) {
     return null
   }
-  const dialogRecord = game.dialogs as unknown as Record<string, DialogData>
-  const dialog = dialogRecord[id] ?? ''
+  const dialog: Dialog = isDialog(game.dialogs[id]) ? game.dialogs[id] : { text: '' }
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value
@@ -21,7 +20,7 @@ export const DialogDetails: FC<DialogDetailsProps> = ({ id }) => {
       ...game,
       dialogs: {
         ...game.dialogs,
-        [id]: value,
+        [id]: { text: value },
       },
     })
   }
@@ -30,7 +29,7 @@ export const DialogDetails: FC<DialogDetailsProps> = ({ id }) => {
     <form>
       <label>
         Dialog:
-        <textarea name="text" value={dialog} onChange={handleChange} />
+        <textarea name="text" value={dialog.text} onChange={handleChange} />
       </label>
     </form>
   )

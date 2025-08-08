@@ -1,7 +1,7 @@
 import type { ChangeEvent, FC } from 'react'
 import { useEditorContext } from '@editor/context/EditorContext'
-
-type VirtualInputData = string
+import type { VirtualInput } from '@editor/data/inputs'
+import { isVirtualInput } from '@editor/data/inputs'
 
 export interface VirtualInputDetailsProps {
   id: string
@@ -12,19 +12,21 @@ export const VirtualInputDetails: FC<VirtualInputDetailsProps> = ({ id }) => {
   if (!game) {
     return null
   }
-  const listRecord = game as unknown as Record<string, VirtualInputData[]>
-  const list = listRecord.virtualInputs
+  const list = game.virtualInputs
   const index = list.indexOf(id)
-  const item = list[index] ?? ''
+  const item: VirtualInput =
+    index >= 0 && isVirtualInput(list[index]) ? list[index] : ''
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     const newList = [...list]
-    newList[index] = value
+    if (index >= 0) {
+      newList[index] = value
+    }
     setGame({
       ...game,
       virtualInputs: newList,
-    } as unknown as typeof game)
+    })
   }
 
   return (

@@ -1,10 +1,7 @@
 import type { ChangeEvent, FC } from 'react'
 import { useEditorContext } from '@editor/context/EditorContext'
-
-interface MapData {
-  width?: number
-  height?: number
-}
+import type { MapData } from '@editor/data/map'
+import { isMapData } from '@editor/data/map'
 
 export interface MapDetailsProps {
   id: string
@@ -15,10 +12,9 @@ export const MapDetails: FC<MapDetailsProps> = ({ id }) => {
   if (!game) {
     return null
   }
-  const mapRecord = game.maps as unknown as Record<string, MapData>
-  const map = mapRecord[id] ?? { width: 0, height: 0 }
+  const map = isMapData(game.maps[id]) ? game.maps[id] : { width: 0, height: 0 }
 
-  const handleChange = (field: 'width' | 'height') => (
+  const handleChange = (field: keyof MapData) => (
     e: ChangeEvent<HTMLInputElement>,
   ) => {
     const value = parseInt(e.target.value, 10) || 0

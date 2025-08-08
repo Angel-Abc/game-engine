@@ -9,8 +9,8 @@ export interface Game {
   version: string
   initialData: InitialData
   languages: Record<string, string[]>
-  pages: Record<string, string>
-  maps: Record<string, string>
+  pages: Record<string, unknown>
+  maps: Record<string, unknown>
   tiles: Record<string, string>
   dialogs: Record<string, string>
   handlers: string[]

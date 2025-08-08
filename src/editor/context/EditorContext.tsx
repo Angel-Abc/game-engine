@@ -9,6 +9,7 @@ interface EditorContextValue {
   game: Game | null
   selectedPath: NodePath
   setSelectedPath: (path: NodePath) => void
+  setGame: (game: Game) => void
 }
 
 const EditorContext = createContext<EditorContextValue | undefined>(undefined)
@@ -22,19 +23,21 @@ export const EditorProvider: React.FC<EditorProviderProps> = ({
   children,
   fetchGameFn = fetchGame,
 }) => {
-  const [game, setGame] = useState<Game | null>(null)
+  const [game, setGameState] = useState<Game | null>(null)
   const [selectedPath, setSelectedPath] = useState<NodePath>([])
 
   useEffect(() => {
     const controller = new AbortController()
     fetchGameFn(controller.signal)
-      .then((data) => setGame(data.game))
-      .catch(() => setGame(null))
+      .then((data) => setGameState(data.game))
+      .catch(() => setGameState(null))
     return () => controller.abort()
   }, [fetchGameFn])
 
   return (
-    <EditorContext.Provider value={{ game, selectedPath, setSelectedPath }}>
+    <EditorContext.Provider
+      value={{ game, selectedPath, setSelectedPath, setGame: (g) => setGameState(g) }}
+    >
       {children}
     </EditorContext.Provider>
   )

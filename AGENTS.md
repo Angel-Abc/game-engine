@@ -1,7 +1,5 @@
 # Agent Instructions
 
-- Create dedicated editor modules rather than extending game-engine components directly.
-
 ## Code Design Guidelines
 - Adhere to SOLID principles.
 - Prefer dependency injection over global singletons.

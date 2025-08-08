@@ -29,13 +29,44 @@ function createGame(): Game {
 }
 
 describe('NodeDetails', () => {
+  it('renders game settings for root node', () => {
+    const sampleGame = createGame()
+    sampleGame.title = 'My Game'
+    sampleGame.description = 'Demo'
+
+    const contextValue = {
+      game: sampleGame,
+      selectedPath: ['game'] as NodePath,
+      setSelectedPath: vi.fn(),
+      setGame: vi.fn(),
+    }
+
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+    const root = createRoot(container)
+
+    act(() => {
+      root.render(
+        <EditorContext.Provider value={contextValue}>
+          <NodeDetails />
+        </EditorContext.Provider>,
+      )
+    })
+
+    const titleInput = container.querySelector('input[name="title"]') as HTMLInputElement
+    const descInput = container.querySelector('input[name="description"]') as HTMLInputElement
+
+    expect(titleInput.value).toBe('My Game')
+    expect(descInput.value).toBe('Demo')
+  })
+
   it('renders fields for page node', () => {
     const sampleGame = createGame()
     sampleGame.pages = { start: { title: 'Start', description: 'Welcome' } }
 
     const contextValue = {
       game: sampleGame,
-      selectedPath: ['pages', 'start'] as NodePath,
+      selectedPath: ['game', 'pages', 'start'] as NodePath,
       setSelectedPath: vi.fn(),
       setGame: vi.fn(),
     }
@@ -65,7 +96,7 @@ describe('NodeDetails', () => {
 
     const contextValue = {
       game: sampleGame,
-      selectedPath: ['tiles', 'grass'] as NodePath,
+      selectedPath: ['game', 'tiles', 'grass'] as NodePath,
       setSelectedPath: vi.fn(),
       setGame: vi.fn(),
     }
@@ -91,7 +122,7 @@ describe('NodeDetails', () => {
     sampleGame.dialogs = { greet: 'Hello' }
     const contextValue = {
       game: sampleGame,
-      selectedPath: ['dialogs', 'greet'] as NodePath,
+      selectedPath: ['game', 'dialogs', 'greet'] as NodePath,
       setSelectedPath: vi.fn(),
       setGame: vi.fn(),
     }
@@ -117,7 +148,7 @@ describe('NodeDetails', () => {
     sampleGame.handlers = ['start']
     const contextValue = {
       game: sampleGame,
-      selectedPath: ['handlers', 'start'] as NodePath,
+      selectedPath: ['game', 'handlers', 'start'] as NodePath,
       setSelectedPath: vi.fn(),
       setGame: vi.fn(),
     }
@@ -143,7 +174,7 @@ describe('NodeDetails', () => {
     sampleGame.virtualKeys = ['A']
     const contextValue = {
       game: sampleGame,
-      selectedPath: ['virtualKeys', 'A'] as NodePath,
+      selectedPath: ['game', 'virtualKeys', 'A'] as NodePath,
       setSelectedPath: vi.fn(),
       setGame: vi.fn(),
     }
@@ -169,7 +200,7 @@ describe('NodeDetails', () => {
     sampleGame.virtualInputs = ['jump']
     const contextValue = {
       game: sampleGame,
-      selectedPath: ['virtualInputs', 'jump'] as NodePath,
+      selectedPath: ['game', 'virtualInputs', 'jump'] as NodePath,
       setSelectedPath: vi.fn(),
       setGame: vi.fn(),
     }
@@ -195,7 +226,7 @@ describe('NodeDetails', () => {
     sampleGame.languages = { en: ['hello', 'world'] }
     const contextValue = {
       game: sampleGame,
-      selectedPath: ['languages', 'en'] as NodePath,
+      selectedPath: ['game', 'languages', 'en'] as NodePath,
       setSelectedPath: vi.fn(),
       setGame: vi.fn(),
     }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useEditorContext } from '@editor/context/EditorContext'
 import type { MapData } from '@editor/data/map'
 
@@ -19,19 +19,26 @@ export const MapEditor: React.FC<MapEditorProps> = ({ id }) => {
   const width = map?.width ?? 0
   const height = map?.height ?? 0
 
-  const currentMap: string[][] =
-    map?.map && map.map.length === height && map.map[0]?.length === width
-      ? map.map
-      : Array.from({ length: height }, () => Array(width).fill(''))
+  const currentMap: string[][] = useMemo(
+    () =>
+      map?.map && map.map.length === height && (map.map[0]?.length ?? 0) === width
+        ? map.map
+        : Array.from({ length: height }, () => Array(width).fill('')),
+    [map, width, height],
+  )
 
   useEffect(() => {
-    if (!map?.map || map.map.length !== height || map.map[0]?.length !== width) {
+    if (
+      !map?.map ||
+      map.map.length !== height ||
+      (map.map[0]?.length ?? 0) !== width
+    ) {
       setGame({
         ...game,
         maps: { ...game.maps, [id]: { ...map, width, height, map: currentMap } },
       })
     }
-  }, [game, id, width, height])
+  }, [game, id, width, height, map, currentMap, setGame])
 
   const tiles = Object.keys(game.tiles)
 

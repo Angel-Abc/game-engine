@@ -1,6 +1,8 @@
 {
     "id": "English",
     "translations": {
-        "START-BEACH.START-DIALOG.INTRO.MESSAGE": "<p>You wake up with a start. Your head hurts and you have <bold>no</bold> idea where you are.</p>"
+        "START-BEACH.START-DIALOG.INTRO.MESSAGE": "<p>You wake up with a start. Your head hurts and you have <bold>no</bold> idea where you are.</p>",
+        "START-BEACH.START-DIALOG.INTRO.CHOICE-1": "Look around",
+        "START-BEACH.START-DIALOG.INTRO.CHOICE-2": "Try to remember"
     }
 }

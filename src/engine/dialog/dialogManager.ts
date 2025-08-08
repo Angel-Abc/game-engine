@@ -5,7 +5,7 @@ import type { IStateManager } from '@engine/core/stateManager'
 import type { ContextData } from '@engine/core/context'
 import type { IDialogLoader } from '@loader/dialogLoader'
 import { loadOnce } from '@utils/loadOnce'
-import { type Condition } from '@loader/data/condition'
+import { trueCondition, type Condition } from '@loader/data/condition'
 import type { ITranslationService } from './translationService'
 import { EventHandlerManager } from '@engine/common/eventHandlerManager'
 
@@ -87,10 +87,29 @@ export class DialogManager implements IDialogManager {
         if (!dialogSet) fatalError('Dialog set {0} not found', context.dialogs.activeDialog)
         const dialog = dialogSet.dialogs[dialogId]
         if (!dialog) fatalError('Dialog with id {0} not found in dialog set {1}', dialogId, context.dialogs.activeDialog)
+        if (dialog.choices.length > 5) logWarning('DialogManager', 'Too many choices in dialog {0}, only the first 5 will be used', dialogId)
         const dialogState = context.dialogs.dialogStates[context.dialogs.activeDialog]
         if (!dialogState) fatalError('Dialog state for dialog set {0} not found', context.dialogs.activeDialog)
-        if (dialogState.activeChoices.length > 5) logWarning('DialogManager', 'Too many active choices in dialog {0}, only the first 5 will be used', dialogId)
-       
+
+        dialogState.activeChoices = []
+        for (let index = 0; index < dialog.choices.length && index < 5; index++){
+            const choice = dialog.choices[index]
+            const count = dialogState.activeChoices.length
+            dialogState.activeChoices.push({
+                id: choice.id,
+                input: {
+                    virtualInput: `VI_${count + 1}`,
+                    preferredRow: 0,
+                    preferredCol: count,
+                    label: this.services.translationService.translate(choice.label),                   
+                    description: this.services.translationService.translate(choice.label),
+                    visible: choice.visible ?? trueCondition,
+                    enabled: choice.enabled ?? trueCondition,
+                    action: choice.action
+                }
+            })
+        }
+
         context.dialogs.isModalDialog = !dialog.behavior.canMove
         this.services.messageBus.postMessage({
             message: ADD_LINE_TO_OUTPUT_LOG,

@@ -2,34 +2,18 @@ import { createRoot } from 'react-dom/client'
 import { GameJsonPage } from './components/GameJsonPage'
 import GameTree from './components/GameTree'
 import { EditorProvider } from './context/EditorContext'
+import '../style/reset.css'
+import '../style/variables.css'
+import './editor.css'
 
 function EditorApp() {
   return (
     <EditorProvider>
-      <div
-        style={{
-          display: 'flex',
-          height: '100vh',
-        }}
-      >
-        <aside
-          style={{
-            width: '250px',
-            borderRight: '1px solid #ccc',
-            padding: '1rem',
-            boxSizing: 'border-box',
-          }}
-        >
+      <div className="editor-container">
+        <aside className="editor-sidebar">
           <GameTree />
         </aside>
-        <main
-          style={{
-            flex: 1,
-            padding: '1rem',
-            boxSizing: 'border-box',
-            overflow: 'auto',
-          }}
-        >
+        <main className="editor-main">
           <h1>Game JSON Editor</h1>
           <GameJsonPage />
         </main>

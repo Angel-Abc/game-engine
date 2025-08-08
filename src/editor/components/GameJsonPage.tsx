@@ -24,13 +24,11 @@ export const GameJsonPage: React.FC = () => {
 
   return (
     <div>
-      <textarea
-        value={json}
-        onChange={(e) => setJson(e.target.value)}
-        style={{ width: '100%', height: '300px' }}
-      />
+      <textarea value={json} onChange={(e) => setJson(e.target.value)} />
       <div>
-        <button onClick={handleSave}>Save</button>
+        <button type="button" onClick={handleSave}>
+          Save
+        </button>
       </div>
       {status && <p>{status}</p>}
     </div>

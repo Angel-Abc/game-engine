@@ -3,9 +3,34 @@ import { GameJsonPage } from './components/GameJsonPage'
 
 function EditorApp() {
   return (
-    <div>
-      <h1>Game JSON Editor</h1>
-      <GameJsonPage />
+    <div
+      style={{
+        display: 'flex',
+        height: '100vh',
+      }}
+    >
+      <aside
+        style={{
+          width: '250px',
+          borderRight: '1px solid #ccc',
+          padding: '1rem',
+          boxSizing: 'border-box',
+        }}
+      >
+        {/* Future tree component */}
+        <p>Tree</p>
+      </aside>
+      <main
+        style={{
+          flex: 1,
+          padding: '1rem',
+          boxSizing: 'border-box',
+          overflow: 'auto',
+        }}
+      >
+        <h1>Game JSON Editor</h1>
+        <GameJsonPage />
+      </main>
     </div>
   )
 }

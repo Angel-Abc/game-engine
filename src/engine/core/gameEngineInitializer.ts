@@ -128,11 +128,14 @@ export class GameEngineInitializer {
             maps: {},
             tileSets: {},
             tiles: {},
-            dialogs: {},
-            data: {
-                activePage: null,
+            dialogSets: {},
+            dialogs: {
                 activeDialog: null,
                 isModalDialog: false,
+                dialogSets: {}
+            },
+            data: {
+                activePage: null,
                 location: {
                     mapName: null,
                     position: { x: 0, y: 0 },

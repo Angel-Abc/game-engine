@@ -33,13 +33,16 @@ function createMapLoaderServiceInstance() {
     language: 'en',
     pages: {},
     maps: {},
-    dialogs: {},
+    dialogSets: {},
     tiles: {},
     tileSets: {},
-    data: {
-      activePage: null,
+    dialogs: {
       activeDialog: null,
       isModalDialog: false,
+      dialogSets: {}
+    },
+    data: {
+      activePage: null,
       location: {
         mapName: null,
         mapSize: {

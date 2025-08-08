@@ -53,10 +53,10 @@ export class DialogManager implements IDialogManager {
 
     private async startDialog(dialogSetId: string): Promise<void> {
         const context = this.services.stateManager.state
-        if (context.data.activeDialog === dialogSetId) return
+        if (context.dialogs.activeDialog === dialogSetId) return
 
         const dialogSet = await loadOnce(
-            context.dialogs,
+            context.dialogSets,
             dialogSetId,
             async () => {
                 const loadedDialog = await this.services.dialogLoader.loadDialog(dialogSetId)
@@ -69,7 +69,7 @@ export class DialogManager implements IDialogManager {
 
         if (!this.services.resolveCondition(dialogSet.startCondition)) return
 
-        context.data.activeDialog = dialogSetId
+        context.dialogs.activeDialog = dialogSetId
 
         this.services.messageBus.postMessage({
             message: DIALOG_SHOW_DIALOG,
@@ -79,13 +79,13 @@ export class DialogManager implements IDialogManager {
 
     private async showDialog(dialogId: string): Promise<void> {
         const context = this.services.stateManager.state
-        if (!context.data.activeDialog) fatalError('No active dialog set for dialog {0}', dialogId)
-        const dialogSet = context.dialogs[context.data.activeDialog]
-        if (!dialogSet) fatalError('Dialog set {0} not found', context.data.activeDialog)
+        if (!context.dialogs.activeDialog) fatalError('No active dialog set for dialog {0}', dialogId)
+        const dialogSet = context.dialogSets[context.dialogs.activeDialog]
+        if (!dialogSet) fatalError('Dialog set {0} not found', context.dialogs.activeDialog)
         const dialog = dialogSet.dialogs[dialogId]
-        if (!dialog) fatalError('Dialog with id {0} not found in dialog set {1}', dialogId, context.data.activeDialog)
+        if (!dialog) fatalError('Dialog with id {0} not found in dialog set {1}', dialogId, context.dialogs.activeDialog)
 
-        context.data.isModalDialog = !dialog.behavior.canMove
+        context.dialogs.isModalDialog = !dialog.behavior.canMove
         this.services.messageBus.postMessage({
             message: ADD_LINE_TO_OUTPUT_LOG,
             payload: this.services.translationService.translate(dialog.message)

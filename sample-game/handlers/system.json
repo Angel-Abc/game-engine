@@ -26,7 +26,7 @@
         "action": {
             "type": "script",
             "script": [
-                "data.activeDialog = null",
+                "dialogs.activeDialog = null",
                 "context.postMessage({message: 'SYSTEM.ADD-LINE-TO-OUTPUT-LOG', payload: `<p>${context.triggerPayload.tile}</p>`})"
             ]
         }

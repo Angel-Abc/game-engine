@@ -16,9 +16,10 @@ export type ScriptContext = {
 export class ScriptRunner implements IScriptRunner {
     public run<T>(script: string, context: ScriptContext): T {
         const data = context.state.data
+        const dialogs = context.state.dialogs
         try {
-            const scriptFunction = new Function('context', 'data', script)
-            return scriptFunction(context, data) as T
+            const scriptFunction = new Function('context', 'data', 'dialogs', script)
+            return scriptFunction(context, data, dialogs) as T
         } catch (error) {
             const message = error instanceof Error ? error.message : String(error)
             logInfo('ScriptRunner', 'Script content: {0}', script)

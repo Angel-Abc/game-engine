@@ -1,25 +1,29 @@
-import type { ChangeEvent, FC } from 'react'
+import type { FC } from 'react'
 import { useEditorContext } from '@editor/context/EditorContext'
 
-interface PageData {
-  title?: string
-  description?: string
-}
+import GameDetails from './node-details/GameDetails'
+import PageDetails from './node-details/PageDetails'
+import MapDetails from './node-details/MapDetails'
+import TileDetails from './node-details/TileDetails'
+import DialogDetails from './node-details/DialogDetails'
+import HandlerDetails from './node-details/HandlerDetails'
+import VirtualKeyDetails from './node-details/VirtualKeyDetails'
+import VirtualInputDetails from './node-details/VirtualInputDetails'
+import LanguageDetails from './node-details/LanguageDetails'
 
-interface MapData {
-  width?: number
-  height?: number
+const componentMap: Record<string, FC<{ id: string }>> = {
+  pages: PageDetails,
+  maps: MapDetails,
+  tiles: TileDetails,
+  dialogs: DialogDetails,
+  handlers: HandlerDetails,
+  virtualKeys: VirtualKeyDetails,
+  virtualInputs: VirtualInputDetails,
+  languages: LanguageDetails,
 }
-
-type TileData = string
-type DialogData = string
-type HandlerData = string
-type VirtualKeyData = string
-type VirtualInputData = string
-type LanguageData = string[]
 
 export const NodeDetails: FC = () => {
-  const { game, selectedPath, setGame } = useEditorContext()
+  const { game, selectedPath } = useEditorContext()
 
   if (!game) {
     return <div>Select a node</div>
@@ -28,32 +32,7 @@ export const NodeDetails: FC = () => {
   const path = selectedPath[0] === 'game' ? selectedPath.slice(1) : selectedPath
 
   if (path.length === 0) {
-    const handleChange = (field: 'title' | 'description') => (
-      e: ChangeEvent<HTMLInputElement>,
-    ) => {
-      const value = e.target.value
-      setGame({
-        ...game,
-        [field]: value,
-      })
-    }
-
-    return (
-      <form>
-        <label>
-          Title:
-          <input name="title" value={game.title} onChange={handleChange('title')} />
-        </label>
-        <label>
-          Description:
-          <input
-            name="description"
-            value={game.description}
-            onChange={handleChange('description')}
-          />
-        </label>
-      </form>
-    )
+    return <GameDetails />
   }
 
   if (path.length < 2) {
@@ -61,193 +40,13 @@ export const NodeDetails: FC = () => {
   }
 
   const [category, id] = path
+  const Component = componentMap[category]
 
-  if (category === 'pages') {
-    const pageRecord = game.pages as unknown as Record<string, PageData>
-    const page = pageRecord[id] ?? { title: '', description: '' }
-
-    const handleChange = (field: 'title' | 'description') => (
-      e: ChangeEvent<HTMLInputElement>,
-    ) => {
-      const value = e.target.value
-      setGame({
-        ...game,
-        pages: {
-          ...game.pages,
-          [id]: { ...page, [field]: value },
-        },
-      })
-    }
-
-    return (
-      <form>
-        <label>
-          Title:
-          <input name="title" value={page.title ?? ''} onChange={handleChange('title')} />
-        </label>
-        <label>
-          Description:
-          <input
-            name="description"
-            value={page.description ?? ''}
-            onChange={handleChange('description')}
-          />
-        </label>
-      </form>
-    )
+  if (!Component) {
+    return <div>Unsupported node type</div>
   }
 
-  if (category === 'maps') {
-    const mapRecord = game.maps as unknown as Record<string, MapData>
-    const map = mapRecord[id] ?? { width: 0, height: 0 }
-
-    const handleChange = (field: 'width' | 'height') => (
-      e: ChangeEvent<HTMLInputElement>,
-    ) => {
-      const value = parseInt(e.target.value, 10) || 0
-      setGame({
-        ...game,
-        maps: {
-          ...game.maps,
-          [id]: { ...map, [field]: value },
-        },
-      })
-    }
-
-    return (
-      <form>
-        <label>
-          Width:
-          <input
-            name="width"
-            type="number"
-            value={map.width ?? 0}
-            onChange={handleChange('width')}
-          />
-        </label>
-        <label>
-          Height:
-          <input
-            name="height"
-            type="number"
-            value={map.height ?? 0}
-            onChange={handleChange('height')}
-          />
-        </label>
-      </form>
-    )
-  }
-
-  if (category === 'tiles') {
-    const tileRecord = game.tiles as unknown as Record<string, TileData>
-    const tile = tileRecord[id] ?? ''
-
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value
-      setGame({
-        ...game,
-        tiles: {
-          ...game.tiles,
-          [id]: value,
-        },
-      })
-    }
-
-    return (
-      <form>
-        <label>
-          Value:
-          <input name="value" value={tile} onChange={handleChange} />
-        </label>
-      </form>
-    )
-  }
-
-  if (category === 'dialogs') {
-    const dialogRecord = game.dialogs as unknown as Record<string, DialogData>
-    const dialog = dialogRecord[id] ?? ''
-
-    const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-      const value = e.target.value
-      setGame({
-        ...game,
-        dialogs: {
-          ...game.dialogs,
-          [id]: value,
-        },
-      })
-    }
-
-    return (
-      <form>
-        <label>
-          Dialog:
-          <textarea name="text" value={dialog} onChange={handleChange} />
-        </label>
-      </form>
-    )
-  }
-
-  if (category === 'handlers' || category === 'virtualKeys' || category === 'virtualInputs') {
-    const listRecord = game as unknown as Record<
-      string,
-      (HandlerData | VirtualKeyData | VirtualInputData)[]
-    >
-    const list = listRecord[category] as (HandlerData | VirtualKeyData | VirtualInputData)[]
-    const index = list.indexOf(id as string)
-    const item = list[index] ?? ''
-
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value
-      const newList = [...list]
-      newList[index] = value
-      setGame({
-        ...game,
-        [category]: newList,
-      } as unknown as typeof game)
-    }
-
-    return (
-      <form>
-        <label>
-          Value:
-          <input name="value" value={item} onChange={handleChange} />
-        </label>
-      </form>
-    )
-  }
-
-  if (category === 'languages') {
-    const langRecord = game.languages as unknown as Record<string, LanguageData>
-    const lines = langRecord[id] ?? []
-
-    const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-      const value = e.target.value.split('\n')
-      setGame({
-        ...game,
-        languages: {
-          ...game.languages,
-          [id]: value,
-        },
-      })
-    }
-
-    return (
-      <form>
-        <label>
-          Lines:
-          <textarea
-            name="lines"
-            value={lines.join('\n')}
-            onChange={handleChange}
-          />
-        </label>
-      </form>
-    )
-  }
-
-  return <div>Unsupported node type</div>
+  return <Component id={id} />
 }
 
 export default NodeDetails
-

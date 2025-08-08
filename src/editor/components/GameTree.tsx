@@ -29,7 +29,7 @@ function renderRecord(
             <button
               type="button"
               onClick={() => onSelect(nextPath)}
-              style={selected ? { fontWeight: 'bold' } : undefined}
+              className={selected ? 'selected' : undefined}
             >
               {key}
             </button>
@@ -58,7 +58,7 @@ function renderArray(
             <button
               type="button"
               onClick={() => onSelect(nextPath)}
-              style={selected ? { fontWeight: 'bold' } : undefined}
+              className={selected ? 'selected' : undefined}
             >
               {label}
             </button>
@@ -109,11 +109,13 @@ export const GameTree: React.FC = () => {
     return <div>Loading...</div>
   }
   return (
-    <GameTreeView
-      game={game}
-      selectedPath={selectedPath}
-      onSelect={setSelectedPath}
-    />
+    <div className="editor-tree">
+      <GameTreeView
+        game={game}
+        selectedPath={selectedPath}
+        onSelect={setSelectedPath}
+      />
+    </div>
   )
 }
 

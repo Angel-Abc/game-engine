@@ -11,6 +11,13 @@ interface MapData {
   height?: number
 }
 
+type TileData = string
+type DialogData = string
+type HandlerData = string
+type VirtualKeyData = string
+type VirtualInputData = string
+type LanguageData = string[]
+
 export const NodeDetails: FC = () => {
   const { game, selectedPath, setGame } = useEditorContext()
 
@@ -90,6 +97,114 @@ export const NodeDetails: FC = () => {
             type="number"
             value={map.height ?? 0}
             onChange={handleChange('height')}
+          />
+        </label>
+      </form>
+    )
+  }
+
+  if (category === 'tiles') {
+    const tileRecord = game.tiles as unknown as Record<string, TileData>
+    const tile = tileRecord[id] ?? ''
+
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value
+      setGame({
+        ...game,
+        tiles: {
+          ...game.tiles,
+          [id]: value,
+        },
+      })
+    }
+
+    return (
+      <form>
+        <label>
+          Value:
+          <input name="value" value={tile} onChange={handleChange} />
+        </label>
+      </form>
+    )
+  }
+
+  if (category === 'dialogs') {
+    const dialogRecord = game.dialogs as unknown as Record<string, DialogData>
+    const dialog = dialogRecord[id] ?? ''
+
+    const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+      const value = e.target.value
+      setGame({
+        ...game,
+        dialogs: {
+          ...game.dialogs,
+          [id]: value,
+        },
+      })
+    }
+
+    return (
+      <form>
+        <label>
+          Dialog:
+          <textarea name="text" value={dialog} onChange={handleChange} />
+        </label>
+      </form>
+    )
+  }
+
+  if (category === 'handlers' || category === 'virtualKeys' || category === 'virtualInputs') {
+    const listRecord = game as unknown as Record<
+      string,
+      (HandlerData | VirtualKeyData | VirtualInputData)[]
+    >
+    const list = listRecord[category] as (HandlerData | VirtualKeyData | VirtualInputData)[]
+    const index = list.indexOf(id as string)
+    const item = list[index] ?? ''
+
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value
+      const newList = [...list]
+      newList[index] = value
+      setGame({
+        ...game,
+        [category]: newList,
+      } as unknown as typeof game)
+    }
+
+    return (
+      <form>
+        <label>
+          Value:
+          <input name="value" value={item} onChange={handleChange} />
+        </label>
+      </form>
+    )
+  }
+
+  if (category === 'languages') {
+    const langRecord = game.languages as unknown as Record<string, LanguageData>
+    const lines = langRecord[id] ?? []
+
+    const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+      const value = e.target.value.split('\n')
+      setGame({
+        ...game,
+        languages: {
+          ...game.languages,
+          [id]: value,
+        },
+      })
+    }
+
+    return (
+      <form>
+        <label>
+          Lines:
+          <textarea
+            name="lines"
+            value={lines.join('\n')}
+            onChange={handleChange}
           />
         </label>
       </form>

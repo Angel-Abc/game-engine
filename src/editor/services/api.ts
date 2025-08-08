@@ -54,10 +54,18 @@ export async function fetchGame(
       startPage: parsed['initial-data']['start-page'],
     },
     languages: { ...parsed.languages },
-    pages: { ...parsed.pages },
-    maps: { ...parsed.maps },
-    tiles: { ...parsed.tiles },
-    dialogs: { ...parsed.dialogs },
+    pages: Object.fromEntries(
+      Object.keys(parsed.pages).map((key) => [key, { title: '', description: '' }]),
+    ),
+    maps: Object.fromEntries(
+      Object.keys(parsed.maps).map((key) => [key, { width: 0, height: 0 }]),
+    ),
+    tiles: Object.fromEntries(
+      Object.entries(parsed.tiles).map(([k, v]) => [k, { value: v }]),
+    ),
+    dialogs: Object.fromEntries(
+      Object.entries(parsed.dialogs).map(([k, v]) => [k, { text: v }]),
+    ),
     handlers: [...parsed.handlers],
     virtualKeys: [...parsed['virtual-keys']],
     virtualInputs: [...parsed['virtual-inputs']],
@@ -80,4 +88,3 @@ export async function fetchTiles(path: string): Promise<unknown> {
   }
   return response.json()
 }
-

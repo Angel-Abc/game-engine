@@ -1,7 +1,7 @@
 import type { ChangeEvent, FC } from 'react'
 import { useEditorContext } from '@editor/context/EditorContext'
-
-type VirtualKeyData = string
+import type { VirtualKey } from '@editor/data/inputs'
+import { isVirtualKey } from '@editor/data/inputs'
 
 export interface VirtualKeyDetailsProps {
   id: string
@@ -12,19 +12,20 @@ export const VirtualKeyDetails: FC<VirtualKeyDetailsProps> = ({ id }) => {
   if (!game) {
     return null
   }
-  const listRecord = game as unknown as Record<string, VirtualKeyData[]>
-  const list = listRecord.virtualKeys
+  const list = game.virtualKeys
   const index = list.indexOf(id)
-  const item = list[index] ?? ''
+  const item: VirtualKey = index >= 0 && isVirtualKey(list[index]) ? list[index] : ''
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     const newList = [...list]
-    newList[index] = value
+    if (index >= 0) {
+      newList[index] = value
+    }
     setGame({
       ...game,
       virtualKeys: newList,
-    } as unknown as typeof game)
+    })
   }
 
   return (

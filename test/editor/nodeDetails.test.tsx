@@ -25,7 +25,7 @@ function createGame(): Game {
     handlers: [],
     virtualKeys: [],
     virtualInputs: [],
-  } as unknown as Game
+  }
 }
 
 describe('NodeDetails', () => {
@@ -92,7 +92,7 @@ describe('NodeDetails', () => {
 
   it('renders and updates tile node', () => {
     const sampleGame = createGame()
-    sampleGame.tiles = { grass: '#' }
+    sampleGame.tiles = { grass: { value: '#' } }
 
     const contextValue = {
       game: sampleGame,
@@ -119,7 +119,7 @@ describe('NodeDetails', () => {
 
   it('renders and updates dialog node', () => {
     const sampleGame = createGame()
-    sampleGame.dialogs = { greet: 'Hello' }
+    sampleGame.dialogs = { greet: { text: 'Hello' } }
     const contextValue = {
       game: sampleGame,
       selectedPath: ['game', 'dialogs', 'greet'] as NodePath,

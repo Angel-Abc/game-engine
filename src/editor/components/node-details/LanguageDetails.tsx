@@ -1,7 +1,7 @@
 import type { ChangeEvent, FC } from 'react'
 import { useEditorContext } from '@editor/context/EditorContext'
-
-type LanguageData = string[]
+import type { Language } from '@editor/data/language'
+import { isLanguage } from '@editor/data/language'
 
 export interface LanguageDetailsProps {
   id: string
@@ -12,8 +12,7 @@ export const LanguageDetails: FC<LanguageDetailsProps> = ({ id }) => {
   if (!game) {
     return null
   }
-  const langRecord = game.languages as unknown as Record<string, LanguageData>
-  const lines = langRecord[id] ?? []
+  const lines: Language = isLanguage(game.languages[id]) ? game.languages[id] : []
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value.split('\n')
@@ -30,11 +29,7 @@ export const LanguageDetails: FC<LanguageDetailsProps> = ({ id }) => {
     <form>
       <label>
         Lines:
-        <textarea
-          name="lines"
-          value={lines.join('\n')}
-          onChange={handleChange}
-        />
+        <textarea name="lines" value={lines.join('\n')} onChange={handleChange} />
       </label>
     </form>
   )

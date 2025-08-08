@@ -1,10 +1,7 @@
 import type { ChangeEvent, FC } from 'react'
 import { useEditorContext } from '@editor/context/EditorContext'
-
-interface PageData {
-  title?: string
-  description?: string
-}
+import type { Page } from '@editor/data/page'
+import { isPage } from '@editor/data/page'
 
 export interface PageDetailsProps {
   id: string
@@ -15,10 +12,9 @@ export const PageDetails: FC<PageDetailsProps> = ({ id }) => {
   if (!game) {
     return null
   }
-  const pageRecord = game.pages as unknown as Record<string, PageData>
-  const page = pageRecord[id] ?? { title: '', description: '' }
+  const page = isPage(game.pages[id]) ? game.pages[id] : { title: '', description: '' }
 
-  const handleChange = (field: 'title' | 'description') => (
+  const handleChange = (field: keyof Page) => (
     e: ChangeEvent<HTMLInputElement>,
   ) => {
     const value = e.target.value

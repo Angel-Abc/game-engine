@@ -1,7 +1,7 @@
 import type { ChangeEvent, FC } from 'react'
 import { useEditorContext } from '@editor/context/EditorContext'
-
-type TileData = string
+import type { Tile } from '@editor/data/tile'
+import { isTile } from '@editor/data/tile'
 
 export interface TileDetailsProps {
   id: string
@@ -12,8 +12,7 @@ export const TileDetails: FC<TileDetailsProps> = ({ id }) => {
   if (!game) {
     return null
   }
-  const tileRecord = game.tiles as unknown as Record<string, TileData>
-  const tile = tileRecord[id] ?? ''
+  const tile: Tile = isTile(game.tiles[id]) ? game.tiles[id] : { value: '' }
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
@@ -21,7 +20,7 @@ export const TileDetails: FC<TileDetailsProps> = ({ id }) => {
       ...game,
       tiles: {
         ...game.tiles,
-        [id]: value,
+        [id]: { value },
       },
     })
   }
@@ -30,7 +29,7 @@ export const TileDetails: FC<TileDetailsProps> = ({ id }) => {
     <form>
       <label>
         Value:
-        <input name="value" value={tile} onChange={handleChange} />
+        <input name="value" value={tile.value} onChange={handleChange} />
       </label>
     </form>
   )

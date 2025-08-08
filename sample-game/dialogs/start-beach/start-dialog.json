@@ -18,10 +18,18 @@
             "choices": [
                 {
                     "id": "intro-choice-1",
-                    "message": "START-BEACH.START-DIALOG.INTRO.CHOICE-1",
+                    "label": "START-BEACH.START-DIALOG.INTRO.CHOICE-1",
                     "action": {
                         "type": "goto",
                         "target": "look-around"
+                    }
+                },
+                {
+                    "id": "intro-choice-2",
+                    "label": "START-BEACH.START-DIALOG.INTRO.CHOICE-2",
+                    "action": {
+                        "type": "goto",
+                        "target": "try-to-remember"
                     }
                 }
             ]
@@ -29,13 +37,31 @@
         {
             "id": "look-around",
             "message": "START-BEACH.START-DIALOG.LOOK-AROUND.MESSAGE",
-            "behavior": {
-                "can-move": false
-            },
             "choices": [
                 {
                     "id": "look-around-choice-1",
-                    "message": "START-BEACH.START-DIALOG.LOOK-AROUND.CHOICE-1",
+                    "label": "START-BEACH.START-DIALOG.LOOK-AROUND.CHOICE-1",
+                    "action": {
+                        "type": "end-dialog"
+                    }
+                },
+                {
+                    "id": "look-around-choice-2",
+                    "label": "START-BEACH.START-DIALOG.LOOK-AROUND.CHOICE-2",
+                    "action": {
+                        "type": "goto",
+                        "target": "try-to-remember"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "try-to-remember",
+            "message": "START-BEACH.START-DIALOG.TRY-TO-REMEMBER.MESSAGE",
+            "choices": [
+                {
+                    "id": "try-to-remember-choice-1",
+                    "label": "START-BEACH.START-DIALOG.TRY-TO-REMEMBER.CHOICE-1",
                     "action": {
                         "type": "end-dialog"
                     }

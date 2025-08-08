@@ -40,7 +40,7 @@ export function mapDialogAction(action: DialogAction): DialogActionData {
 export function mapDialogChoice(choice: DialogChoice): DialogChoiceData {
     return {
         id: choice.id,
-        message: choice.message,
+        label: choice.label,
         visible: choice.visible ? mapCondition(choice.visible) : undefined,
         enabled: choice.enabled ? mapCondition(choice.enabled) : undefined,
         action: mapDialogAction(choice.action)

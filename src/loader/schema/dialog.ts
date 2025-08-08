@@ -23,7 +23,7 @@ export const dialogActionSchema = z.discriminatedUnion('type', [
 
 export const dialogChoiceSchema = z.object({
     id: z.string(),
-    message: z.string(),
+    label: z.string(),
     visible: conditionSchema.optional(),
     enabled: conditionSchema.optional(),
     action: dialogActionSchema

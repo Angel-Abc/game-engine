@@ -18,7 +18,7 @@ export type DialogAction = Action | GotoDialogAction | EndDialogAction
 
 export type DialogChoice = {
     id: string
-    message: string
+    label: string
     visible?: Condition
     enabled?: Condition
     action: DialogAction

@@ -2,37 +2,36 @@ import { fatalError } from '@utils/logMessage'
 import type { IMessageBus } from '@utils/messageBus'
 import type { IGameLoader, IHandlerLoader } from '@loader/loader'
 import type { Handler } from '@loader/data/handler'
-import type { IActionHandler } from '../actions/actionHandler'
+import type { IActionHandler, BaseAction } from '../actions/actionHandler'
 import type { IConditionResolver } from '../conditions/conditionResolver'
-import type { Action } from '@loader/data/action'
 import type { Condition } from '@loader/data/condition'
 import type { CleanUp, Message } from '@utils/types'
 import type { IGameEngine } from './gameEngine'
 
 export interface IHandlerRegistry {
-    registerActionHandler(handler: IActionHandler): void
+    registerActionHandler<T extends BaseAction>(handler: IActionHandler<T>): void
     registerConditionResolver(resolver: IConditionResolver): void
-    executeAction(engine: IGameEngine, action: Action, message?: Message): void
+    executeAction<T extends BaseAction>(engine: IGameEngine, action: T, message?: Message): void
     resolveCondition(engine: IGameEngine, condition: Condition | null): boolean
     registerGameHandlers(engine: IGameEngine, gameLoader: IGameLoader, handlerLoader: IHandlerLoader, messageBus: IMessageBus): Promise<void>
     cleanup(): void
 }
 
 export class HandlerRegistry implements IHandlerRegistry {
-    private actionHandlers = new Map<string, IActionHandler>()
+    private actionHandlers = new Map<string, IActionHandler<BaseAction>>()
     private conditionResolvers = new Map<string, IConditionResolver>()
     private handlerCleanupList: CleanUp[] = []
 
-    public registerActionHandler(handler: IActionHandler): void {
-        this.actionHandlers.set(handler.type, handler)
+    public registerActionHandler<T extends BaseAction>(handler: IActionHandler<T>): void {
+        this.actionHandlers.set(handler.type, handler as IActionHandler<BaseAction>)
     }
 
     public registerConditionResolver(resolver: IConditionResolver): void {
         this.conditionResolvers.set(resolver.type, resolver)
     }
 
-    public executeAction(engine: IGameEngine, action: Action, message?: Message): void {
-        const handler = this.actionHandlers.get(action.type)
+    public executeAction<T extends BaseAction>(engine: IGameEngine, action: T, message?: Message): void {
+        const handler = this.actionHandlers.get(action.type) as IActionHandler<T> | undefined
         if (handler === undefined) {
             fatalError('HandlerRegistry', `No action handler for type: ${action.type}`)
         }

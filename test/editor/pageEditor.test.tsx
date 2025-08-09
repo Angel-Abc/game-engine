@@ -2,18 +2,18 @@
 import { act } from 'react'
 import { describe, it, expect, vi } from 'vitest'
 import { createRoot } from 'react-dom/client'
-import { PageEditor, type Fetcher } from '@editor/pages/pageEditor'
+import { PageEditor } from '@editor/pages/pageEditor'
 
 ;(globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true
 
 describe('PageEditor', () => {
-  it('posts updates to API endpoint', async () => {
-    const fetcher: Fetcher = vi.fn().mockResolvedValue({} as Response)
+  it('applies updates with parsed JSON data', async () => {
+    const onApply = vi.fn()
     const container = document.createElement('div')
 
     await act(async () => {
       createRoot(container).render(
-        <PageEditor data={{ foo: 'bar' }} />,
+        <PageEditor data={{ foo: 'bar' }} onApply={onApply} />,
       )
     })
 
@@ -22,10 +22,6 @@ describe('PageEditor', () => {
       button?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
     })
 
-    expect(fetcher).toHaveBeenCalledWith('/api/pages/test', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ foo: 'bar' }, null, 2),
-    })
+    expect(onApply).toHaveBeenCalledWith({ foo: 'bar' })
   })
 })

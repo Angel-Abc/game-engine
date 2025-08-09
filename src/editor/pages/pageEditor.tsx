@@ -1,13 +1,20 @@
 import React, { useState } from 'react'
 
-export type Fetcher = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>
-
 interface PageEditorProps {
   data: unknown
+  onApply: (data: unknown) => void
 }
 
-export const PageEditor: React.FC<PageEditorProps> = ({ data }) => {
+export const PageEditor: React.FC<PageEditorProps> = ({ data, onApply }) => {
   const [content, setContent] = useState<string>(JSON.stringify(data, null, 2))
+
+  const handleApply = () => {
+    try {
+      onApply(JSON.parse(content))
+    } catch {
+      // Ignore JSON parse errors for now
+    }
+  }
 
   return (
     <div>
@@ -18,7 +25,7 @@ export const PageEditor: React.FC<PageEditorProps> = ({ data }) => {
         cols={80}
       />
       <div>
-        <button>Apply</button>
+        <button onClick={handleApply}>Apply</button>
         <button>Cancel</button>
       </div>
     </div>

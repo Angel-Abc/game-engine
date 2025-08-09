@@ -18,6 +18,11 @@ import { createScriptRunner } from '@engine/script/scriptRunnerFactory'
 import { createTranslationService } from '@engine/dialog/translationServiceFactory'
 import { App } from '@app/app'
 import { GameEngineProvider } from '@app/engineContext'
+import { MessageBusProvider } from '@app/messageBusContext'
+import { StateManagerProvider } from '@app/stateManagerContext'
+import { TranslationServiceProvider } from '@app/translationServiceContext'
+import { InputManagerProvider } from '@app/inputManagerContext'
+import { OutputManagerProvider } from '@app/outputManagerContext'
 import './style/reset.css'
 import './style/variables.css'
 import './style/game.css'
@@ -67,7 +72,17 @@ const root = document.getElementById('app')
 if (root) {
   createRoot(root).render(
     <GameEngineProvider engine={engine}>
-      <App />
+      <MessageBusProvider messageBus={engine.MessageBus}>
+        <StateManagerProvider stateManager={engine.StateManager}>
+          <TranslationServiceProvider translationService={engine.TranslationService}>
+            <InputManagerProvider inputManager={engine.InputManager}>
+              <OutputManagerProvider outputManager={engine.OutputManager}>
+                <App />
+              </OutputManagerProvider>
+            </InputManagerProvider>
+          </TranslationServiceProvider>
+        </StateManagerProvider>
+      </MessageBusProvider>
     </GameEngineProvider>
   )
 }

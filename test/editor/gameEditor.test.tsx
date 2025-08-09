@@ -1,6 +1,6 @@
 /** @vitest-environment jsdom */
 import { act } from 'react'
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { createRoot } from 'react-dom/client'
 import { GameEditor } from '@editor/app/gameEditor'
 import type { GameData } from '@editor/types'
@@ -30,7 +30,9 @@ describe('GameEditor', () => {
     }
     const container = document.createElement('div')
     act(() => {
-      createRoot(container).render(<GameEditor game={game} />)
+      createRoot(container).render(
+        <GameEditor game={game} onChange={() => {}} />,
+      )
     })
     const selects = container.querySelectorAll('select')
     expect(selects).toHaveLength(2)
@@ -42,5 +44,27 @@ describe('GameEditor', () => {
     expect(startPageSelect.value).toBe('start')
     const pageOptions = Array.from(startPageSelect.options).map((o) => o.value)
     expect(pageOptions).toContain('other')
+  })
+
+  it('calls onChange when fields are edited', async () => {
+    const game: GameData = { title: 'T', languages: {}, pages: {} }
+    const onChange = vi.fn()
+    const container = document.createElement('div')
+    await act(async () => {
+      createRoot(container).render(
+        <GameEditor game={game} onChange={onChange} />,
+      )
+    })
+    const textarea = container.querySelector('textarea') as HTMLTextAreaElement
+    const propsKey = Object.keys(textarea).find((k) =>
+      k.startsWith('__reactProps'),
+    ) as string
+    const props = (textarea as unknown as Record<string, unknown>)[propsKey] as {
+      onChange: (e: { target: { value: string } }) => void
+    }
+    act(() => {
+      props.onChange({ target: { value: 'New' } })
+    })
+    expect(onChange).toHaveBeenCalledWith({ ...game, description: 'New' })
   })
 })

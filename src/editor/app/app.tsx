@@ -83,7 +83,9 @@ export const App: React.FC = (): React.JSX.Element => {
             <span>Status: {status}</span>
             <button onClick={handleSave}>Save</button>
           </div>
-          {selected === 'root' && game ? <GameEditor game={game} /> : null}
+          {selected === 'root' && game ? (
+            <GameEditor game={game} onChange={(g) => setGame(g)} />
+          ) : null}
           {selected === 'pages' ? (
             <CreatePageForm onCreate={handlePageCreate} />
           ) : null}

@@ -35,6 +35,17 @@ export const App: React.FC = (): React.JSX.Element => {
     })
   }
 
+  const handlePageCreate = (id: string, fileName: string): void => {
+    if (!game) return
+    setGame({
+      ...game,
+      pages: {
+        ...(game.pages ?? {}),
+        [id]: fileName,
+      },
+    })
+  }
+
   return (
     <div className={styles.app}>
       <div className={styles.main}>
@@ -47,7 +58,9 @@ export const App: React.FC = (): React.JSX.Element => {
             <button onClick={handleSave}>Save</button>
           </div>
           {selected === 'root' && game ? <GameEditor game={game} /> : null}
-          {selected === 'pages' ? <CreatePageForm /> : null}
+          {selected === 'pages' ? (
+            <CreatePageForm onCreate={handlePageCreate} />
+          ) : null}
           {selected?.startsWith('pages/') && game ? (
             <PageEditor
               data={game.pages?.[selected.split('/')[1]]}

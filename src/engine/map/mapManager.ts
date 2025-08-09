@@ -18,7 +18,7 @@ export interface IMapManager {
 export type MapManagerServices = {
     messageBus: IMessageBus
     stateManager: IStateManager<ContextData>
-    executeAction: (action: Action, message?: Message) => void
+    executeAction: (action: Action, message?: Message, data?: unknown) => void
     mapLoaderService: IMapLoaderService
     translationService: ITranslationService
 }

@@ -20,7 +20,7 @@ export type InputManagerServices = {
     messageBus: IMessageBus
     inputSourceTracker: InputSourceTracker
     inputMatrixBuilder: InputMatrixBuilder
-    executeAction: <T extends BaseAction = Action>(action: T, message?: Message) => void
+    executeAction: <T extends BaseAction = Action>(action: T, message?: Message, data?: unknown) => void
 }
 
 export class InputManager implements IInputManager {
@@ -56,7 +56,7 @@ export class InputManager implements IInputManager {
     private onInput(input: string): void {
         const inputItem = this.services.inputSourceTracker.getInput(input)
         if (inputItem && inputItem.enabled && inputItem.input.action) {
-            this.services.executeAction(inputItem.input.action, undefined)
+            this.services.executeAction(inputItem.input.action, undefined, inputItem)
         }
     }
 }

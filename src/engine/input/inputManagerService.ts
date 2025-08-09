@@ -15,7 +15,7 @@ export function createInputManager(
     stateManager: IStateManager<ContextData>,
     translationService: ITranslationService,
     virtualInputHandler: IVirtualInputHandler,
-    executeAction: <T extends BaseAction = Action>(action: T, message?: Message) => void,
+    executeAction: <T extends BaseAction = Action>(action: T, message?: Message, data?: unknown) => void,
     resolveCondition: (condition: Condition | null) => boolean
 ): IInputManager {
     const inputSourceTracker = new InputSourceTracker({

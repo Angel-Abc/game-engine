@@ -44,7 +44,7 @@ export interface IEngineManagerFactory {
         mapLoader: IMapLoader,
         tileLoader: ITileLoader,
         translationService: ITranslationService,
-        executeAction: <T extends BaseAction = Action>(action: T, message?: Message) => void,
+        executeAction: <T extends BaseAction = Action>(action: T, message?: Message, data?: unknown) => void,
         setIsLoading: () => void,
         setIsRunning: () => void
     ): IMapManager
@@ -58,7 +58,7 @@ export interface IEngineManagerFactory {
         stateManager: IStateManager<ContextData>,
         translationService: ITranslationService,
         virtualInputHandler: IVirtualInputHandler,
-        executeAction: <T extends BaseAction = Action>(action: T, message?: Message) => void,
+        executeAction: <T extends BaseAction = Action>(action: T, message?: Message, data?: unknown) => void,
         resolveCondition: (condition: Condition | null) => boolean
     ): IInputManager
     createOutputManager(messageBus: IMessageBus): IOutputManager
@@ -154,7 +154,7 @@ export class GameEngineInitializer {
 
         const setIsLoading = () => stateController.setIsLoading()
         const setIsRunning = () => stateController.setIsRunning()
-        const executeAction = <T extends BaseAction = Action>(action: T, message?: Message) => handlerRegistry.executeAction(engine, action, message)
+        const executeAction = <T extends BaseAction = Action>(action: T, message?: Message, data?: unknown) => handlerRegistry.executeAction(engine, action, message, data)
         const resolveCondition = (condition: Condition | null) => handlerRegistry.resolveCondition(engine, condition)
 
         const pageManager = factory.createPageManager(messageBus, stateManager, loader.pageLoader, setIsLoading, setIsRunning)

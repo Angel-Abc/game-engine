@@ -46,18 +46,19 @@ function createEngine() {
 }
 
 describe('ScriptActionHandler', () => {
-  it('provides triggering message and payload to script context', () => {
+  it('provides triggering message, payload and data to script context', () => {
     const { engine, handlerRegistry, messageBus } = createEngine()
     let result: any = null
     messageBus.registerMessageListener('RESULT', msg => { result = msg.payload })
     const action: ScriptAction = {
       type: 'script',
-      script: "context.postMessage({ message: 'RESULT', payload: { msg: context.triggerMessage, payload: context.triggerPayload } })"
+      script: "context.postMessage({ message: 'RESULT', payload: { msg: context.triggerMessage, payload: context.triggerPayload, data: context.triggerData } })"
     }
+    const extraData = { bar: 1 }
     messageBus.registerMessageListener('TRIGGER', msg => {
-      handlerRegistry.executeAction(engine, action as Action, msg)
+      handlerRegistry.executeAction(engine, action as Action, msg, extraData)
     })
     messageBus.postMessage({ message: 'TRIGGER', payload: { foo: 42 } })
-    expect(result).toEqual({ msg: 'TRIGGER', payload: { foo: 42 } })
+    expect(result).toEqual({ msg: 'TRIGGER', payload: { foo: 42 }, data: extraData })
   })
 })

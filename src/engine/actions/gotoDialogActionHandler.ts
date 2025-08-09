@@ -7,8 +7,9 @@ import { DIALOG_SHOW_DIALOG } from '@engine/messages/messages'
 export class GotoDialogActionHandler implements IActionHandler<GotoDialogAction> {
     readonly type = 'goto' as const
 
-    handle(engine: IGameEngine, action: GotoDialogAction, _message?: Message): void {
+    handle(engine: IGameEngine, action: GotoDialogAction, _message?: Message, _data?: unknown): void {
         void _message
+        void _data
         engine.MessageBus.postMessage({ message: DIALOG_SHOW_DIALOG, payload: action.target })
     }
 }

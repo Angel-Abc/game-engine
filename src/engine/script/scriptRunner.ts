@@ -10,7 +10,8 @@ export type ScriptContext = {
     state: ContextData,
     postMessage: (message: Message) => void,
     triggerMessage?: string,
-    triggerPayload?: Message['payload']
+    triggerPayload?: Message['payload'],
+    triggerData?: unknown
 }
 
 export class ScriptRunner implements IScriptRunner {

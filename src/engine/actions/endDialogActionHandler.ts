@@ -7,8 +7,9 @@ import { ADD_LINE_TO_OUTPUT_LOG } from '@engine/messages/messages'
 export class EndDialogActionHandler implements IActionHandler<EndDialogAction> {
     readonly type = 'end-dialog' as const
 
-    handle(engine: IGameEngine, action: EndDialogAction, _message?: Message): void {
+    handle(engine: IGameEngine, action: EndDialogAction, _message?: Message, _data?: unknown): void {
         void _message
+        void _data
         if (action.message) {
             engine.MessageBus.postMessage({
                 message: ADD_LINE_TO_OUTPUT_LOG,

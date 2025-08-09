@@ -19,11 +19,11 @@ import type { EngineContext } from './engineContext'
 export interface IGameEngine {
     start(): Promise<void>
     cleanup(): void
-    executeAction(action: Action): void
+    executeAction(action: Action, message?: Message, data?: unknown): void
     resolveCondition(condition: Condition | null): boolean
     registerActionHandler(handler: IActionHandler<BaseAction>): void
     registerConditionResolver(resolver: IConditionResolver): void
-    createScriptContext(message?: Message): ScriptContext
+    createScriptContext(message?: Message, data?: unknown): ScriptContext
     setIsLoading(): void
     setIsRunning(): void
     get StateManager(): IStateManager<ContextData>
@@ -77,8 +77,8 @@ export class GameEngine implements IGameEngine {
         this.handlerRegistry.registerConditionResolver(resolver)
     }
 
-    public executeAction(action: Action): void {
-        this.handlerRegistry.executeAction(this, action, undefined)
+    public executeAction(action: Action, message?: Message, data?: unknown): void {
+        this.handlerRegistry.executeAction(this, action, message, data)
     }
 
     public resolveCondition(condition: Condition | null): boolean {
@@ -121,14 +121,15 @@ export class GameEngine implements IGameEngine {
         return this.outputManager
     }
 
-    public createScriptContext(message?: Message): ScriptContext {
+    public createScriptContext(message?: Message, data?: unknown): ScriptContext {
         const context: ScriptContext = {
             state: this.StateManager.state,
             postMessage: (msg: Message) => {
                 this.MessageBus.postMessage(msg)
             },
             triggerMessage: message?.message,
-            triggerPayload: message?.payload
+            triggerPayload: message?.payload,
+            triggerData: data
         }
         return context
     }

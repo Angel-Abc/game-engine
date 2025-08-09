@@ -34,11 +34,12 @@ function createEngine() {
       void setIsRunning
       return { initialize: vi.fn(), switchPage: vi.fn(), cleanup: vi.fn() } as any
     },
-    createMapManager: (messageBus, stateManager, mapLoader, tileLoader, executeAction, setIsLoading, setIsRunning) => {
+    createMapManager: (messageBus, stateManager, mapLoader, tileLoader, translationService, executeAction, setIsLoading, setIsRunning) => {
       void messageBus
       void stateManager
       void mapLoader
       void tileLoader
+      void translationService
       void executeAction
       void setIsLoading
       void setIsRunning

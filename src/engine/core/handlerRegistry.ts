@@ -12,7 +12,7 @@ import type { BaseAction } from '@loader/data/action'
 export interface IHandlerRegistry {
     registerActionHandler<T extends BaseAction>(handler: IActionHandler<T>): void
     registerConditionResolver(resolver: IConditionResolver): void
-    executeAction<T extends BaseAction>(engine: IGameEngine, action: T, message?: Message): void
+    executeAction<T extends BaseAction>(engine: IGameEngine, action: T, message?: Message, data?: unknown): void
     resolveCondition(engine: IGameEngine, condition: Condition | null): boolean
     registerGameHandlers(engine: IGameEngine, gameLoader: IGameLoader, handlerLoader: IHandlerLoader, messageBus: IMessageBus): Promise<void>
     cleanup(): void
@@ -31,12 +31,12 @@ export class HandlerRegistry implements IHandlerRegistry {
         this.conditionResolvers.set(resolver.type, resolver)
     }
 
-    public executeAction<T extends BaseAction>(engine: IGameEngine, action: T, message?: Message): void {
+    public executeAction<T extends BaseAction>(engine: IGameEngine, action: T, message?: Message, data?: unknown): void {
         const handler = this.actionHandlers.get(action.type) as IActionHandler<T> | undefined
         if (handler === undefined) {
             fatalError('HandlerRegistry', `No action handler for type: ${action.type}`)
         }
-        handler.handle(engine, action, message)
+        handler.handle(engine, action, message, data)
     }
 
     public resolveCondition(engine: IGameEngine, condition: Condition | null): boolean {
@@ -56,7 +56,7 @@ export class HandlerRegistry implements IHandlerRegistry {
             handlers.forEach((handler: Handler) => {
                 const cleanup = messageBus.registerMessageListener(
                     handler.message,
-                    (msg) => this.executeAction(engine, handler.action, msg)
+                    (msg) => this.executeAction(engine, handler.action, msg, undefined)
                 )
                 this.handlerCleanupList.push(cleanup)
             })

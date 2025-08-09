@@ -7,6 +7,7 @@ import { PageEditor } from '../pages/pageEditor'
 import { useGameData } from '../context/GameDataContext'
 import { useSelection } from '../context/SelectionContext'
 import { pagePath } from '../utils/pagePath'
+import { saveGame } from '../api/game'
 import styles from './app.module.css'
 
 export const sectionsFromGame = (game: GameData | null): GameTreeSection[] => {
@@ -21,10 +22,22 @@ export const sectionsFromGame = (game: GameData | null): GameTreeSection[] => {
 }
 
 export const App: React.FC = (): React.JSX.Element => {
-  const { game, setGame, status, saveGame } = useGameData()
+  const { game, setGame } = useGameData()
   const { selected, setSelected } = useSelection()
+  const [status, setStatus] = React.useState('idle')
 
   const sections = React.useMemo(() => sectionsFromGame(game), [game])
+
+  const handleSave = async (): Promise<void> => {
+    if (!game) return
+    setStatus('saving')
+    try {
+      await saveGame(game)
+      setStatus('saved')
+    } catch {
+      setStatus('error')
+    }
+  }
 
   const handlePageApply = (page: Page): void => {
     if (!game || !selected?.startsWith('pages/')) return
@@ -68,7 +81,7 @@ export const App: React.FC = (): React.JSX.Element => {
         <div className={styles.content}>
           <div className={styles.header}>
             <span>Status: {status}</span>
-            <button onClick={saveGame}>Save</button>
+            <button onClick={handleSave}>Save</button>
           </div>
           {selected === 'root' && game ? <GameEditor game={game} /> : null}
           {selected === 'pages' ? (
@@ -86,4 +99,3 @@ export const App: React.FC = (): React.JSX.Element => {
     </div>
   )
 }
-

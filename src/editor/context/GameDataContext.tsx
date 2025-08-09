@@ -1,13 +1,11 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import type { GameData } from '../types'
-
-export type Fetcher = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>
+import { loadGame } from '../api/game'
+import type { Fetcher } from '../api/game'
 
 interface GameDataContextValue {
   game: GameData | null
   setGame: React.Dispatch<React.SetStateAction<GameData | null>>
-  status: string
-  saveGame: () => Promise<void>
 }
 
 const GameDataContext = createContext<GameDataContextValue | undefined>(undefined)
@@ -19,17 +17,15 @@ interface GameDataProviderProps {
 
 export const GameDataProvider: React.FC<GameDataProviderProps> = ({
   children,
-  fetcher = fetch,
+  fetcher,
 }) => {
   const [game, setGame] = useState<GameData | null>(null)
-  const [status, setStatus] = useState('idle')
 
   useEffect(() => {
     let cancelled = false
 
-    fetcher('/api/game')
-      .then((res) => res.json())
-      .then((data: GameData) => {
+    loadGame(fetcher)
+      .then((data) => {
         if (!cancelled) {
           setGame(data)
         }
@@ -45,23 +41,8 @@ export const GameDataProvider: React.FC<GameDataProviderProps> = ({
     }
   }, [fetcher])
 
-  const saveGame = async (): Promise<void> => {
-    if (!game) return
-    setStatus('saving')
-    try {
-      await fetcher('/api/game', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(game),
-      })
-      setStatus('saved')
-    } catch {
-      setStatus('error')
-    }
-  }
-
   return (
-    <GameDataContext.Provider value={{ game, setGame, status, saveGame }}>
+    <GameDataContext.Provider value={{ game, setGame }}>
       {children}
     </GameDataContext.Provider>
   )
@@ -74,4 +55,3 @@ export const useGameData = (): GameDataContextValue => {
   }
   return context
 }
-

@@ -2,7 +2,8 @@
 import React, { useEffect, act } from 'react'
 import { describe, it, expect, vi } from 'vitest'
 import { createRoot } from 'react-dom/client'
-import { GameDataProvider, useGameData, type Fetcher } from '@editor/context/GameDataContext'
+import { GameDataProvider, useGameData } from '@editor/context/GameDataContext'
+import type { Fetcher } from '@editor/api/game'
 import type { GameData } from '@editor/types'
 
 ;(globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true
@@ -28,6 +29,7 @@ describe('GameDataProvider', () => {
   it('loads game data and provides it through context', async () => {
     const mockData: GameData = { title: 'Test Game' }
     const fetcher: Fetcher = vi.fn().mockResolvedValue({
+      ok: true,
       json: () => Promise.resolve(mockData),
     } as unknown as Response)
     const onData = vi.fn()
@@ -38,7 +40,7 @@ describe('GameDataProvider', () => {
     })
 
     await act(async () => {
-      await Promise.resolve()
+      await new Promise((resolve) => setTimeout(resolve, 0))
     })
 
     expect(fetcher).toHaveBeenCalledWith('/api/game')

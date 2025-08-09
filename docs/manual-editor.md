@@ -28,6 +28,8 @@ Selecting the **pages** node opens a form in the right pane that lets you create
 ## Top Bar
 
 A bar at the top of the editor displays the current save status and includes a **Save** button.
+When you click **Save**, the editor POSTs the current game data to `/api/game`.
+The status text updates to show `saving`, `saved`, or `error` based on the result.
 
 ## Root Page
 

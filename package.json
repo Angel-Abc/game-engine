@@ -1,0 +1,48 @@
+{
+  "name": "@angelabc/game-engine",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Game Engine",
+  "keywords": [],
+  "author": "AngelAbc",
+  "license": "MPL-2.0",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:server\" \"vite --port 5173\" \"npm run typecheck:watch\"",
+    "dev:editor": "concurrently \"npm run dev:server\" \"vite --port 5174 --open /editor.html\" \"npm run typecheck:watch\"",
+    "dev:server": "node src/server/index.js",
+    "build": "tsc && vite build",
+    "build:release": "cross-env WITH_EDITOR=false npm run build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "lint": "eslint . --ext .ts,.tsx",
+    "lint:fix": "eslint . --ext .ts,.tsx --fix",
+    "typecheck": "tsc --noEmit",
+    "typecheck:watch": "npm run typecheck -- --watch"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.32.0",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.7",
+    "@types/supertest": "^2.0.16",
+    "@typescript-eslint/eslint-plugin": "^8.38.0",
+    "@typescript-eslint/parser": "^8.38.0",
+    "@vitejs/plugin-react": "^4.7.0",
+    "concurrently": "^9.2.0",
+    "cross-env": "^10.0.0",
+    "eslint": "^9.32.0",
+    "eslint-plugin-react": "^7.37.5",
+    "jsdom": "^26.1.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.1",
+    "supertest": "^7.1.4",
+    "typescript": "~5.8.3",
+    "vite": "^7.0.4",
+    "vite-plugin-static-copy": "^3.1.1",
+    "vitest": "^3.2.4",
+    "zod": "^4.0.14"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}

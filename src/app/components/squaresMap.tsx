@@ -4,7 +4,8 @@ import type { SquaresMapComponent } from '@loader/data/component'
 import type { GameMap } from '@loader/data/map'
 import { useEffect, useState } from 'react'
 import { Tile } from './tile'
-import { useGameEngine } from '@app/engineContext'
+import { useMessageBus } from '@app/messageBusContext'
+import { useStateManager } from '@app/stateManagerContext'
 
 export type SquaresMapProps = {
     component: SquaresMapComponent
@@ -16,19 +17,20 @@ interface Position {
 }
 
 export const SquaresMap: React.FC<SquaresMapProps> = ({ component }): React.JSX.Element => {
-    const engine = useGameEngine()
-    const [activeMap, setActiveMap] = useState<string | null>(engine.StateManager.state.data.location.mapName)
-    const [pos, setPos] = useState<Position>(engine.StateManager.state.data.location.position)
+    const messageBus = useMessageBus()
+    const stateManager = useStateManager()
+    const [activeMap, setActiveMap] = useState<string | null>(stateManager.state.data.location.mapName)
+    const [pos, setPos] = useState<Position>(stateManager.state.data.location.position)
 
     useEffect(() => {
-        const cleanup = engine.MessageBus.registerMessageListener(MAP_SWITCHED_MESSAGE, () => {
-            setActiveMap(engine.StateManager.state.data.location.mapName)
+        const cleanup = messageBus.registerMessageListener(MAP_SWITCHED_MESSAGE, () => {
+            setActiveMap(stateManager.state.data.location.mapName)
         })
         return cleanup
-    }, [engine])
+    }, [messageBus, stateManager])
 
     useEffect(() => {
-        const cleanup = engine.MessageBus.registerMessageListener(
+        const cleanup = messageBus.registerMessageListener(
             POSITION_CHANGED_MESSAGE,
             msg => {
                 if (msg?.payload) {
@@ -41,9 +43,9 @@ export const SquaresMap: React.FC<SquaresMapProps> = ({ component }): React.JSX.
             }
         )
         return cleanup
-    }, [engine])
+    }, [messageBus])
 
-    const gameMap: GameMap | null = activeMap !== null ? engine.StateManager.state.maps[activeMap] : null
+    const gameMap: GameMap | null = activeMap !== null ? stateManager.state.maps[activeMap] : null
     if (!gameMap) return (<></>)
 
     const deltaX = Math.floor(component.mapSize.columns / 2)
@@ -64,7 +66,7 @@ export const SquaresMap: React.FC<SquaresMapProps> = ({ component }): React.JSX.
                     {gameMap.map.map((row, rowIndex) => {
                         return row.map((tileKey, columnIndex) => {
                             const mapTile = gameMap.tiles[tileKey]
-                            const tile = engine.StateManager.state.tiles[mapTile.tile]
+                            const tile = stateManager.state.tiles[mapTile.tile]
                             const key = `${tileKey}-${rowIndex}-${columnIndex}`
                             return (
                                 <Tile

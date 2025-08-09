@@ -3,30 +3,32 @@ import type { MatrixInputItem } from '@engine/input/inputManager'
 import { INPUTHANDLER_INPUTS_CHANGED, VIRTUAL_INPUT_MESSAGE } from '@engine/messages/messages'
 import type { InputMatrixComponent } from '@loader/data/component'
 import { useEffect, useState } from 'react'
-import { useGameEngine } from '@app/engineContext'
+import { useInputManager } from '@app/inputManagerContext'
+import { useMessageBus } from '@app/messageBusContext'
 
 export type InputMatrixProps = {
     component: InputMatrixComponent
 }
 
 export const InputMatrix: React.FC<InputMatrixProps> = ({ component }): React.JSX.Element => {
-    const engine = useGameEngine()
-    const [inputMatrix, setInputMatrix] = useState(engine.InputManager.getInputMatrix(component.matrixSize.width, component.matrixSize.height))
+    const inputManager = useInputManager()
+    const messageBus = useMessageBus()
+    const [inputMatrix, setInputMatrix] = useState(inputManager.getInputMatrix(component.matrixSize.width, component.matrixSize.height))
     const style: CSSCustomProperties = {
         '--ge-input-matrix-width': component.matrixSize.width.toString(),
         '--ge-input-matrix-height': component.matrixSize.height.toString()
     }
 
     useEffect(() => {
-        const cleanup = engine.MessageBus.registerMessageListener(INPUTHANDLER_INPUTS_CHANGED, () => {
-            setInputMatrix(engine.InputManager.getInputMatrix(component.matrixSize.width, component.matrixSize.height))
+        const cleanup = messageBus.registerMessageListener(INPUTHANDLER_INPUTS_CHANGED, () => {
+            setInputMatrix(inputManager.getInputMatrix(component.matrixSize.width, component.matrixSize.height))
         })
         return cleanup
-    }, [engine, component.matrixSize.height, component.matrixSize.width])
+    }, [messageBus, inputManager, component.matrixSize.height, component.matrixSize.width])
 
     const onButtonClick = (item: MatrixInputItem): void => {
         if (!item.enabled || item.virtualInput === '') return
-        engine.MessageBus.postMessage({ message: VIRTUAL_INPUT_MESSAGE, payload: item.virtualInput })
+        messageBus.postMessage({ message: VIRTUAL_INPUT_MESSAGE, payload: item.virtualInput })
     }
 
 

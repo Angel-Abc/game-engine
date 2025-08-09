@@ -1,6 +1,6 @@
 import React from 'react'
 import { GameTree } from './gameTree'
-import type { GameTreeSection, GameData } from '../types'
+import type { GameTreeSection, GameData, Page } from '../types'
 import { GameEditor } from './gameEditor'
 import { CreatePageForm } from '../pages/createPageForm'
 import { PageEditor } from '../pages/pageEditor'
@@ -21,11 +21,11 @@ export const sectionsFromGame = (game: GameData | null): GameTreeSection[] => {
 
 export const App: React.FC = (): React.JSX.Element => {
   const { game, setGame, status, saveGame } = useGameData()
-  const { selected } = useSelection()
+  const { selected, setSelected } = useSelection()
 
   const sections = React.useMemo(() => sectionsFromGame(game), [game])
 
-  const handlePageApply = (page: unknown): void => {
+  const handlePageApply = (page: Page): void => {
     if (!game || !selected?.startsWith('pages/')) return
     const pageId = selected.split('/')[1]
     setGame({
@@ -43,9 +43,18 @@ export const App: React.FC = (): React.JSX.Element => {
       ...game,
       pages: {
         ...(game.pages ?? {}),
-        [id]: fileName,
+        [id]: {
+          id,
+          fileName,
+          inputs: [],
+          screen: { type: 'grid', width: 1, height: 1, components: [] },
+        },
       },
     })
+  }
+
+  const handlePageCancel = (): void => {
+    setSelected('pages')
   }
 
   return (
@@ -65,8 +74,9 @@ export const App: React.FC = (): React.JSX.Element => {
           ) : null}
           {selected?.startsWith('pages/') && game ? (
             <PageEditor
-              data={game.pages?.[selected.split('/')[1]]}
+              data={game.pages?.[selected.split('/')[1]] as Page}
               onApply={handlePageApply}
+              onCancel={handlePageCancel}
             />
           ) : null}
         </div>

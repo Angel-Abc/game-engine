@@ -12,7 +12,20 @@ describe('GameEditor', () => {
     const game: GameData = {
       title: 'Test Game',
       languages: { en: [], fr: [] },
-      pages: { start: 'pages/start.json', other: 'pages/other.json' },
+      pages: {
+        start: {
+          id: 'start',
+          fileName: 'pages/start.json',
+          inputs: [],
+          screen: { type: 'grid', width: 1, height: 1, components: [] },
+        },
+        other: {
+          id: 'other',
+          fileName: 'pages/other.json',
+          inputs: [],
+          screen: { type: 'grid', width: 1, height: 1, components: [] },
+        },
+      },
       ['initial-data']: { language: 'en', 'start-page': 'start' },
     }
     const container = document.createElement('div')

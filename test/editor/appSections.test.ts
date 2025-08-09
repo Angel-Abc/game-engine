@@ -6,7 +6,13 @@ describe('sectionsFromGame', () => {
   it('returns sections for defined keys', () => {
     const game: GameData = {
       title: 'Test',
-      pages: { start: {} },
+      pages: {
+        start: {
+          id: 'start',
+          inputs: [],
+          screen: { type: 'grid', width: 1, height: 1, components: [] },
+        },
+      },
       tiles: {},
     }
     const sections = sectionsFromGame(game)

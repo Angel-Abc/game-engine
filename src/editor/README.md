@@ -30,7 +30,8 @@ the page **id**, **inputs**, and **screen**:
 
 - The **Id** field is a simple text input.
 - The **Inputs** and **Screen** fields accept JSON and validate it against the
-  project's schemas.
+  project's schemas using the shared [`JsonEditor`](./components/JsonEditor.tsx)
+  component.
 
 Click **Apply** to validate and persist your changes or **Cancel** to revert to
 the original values.

@@ -30,7 +30,8 @@ export function mapDialogAction(action: DialogAction): DialogActionData {
             }
         case 'end-dialog':
             return {
-                type: 'end-dialog'
+                type: 'end-dialog',
+                message: action.message
             }
         default:
             return mapAction(action)

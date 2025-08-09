@@ -12,7 +12,8 @@ export const gotoDialogActionSchema = z.object({
 })
 
 export const endDialogActionSchema = z.object({
-    type: z.literal('end-dialog')
+    type: z.literal('end-dialog'),
+    message: z.string().optional()
 })
 
 export const dialogActionSchema = z.discriminatedUnion('type', [

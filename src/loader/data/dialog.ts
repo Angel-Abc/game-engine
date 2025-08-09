@@ -11,7 +11,8 @@ export type GotoDialogAction = {
 }
 
 export type EndDialogAction = {
-    type: 'end-dialog'
+    type: 'end-dialog',
+    message?: string
 }
 
 export type DialogAction = Action | GotoDialogAction | EndDialogAction

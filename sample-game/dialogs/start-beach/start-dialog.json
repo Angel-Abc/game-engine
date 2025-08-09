@@ -42,7 +42,8 @@
                     "id": "look-around-choice-1",
                     "label": "START-BEACH.START-DIALOG.LOOK-AROUND.CHOICE-1",
                     "action": {
-                        "type": "end-dialog"
+                        "type": "end-dialog",
+                        "message": "START-BEACH.START-DIALOG.LOOK-AROUND.CHOICE-1.MESSAGE"
                     }
                 },
                 {
@@ -63,7 +64,8 @@
                     "id": "try-to-remember-choice-1",
                     "label": "START-BEACH.START-DIALOG.TRY-TO-REMEMBER.CHOICE-1",
                     "action": {
-                        "type": "end-dialog"
+                        "type": "end-dialog",
+                        "message": "START-BEACH.START-DIALOG.TRY-TO-REMEMBER.CHOICE-1.MESSAGE"
                     }
                 }
             ]

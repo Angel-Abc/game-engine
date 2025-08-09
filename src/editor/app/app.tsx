@@ -3,6 +3,7 @@ import { GameTree } from './gameTree'
 import { GameEditor } from './gameEditor'
 import { CreatePageForm } from '../pages/createPageForm'
 import { useGameData } from '../hooks/useGameData'
+import styles from './app.module.css'
 
 export const App: React.FC = (): React.JSX.Element => {
   const game = useGameData()
@@ -14,31 +15,16 @@ export const App: React.FC = (): React.JSX.Element => {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          padding: '0.5rem',
-          borderBottom: '1px solid #ccc',
-        }}
-      >
+    <div className={styles.app}>
+      <div className={styles.header}>
         <span>Status: {status}</span>
         <button onClick={handleSave}>Save</button>
       </div>
-      <div style={{ display: 'flex', flex: 1 }}>
-        <div
-          style={{
-            width: '250px',
-            borderRight: '1px solid #ccc',
-            padding: '0.5rem',
-            overflowY: 'auto',
-          }}
-        >
+      <div className={styles.main}>
+        <div className={styles.sidebar}>
           <GameTree game={game} onSelect={setSelected} />
         </div>
-        <div style={{ flex: 1, padding: '0.5rem', overflowY: 'auto' }}>
+        <div className={styles.content}>
           {selected === 'root' && game ? <GameEditor game={game} /> : null}
           {selected === 'pages' ? <CreatePageForm /> : null}
         </div>

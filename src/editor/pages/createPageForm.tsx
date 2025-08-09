@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import styles from './createPageForm.module.css'
 
 export const CreatePageForm: React.FC = () => {
   const [id, setId] = useState('')
@@ -18,7 +19,7 @@ export const CreatePageForm: React.FC = () => {
   }
 
   return (
-    <form style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+    <form className={styles.form}>
       <label>
         Page ID
         <input type="text" value={id} onChange={(e) => setId(e.target.value)} />

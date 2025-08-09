@@ -38,6 +38,11 @@ export default defineConfig({
       },
     },
   },
+  css: {
+    modules: {
+      localsConvention: 'camelCase',
+    },
+  },
   server: {
     proxy: {
       '/api': 'http://localhost:3001',

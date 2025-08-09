@@ -6,7 +6,10 @@ interface Section {
   items: string[]
 }
 
-export const GameTree: React.FC<{ game: GameData | null }> = ({ game }) => {
+export const GameTree: React.FC<{ game: GameData | null; onSelect: (node: string) => void }> = ({
+  game,
+  onSelect,
+}) => {
   if (!game) {
     return <div>Loading...</div>
   }
@@ -20,7 +23,7 @@ export const GameTree: React.FC<{ game: GameData | null }> = ({ game }) => {
 
   return (
     <ul>
-      <li>
+      <li onClick={() => onSelect('root')} style={{ cursor: 'pointer' }}>
         {game.title}
         <ul>
           {sections.map((section) => (

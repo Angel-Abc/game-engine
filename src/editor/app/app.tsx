@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { GameTree } from './gameTree'
+import { GameEditor } from './gameEditor'
 import { useGameData } from '../hooks/useGameData'
 
 export const App: React.FC = (): React.JSX.Element => {
   const game = useGameData()
+  const [selected, setSelected] = useState<string | null>(null)
 
   return (
     <div style={{ display: 'flex', height: '100vh' }}>
@@ -15,9 +17,11 @@ export const App: React.FC = (): React.JSX.Element => {
           overflowY: 'auto',
         }}
       >
-        <GameTree game={game} />
+        <GameTree game={game} onSelect={setSelected} />
       </div>
-      <div style={{ flex: 1 }} />
+      <div style={{ flex: 1, padding: '0.5rem', overflowY: 'auto' }}>
+        {selected === 'root' && game ? <GameEditor game={game} /> : null}
+      </div>
     </div>
   )
 }

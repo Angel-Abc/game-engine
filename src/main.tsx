@@ -17,6 +17,7 @@ import { createDialogManager } from '@engine/dialog/dialogManagerService'
 import { createScriptRunner } from '@engine/script/scriptRunnerFactory'
 import { createTranslationService } from '@engine/dialog/translationServiceFactory'
 import { App } from '@app/app'
+import { GameEngineProvider } from '@app/engineContext'
 import './style/reset.css'
 import './style/variables.css'
 import './style/game.css'
@@ -64,6 +65,10 @@ await engine.start()
 
 const root = document.getElementById('app')
 if (root) {
-  createRoot(root).render(<App engine={engine} />)
+  createRoot(root).render(
+    <GameEngineProvider engine={engine}>
+      <App />
+    </GameEngineProvider>
+  )
 }
 

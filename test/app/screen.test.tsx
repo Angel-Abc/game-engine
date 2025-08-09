@@ -1,7 +1,10 @@
-import { describe, it, expect } from 'vitest'
-import { Screen } from '@app/controls/screen'
+import { describe, it, expect, vi } from 'vitest'
 import type { Screen as ScreenData } from '@loader/data/page'
 import type { IGameEngine } from '@engine/core/gameEngine'
+
+const engine = { resolveCondition: () => true } as unknown as IGameEngine
+vi.mock('@app/engineContext', () => ({ useGameEngine: () => engine }))
+import { Screen } from '@app/controls/screen'
 
 describe('Screen', () => {
   it('applies grid position variables to components', () => {
@@ -17,8 +20,7 @@ describe('Screen', () => {
       ],
     }
 
-    const engine = { resolveCondition: () => true } as unknown as IGameEngine
-    const element = Screen({ screen: screenData, engine }) as React.ReactElement<Record<string, unknown>>
+    const element = Screen({ screen: screenData }) as React.ReactElement<Record<string, unknown>>
     const child = (element.props.children as React.ReactElement<Record<string, unknown>>[])[0]
     const style = child.props.style as Record<string, string>
 

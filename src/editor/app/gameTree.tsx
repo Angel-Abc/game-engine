@@ -1,5 +1,6 @@
 import React from 'react'
 import type { GameData } from '../types'
+import styles from './gameTree.module.css'
 
 interface Section {
   name: string
@@ -22,9 +23,9 @@ export const GameTree: React.FC<{ game: GameData | null; onSelect: (node: string
   ]
 
   return (
-    <ul>
+    <ul className={styles.tree}>
       <li>
-        <span onClick={() => onSelect('root')} style={{ cursor: 'pointer' }}>
+        <span onClick={() => onSelect('root')} className={styles.node}>
           {game.title}
         </span>
         <ul>
@@ -32,7 +33,7 @@ export const GameTree: React.FC<{ game: GameData | null; onSelect: (node: string
             <li key={section.name}>
               <span
                 onClick={() => onSelect(section.name)}
-                style={{ cursor: 'pointer' }}
+                className={styles.node}
               >
                 {section.name}
               </span>
@@ -41,7 +42,7 @@ export const GameTree: React.FC<{ game: GameData | null; onSelect: (node: string
                   <li key={item}>
                     <span
                       onClick={() => onSelect(`${section.name}/${item}`)}
-                      style={{ cursor: 'pointer' }}
+                      className={styles.node}
                     >
                       {item}
                     </span>

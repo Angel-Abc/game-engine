@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { sectionsFromGame } from '@editor/app/app'
+import { sectionsFromGame } from '@editor/app/useGameSections'
 import type { GameData } from '@editor/types'
 
 describe('sectionsFromGame', () => {

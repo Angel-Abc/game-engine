@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { GameTree } from './gameTree'
-
-interface GameData {
-  title: string
-  pages?: Record<string, unknown>
-  maps?: Record<string, unknown>
-  tiles?: Record<string, unknown>
-  dialogs?: Record<string, unknown>
-}
+import type { GameData } from '../types'
 
 export const App: React.FC = (): React.JSX.Element => {
   const [game, setGame] = useState<GameData | null>(null)

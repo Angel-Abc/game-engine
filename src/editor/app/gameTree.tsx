@@ -23,12 +23,19 @@ export const GameTree: React.FC<{ game: GameData | null; onSelect: (node: string
 
   return (
     <ul>
-      <li onClick={() => onSelect('root')} style={{ cursor: 'pointer' }}>
-        {game.title}
+      <li>
+        <span onClick={() => onSelect('root')} style={{ cursor: 'pointer' }}>
+          {game.title}
+        </span>
         <ul>
           {sections.map((section) => (
             <li key={section.name}>
-              {section.name}
+              <span
+                onClick={() => onSelect(section.name)}
+                style={{ cursor: 'pointer' }}
+              >
+                {section.name}
+              </span>
               <ul>
                 {section.items.map((item) => (
                   <li key={item}>{item}</li>

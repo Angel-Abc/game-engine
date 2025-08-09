@@ -75,12 +75,12 @@ function createInputManager(actionFn = vi.fn()) {
   }
 
   const inputManager = new InputManager(services)
-  return { inputManager, messageBus, actionFn }
+  return { inputManager, messageBus, actionFn, input }
 }
 
 describe('InputManager', () => {
   it('does not invoke handlers after cleanup and reinitialize cycles', () => {
-    const { inputManager, messageBus, actionFn } = createInputManager()
+    const { inputManager, messageBus, actionFn, input } = createInputManager()
 
     inputManager.initialize()
     inputManager.update()
@@ -92,7 +92,11 @@ describe('InputManager', () => {
     inputManager.initialize()
     inputManager.update()
     messageBus.postMessage({ message: VIRTUAL_INPUT_MESSAGE, payload: 'test' })
-    expect(actionFn).toHaveBeenCalledTimes(1)
+    expect(actionFn).toHaveBeenCalledWith(input.action, undefined, {
+      input,
+      enabled: true,
+      visible: true
+    })
 
     inputManager.cleanup()
     messageBus.postMessage({ message: VIRTUAL_INPUT_MESSAGE, payload: 'test' })

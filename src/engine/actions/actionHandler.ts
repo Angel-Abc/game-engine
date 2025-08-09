@@ -5,6 +5,6 @@ import type { Message } from '@utils/types'
 
 export interface IActionHandler<T extends BaseAction = Action> {
     readonly type: T['type']
-    handle(engine: IGameEngine, action: T, message?: Message): void
+    handle(engine: IGameEngine, action: T, message?: Message, data?: unknown): void
 }
 

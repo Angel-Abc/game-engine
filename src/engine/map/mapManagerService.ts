@@ -15,7 +15,7 @@ export function createMapManager(
     mapLoader: IMapLoader,
     tileLoader: ITileLoader,
     translationService: ITranslationService,
-    executeAction: (action: Action, message?: Message) => void,
+    executeAction: (action: Action, message?: Message, data?: unknown) => void,
     setIsLoading: () => void,
     setIsRunning: () => void
 ): IMapManager {

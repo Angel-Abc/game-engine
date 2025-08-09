@@ -6,7 +6,7 @@ import { CreatePageForm } from '../pages/createPageForm'
 import { PageEditor } from '../pages/pageEditor'
 import { useGameData } from '../context/GameDataContext'
 import { useSelection } from '../context/SelectionContext'
-import { pagePath } from '../utils/pagePath'
+import { pagePath, generatePageId } from '../utils/pagePath'
 import { saveGame } from '../api/game'
 import styles from './app.module.css'
 
@@ -51,14 +51,15 @@ export const App: React.FC = (): React.JSX.Element => {
     })
   }
 
-  const handlePageCreate = (id: string): void => {
+  const handlePageCreate = (baseId: string): void => {
     if (!game) return
-    const fileName = pagePath(id)
+    const fileName = pagePath(baseId)
+    const id = generatePageId(baseId)
     setGame({
       ...game,
       pages: {
         ...(game.pages ?? {}),
-        [id]: {
+        [baseId]: {
           id,
           fileName,
           inputs: [],

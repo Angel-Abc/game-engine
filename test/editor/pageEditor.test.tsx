@@ -8,7 +8,7 @@ import type { Page } from '@editor/types'
 ;(globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true
 
 describe('PageEditor', () => {
-  it('applies updates with parsed JSON data', async () => {
+  it('applies updates with form data', async () => {
     const onApply = vi.fn()
     const container = document.createElement('div')
 
@@ -20,7 +20,7 @@ describe('PageEditor', () => {
     }
     await act(async () => {
       createRoot(container).render(
-        <PageEditor data={page} onApply={onApply} />, 
+        <PageEditor data={page} onApply={onApply} />,
       )
     })
 

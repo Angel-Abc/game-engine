@@ -92,6 +92,7 @@ export const App: React.FC = (): React.JSX.Element => {
           ) : null}
           {selected?.startsWith('pages/') && game ? (
             <PageEditor
+              key={selected}
               data={game.pages?.[selected.split('/')[1]] as Page}
               onApply={handlePageApply}
               onCancel={handlePageCancel}

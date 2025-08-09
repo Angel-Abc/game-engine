@@ -12,3 +12,8 @@ export interface GameData {
   dialogs?: Record<string, unknown>
   languages?: Record<string, unknown>
 }
+
+export interface GameTreeSection {
+  name: string
+  items: string[]
+}

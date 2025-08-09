@@ -1,0 +1,18 @@
+import { describe, it, expect } from 'vitest'
+import { sectionsFromGame } from '@editor/app/app'
+import type { GameData } from '@editor/types'
+
+describe('sectionsFromGame', () => {
+  it('returns sections for defined keys', () => {
+    const game: GameData = {
+      title: 'Test',
+      pages: { start: {} },
+      tiles: {},
+    }
+    const sections = sectionsFromGame(game)
+    const names = sections.map((s) => s.name)
+    expect(names).toContain('pages')
+    expect(names).toContain('tiles')
+    expect(names).not.toContain('maps')
+  })
+})

@@ -1,25 +1,16 @@
 import React from 'react'
-import type { GameData } from '../types'
+import type { GameData, GameTreeSection } from '../types'
 import { useSelection } from '../context/SelectionContext'
 import styles from './gameTree.module.css'
 
-interface Section {
-  name: string
-  items: string[]
-}
-
-export const GameTree: React.FC<{ game: GameData | null }> = ({ game }) => {
+export const GameTree: React.FC<{ game: GameData | null; sections: GameTreeSection[] }> = ({
+  game,
+  sections,
+}) => {
   const { setSelected } = useSelection()
   if (!game) {
     return <div>Loading...</div>
   }
-
-  const sections: Section[] = [
-    { name: 'pages', items: Object.keys(game.pages || {}) },
-    { name: 'maps', items: Object.keys(game.maps || {}) },
-    { name: 'tiles', items: Object.keys(game.tiles || {}) },
-    { name: 'dialogs', items: Object.keys(game.dialogs || {}) },
-  ]
 
   return (
     <ul className={styles.tree}>

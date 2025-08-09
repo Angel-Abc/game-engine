@@ -18,17 +18,13 @@ describe('CreatePageForm', () => {
     expect(button?.textContent).toBe('Create')
   })
 
-  it('calls onCreate with page id and file name', async () => {
+  it('calls onCreate with page id', async () => {
     const onCreate = vi.fn()
     const container = document.createElement('div')
 
     await act(async () => {
       createRoot(container).render(
-        <CreatePageForm
-          onCreate={onCreate}
-          initialId="test-page"
-          initialFileName="pages/test-page.json"
-        />,
+        <CreatePageForm onCreate={onCreate} initialId="test-page" />, 
       )
     })
 
@@ -37,9 +33,24 @@ describe('CreatePageForm', () => {
       button.click()
     })
 
-    expect(onCreate).toHaveBeenCalledWith(
-      'test-page',
-      'pages/test-page.json',
-    )
+    expect(onCreate).toHaveBeenCalledWith('test-page')
+  })
+
+  it('rejects invalid page ids', async () => {
+    const onCreate = vi.fn()
+    const container = document.createElement('div')
+
+    await act(async () => {
+      createRoot(container).render(
+        <CreatePageForm onCreate={onCreate} initialId="bad/id" />, 
+      )
+    })
+
+    const button = container.querySelector('button') as HTMLButtonElement
+    await act(async () => {
+      button.click()
+    })
+
+    expect(onCreate).not.toHaveBeenCalled()
   })
 })

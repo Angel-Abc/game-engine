@@ -23,7 +23,7 @@ When the editor loads, the left side displays a tree. The top node shows the gam
 
 The tree uses a clean, indented layout with clickable nodes for easier navigation.
 
-Selecting the **pages** node opens a form in the right pane that lets you create a new page by specifying its ID and file name. If the file name is left blank, the editor suggests one based on the entered ID (for example, an ID of `intro` results in a suggested file name of `pages/intro.json`).
+Selecting the **pages** node opens a form in the right pane that lets you create a new page by specifying its ID. The editor saves the page using a path derived from that ID (for example, an ID of `intro` becomes `pages/intro.json`).
 
 ## Top Bar
 

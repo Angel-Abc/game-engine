@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { GameTree } from './gameTree'
 import { GameEditor } from './gameEditor'
 import { CreatePageForm } from '../pages/createPageForm'
+import { PageEditor } from '../pages/pageEditor'
 import { useGameData } from '../hooks/useGameData'
 import styles from './app.module.css'
 
@@ -27,6 +28,12 @@ export const App: React.FC = (): React.JSX.Element => {
         <div className={styles.content}>
           {selected === 'root' && game ? <GameEditor game={game} /> : null}
           {selected === 'pages' ? <CreatePageForm /> : null}
+          {selected?.startsWith('pages/') && game ? (
+            <PageEditor
+              id={selected.split('/')[1]}
+              data={game.pages?.[selected.split('/')[1]]}
+            />
+          ) : null}
         </div>
       </div>
     </div>

@@ -23,3 +23,15 @@ When the editor loads, the left side displays a tree. The top node shows the gam
 
 Selecting the **pages** node opens a form in the right pane that lets you create a new page by specifying its ID and file name. If the file name is left blank, the editor suggests one based on the entered ID (for example, an ID of `intro` results in a suggested file name of `pages/intro.json`).
 
+
+## Top Bar
+
+A bar at the top of the editor displays the current save status and includes a **Save** button.
+
+## Root Page
+
+Selecting the top node in the sidebar shows fields for the title, description, and version. The initial data has been split into separate **Language** and **Start Page** dropdowns.
+
+## Create Page Form
+
+The create page form includes a **Create** button below the fields.

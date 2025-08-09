@@ -27,6 +27,7 @@ export const CreatePageForm: React.FC = () => {
         File Name
         <input type="text" value={fileName} onChange={handleFileNameChange} />
       </label>
+      <button type="button">Create</button>
     </form>
   )
 }

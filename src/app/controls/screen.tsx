@@ -1,14 +1,14 @@
 import type { CSSCustomProperties } from '@app/types'
 import type { Screen as ScreenData } from '@loader/data/page'
-import type { IGameEngine } from '@engine/core/gameEngine'
 import { Component } from './component'
+import { useGameEngine } from '@app/engineContext'
 
 export type ScreenProps = {
     screen: ScreenData
-    engine: IGameEngine
 }
 
-export const Screen: React.FC<ScreenProps> = ({ screen, engine }): React.JSX.Element => {
+export const Screen: React.FC<ScreenProps> = ({ screen }): React.JSX.Element => {
+    const engine = useGameEngine()
     switch (screen.type) {
         case 'grid': {
             const style: CSSCustomProperties = {
@@ -28,7 +28,7 @@ export const Screen: React.FC<ScreenProps> = ({ screen, engine }): React.JSX.Ele
                             }
                             return (
                                 <div className='grid-component' style={componentStyle} key={key}>
-                                    <Component component={item.component} engine={engine} />
+                                    <Component component={item.component} />
                                 </div>
                             )
                         } else return null

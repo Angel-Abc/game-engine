@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import type { GameData } from '../types'
+import styles from './gameEditor.module.css'
 
 export const GameEditor: React.FC<{ game: GameData }> = ({ game }) => {
   const [title, setTitle] = useState(game.title)
@@ -16,7 +17,7 @@ export const GameEditor: React.FC<{ game: GameData }> = ({ game }) => {
   const pages = Object.keys(game.pages ?? {})
 
   return (
-    <form style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+    <form className={styles.form}>
       <label>
         Title
         <input

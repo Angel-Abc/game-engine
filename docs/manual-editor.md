@@ -19,7 +19,7 @@ This command serves the editor on http://localhost:5174/editor.html.
 
 ## Sidebar Tree
 
-When the editor loads, the left side displays a tree. The top node shows the game's title. Underneath are the **pages**, **maps**, **tiles**, and **dialogs** nodes. Each of these nodes lists their respective keys as leaves.
+When the editor loads, the left side displays a tree. The top node shows the game's title. Below it, the tree lists a section for each data type found in the game (for example, **pages**, **maps**, **tiles**, or **dialogs**). Each section lists its keys as leaves.
 
 The tree uses a clean, indented layout with clickable nodes for easier navigation.
 

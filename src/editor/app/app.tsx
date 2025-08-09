@@ -1,5 +1,6 @@
 import React from 'react'
 import { GameTree } from './gameTree'
+import type { GameTreeSection, GameData } from '../types'
 import { GameEditor } from './gameEditor'
 import { CreatePageForm } from '../pages/createPageForm'
 import { PageEditor } from '../pages/pageEditor'
@@ -7,9 +8,22 @@ import { useGameData } from '../context/GameDataContext'
 import { useSelection } from '../context/SelectionContext'
 import styles from './app.module.css'
 
+export const sectionsFromGame = (game: GameData | null): GameTreeSection[] => {
+  if (!game) return []
+  const sections: GameTreeSection[] = []
+  if (game.pages) sections.push({ name: 'pages', items: Object.keys(game.pages) })
+  if (game.maps) sections.push({ name: 'maps', items: Object.keys(game.maps) })
+  if (game.tiles) sections.push({ name: 'tiles', items: Object.keys(game.tiles) })
+  if (game.dialogs)
+    sections.push({ name: 'dialogs', items: Object.keys(game.dialogs) })
+  return sections
+}
+
 export const App: React.FC = (): React.JSX.Element => {
   const { game, setGame, status, saveGame } = useGameData()
   const { selected } = useSelection()
+
+  const sections = React.useMemo(() => sectionsFromGame(game), [game])
 
   const handlePageApply = (page: unknown): void => {
     if (!game || !selected?.startsWith('pages/')) return
@@ -38,7 +52,7 @@ export const App: React.FC = (): React.JSX.Element => {
     <div className={styles.app}>
       <div className={styles.main}>
         <div className={styles.sidebar}>
-          <GameTree game={game} />
+          <GameTree game={game} sections={sections} />
         </div>
         <div className={styles.content}>
           <div className={styles.header}>

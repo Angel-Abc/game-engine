@@ -6,6 +6,7 @@ import { CreatePageForm } from '../pages/createPageForm'
 import { PageEditor } from '../pages/pageEditor'
 import { useGameData } from '../context/GameDataContext'
 import { useSelection } from '../context/SelectionContext'
+import { pagePath } from '../utils/pagePath'
 import styles from './app.module.css'
 
 export const sectionsFromGame = (game: GameData | null): GameTreeSection[] => {
@@ -37,8 +38,9 @@ export const App: React.FC = (): React.JSX.Element => {
     })
   }
 
-  const handlePageCreate = (id: string, fileName: string): void => {
+  const handlePageCreate = (id: string): void => {
     if (!game) return
+    const fileName = pagePath(id)
     setGame({
       ...game,
       pages: {

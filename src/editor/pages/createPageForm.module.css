@@ -23,3 +23,7 @@
   align-self: flex-start;
   padding: 0.25rem 0.75rem;
 }
+
+.error {
+  color: red;
+}

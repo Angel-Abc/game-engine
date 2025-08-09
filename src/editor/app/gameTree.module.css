@@ -1,0 +1,18 @@
+.tree {
+  list-style: none;
+  padding-left: 0;
+}
+
+.tree ul {
+  list-style: none;
+  padding-left: 1rem;
+  margin-left: 0;
+}
+
+.node {
+  cursor: pointer;
+}
+
+.node:hover {
+  text-decoration: underline;
+}

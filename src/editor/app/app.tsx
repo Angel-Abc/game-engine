@@ -1,27 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { GameTree } from './gameTree'
 import { GameEditor } from './gameEditor'
 import { CreatePageForm } from '../pages/createPageForm'
 import { PageEditor } from '../pages/pageEditor'
-import { useGameData } from '../hooks/useGameData'
-import type { GameData } from '../types'
+import { useGameData } from '../context/GameDataContext'
+import { useSelection } from '../context/SelectionContext'
 import styles from './app.module.css'
 
 export const App: React.FC = (): React.JSX.Element => {
-  const fetchedGame = useGameData()
-  const [game, setGame] = useState<GameData | null>(null)
-  const [selected, setSelected] = useState<string | null>(null)
-  const [status, setStatus] = useState('idle')
-
-  useEffect(() => {
-    if (fetchedGame) {
-      setGame(fetchedGame)
-    }
-  }, [fetchedGame])
-
-  const handleSave = (): void => {
-    setStatus('saved')
-  }
+  const { game, setGame, status, saveGame } = useGameData()
+  const { selected } = useSelection()
 
   const handlePageApply = (page: unknown): void => {
     if (!game || !selected?.startsWith('pages/')) return
@@ -50,12 +38,12 @@ export const App: React.FC = (): React.JSX.Element => {
     <div className={styles.app}>
       <div className={styles.main}>
         <div className={styles.sidebar}>
-          <GameTree game={game} onSelect={setSelected} />
+          <GameTree game={game} />
         </div>
         <div className={styles.content}>
           <div className={styles.header}>
             <span>Status: {status}</span>
-            <button onClick={handleSave}>Save</button>
+            <button onClick={saveGame}>Save</button>
           </div>
           {selected === 'root' && game ? <GameEditor game={game} /> : null}
           {selected === 'pages' ? (

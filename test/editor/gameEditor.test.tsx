@@ -59,7 +59,9 @@ describe('GameEditor', () => {
     const propsKey = Object.keys(textarea).find((k) =>
       k.startsWith('__reactProps'),
     ) as string
-    const props = (textarea as unknown as Record<string, any>)[propsKey]
+    const props = (textarea as unknown as Record<string, unknown>)[propsKey] as {
+      onChange: (e: { target: { value: string } }) => void
+    }
     act(() => {
       props.onChange({ target: { value: 'New' } })
     })

@@ -43,6 +43,6 @@ The create page form includes a **Create** button below the fields.
 
 Choosing a page from the sidebar opens a visual editor. It provides separate
 fields for the page **id**, **inputs**, and **screen**. The **Id** field is a
-text input, while **Inputs** and **Screen** accept JSON and validate against the
-same schemas used by the game loader. Use **Apply** to save changes or
-**Cancel** to discard them.
+text input, while **Inputs** and **Screen** rely on a shared `JsonEditor`
+component to accept JSON and validate against the same schemas used by the game
+loader. Use **Apply** to save changes or **Cancel** to discard them.

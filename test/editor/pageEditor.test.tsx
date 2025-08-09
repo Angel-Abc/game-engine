@@ -13,7 +13,7 @@ describe('PageEditor', () => {
 
     await act(async () => {
       createRoot(container).render(
-        <PageEditor id="test" data={{ foo: 'bar' }} fetcher={fetcher} />,
+        <PageEditor data={{ foo: 'bar' }} />,
       )
     })
 

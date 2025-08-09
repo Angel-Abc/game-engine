@@ -17,20 +17,19 @@ export const App: React.FC = (): React.JSX.Element => {
 
   return (
     <div className={styles.app}>
-      <div className={styles.header}>
-        <span>Status: {status}</span>
-        <button onClick={handleSave}>Save</button>
-      </div>
       <div className={styles.main}>
         <div className={styles.sidebar}>
           <GameTree game={game} onSelect={setSelected} />
         </div>
         <div className={styles.content}>
+          <div className={styles.header}>
+            <span>Status: {status}</span>
+            <button onClick={handleSave}>Save</button>
+          </div>
           {selected === 'root' && game ? <GameEditor game={game} /> : null}
           {selected === 'pages' ? <CreatePageForm /> : null}
           {selected?.startsWith('pages/') && game ? (
             <PageEditor
-              id={selected.split('/')[1]}
               data={game.pages?.[selected.split('/')[1]]}
             />
           ) : null}

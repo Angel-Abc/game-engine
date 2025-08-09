@@ -38,7 +38,14 @@ export const GameTree: React.FC<{ game: GameData | null; onSelect: (node: string
               </span>
               <ul>
                 {section.items.map((item) => (
-                  <li key={item}>{item}</li>
+                  <li key={item}>
+                    <span
+                      onClick={() => onSelect(`${section.name}/${item}`)}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      {item}
+                    </span>
+                  </li>
                 ))}
               </ul>
             </li>

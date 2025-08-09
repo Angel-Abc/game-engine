@@ -1,16 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { GameTree } from './gameTree'
-import type { GameData } from '../types'
+import { useGameData } from '../hooks/useGameData'
 
 export const App: React.FC = (): React.JSX.Element => {
-  const [game, setGame] = useState<GameData | null>(null)
-
-  useEffect(() => {
-    fetch('/api/game')
-      .then((res) => res.json())
-      .then((data) => setGame(data))
-      .catch(() => setGame(null))
-  }, [])
+  const game = useGameData()
 
   return (
     <div style={{ display: 'flex', height: '100vh' }}>

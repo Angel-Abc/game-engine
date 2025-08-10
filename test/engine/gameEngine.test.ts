@@ -6,24 +6,22 @@ import { PostMessageActionHandler } from '@engine/actions/postMessageActionHandl
 
 function createEngine() {
   const loader = {
-    Game: {
-      initialData: {
-        language: 'en',
-        startPage: 'start',
+    gameLoader: {
+      Game: {
+        initialData: {
+          language: 'en',
+          startPage: 'start'
+        },
         handlers: []
       }
     },
+    handlerLoader: {} as any,
+    tileLoader: {} as any,
+    dialogLoader: {} as any,
+    inputLoader: {} as any,
     pageLoader: {} as any,
     mapLoader: {} as any,
-    languageLoader: { loadLanguage: vi.fn(), reset: vi.fn() },
-    loadRoot: vi.fn(),
-    reset: vi.fn(),
-    loadHandlers: vi.fn(),
-    loadTileSet: vi.fn(),
-    loadDialog: vi.fn(),
-    loadVirtualKeys: vi.fn(),
-    loadVirtualInputs: vi.fn(),
-    Styling: []
+    languageLoader: { loadLanguage: vi.fn(), reset: vi.fn() }
   } as unknown as Loader
   const factory: IEngineManagerFactory = {
     createPageManager: (messageBus, stateManager, pageLoader, setIsLoading, setIsRunning) => {

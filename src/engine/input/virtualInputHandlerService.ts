@@ -1,6 +1,6 @@
 import { VirtualInputHandler, type IVirtualInputHandler, type VirtualInputHandlerServices } from './virtualInputHandler'
 import type { IMessageBus } from '@utils/messageBus'
-import type { IGameLoader } from '@loader/loader'
+import type { IGameLoader } from '@loader/gameLoader'
 import type { IInputLoader } from '@loader/inputsLoader'
 import { DocumentKeyboardEventTarget, TestKeyboardEventTarget } from './keyboardEventTarget'
 

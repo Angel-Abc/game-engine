@@ -3,7 +3,7 @@ import type { Page as PageData } from './data/page'
 import { type Page, pageSchema } from './schema/page'
 import { mapPage } from './mappers/page'
 import { fatalError } from '@utils/logMessage'
-import type { IGameLoader } from './loader'
+import type { IGameLoader } from './gameLoader'
 
 export interface IPageLoader {
     loadPage(page: string): Promise<PageData>

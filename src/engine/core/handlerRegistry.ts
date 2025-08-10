@@ -1,6 +1,7 @@
 import { fatalError } from '@utils/logMessage'
 import type { IMessageBus } from '@utils/messageBus'
-import type { IGameLoader, IHandlerLoader } from '@loader/loader'
+import type { IGameLoader } from '@loader/gameLoader'
+import type { IHandlerLoader } from '@loader/handlerLoader'
 import type { Handler } from '@loader/data/handler'
 import type { IActionHandler } from '../actions/actionHandler'
 import type { IConditionResolver } from '../conditions/conditionResolver'

@@ -3,7 +3,7 @@ import { fatalError, logWarning } from '@utils/logMessage'
 import { languageSchema, type Language } from './schema/language'
 import type { Language as LanguageData } from './data/language'
 import { mapLanguage } from './mappers/language'
-import type { IGameLoader } from './loader'
+import type { IGameLoader } from './gameLoader'
 
 export interface ILanguageLoader {
     loadLanguage(language: string): Promise<LanguageData>

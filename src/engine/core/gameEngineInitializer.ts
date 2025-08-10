@@ -1,5 +1,5 @@
 import { Loader } from '@loader/loader'
-import type { IGameLoader } from '@loader/loader'
+import type { IGameLoader } from '@loader/gameLoader'
 import type { IPageLoader } from '@loader/pageLoader'
 import type { IMapLoader } from '@loader/mapLoader'
 import type { ITileLoader } from '@loader/tileLoader'
@@ -123,7 +123,7 @@ export class GameEngineInitializer {
         const messageBus: IMessageBus = new MessageBus(messageQueue)
 
         const contextData: ContextData = {
-            language: loader.Game.initialData.language,
+            language: loader.gameLoader.Game.initialData.language,
             pages: {},
             maps: {},
             tileSets: {},
@@ -162,13 +162,13 @@ export class GameEngineInitializer {
             messageBus,
             stateManager,
             loader.mapLoader,
-            loader,
+            loader.tileLoader,
             translationService,
             executeAction,
             setIsLoading,
             setIsRunning
         )
-        const virtualInputHandler = factory.createVirtualInputHandler(loader, loader, messageBus)
+        const virtualInputHandler = factory.createVirtualInputHandler(loader.gameLoader, loader.inputLoader, messageBus)
         const inputManager = factory.createInputManager(
             messageBus,
             stateManager,
@@ -182,15 +182,15 @@ export class GameEngineInitializer {
             messageBus,
             stateManager,
             translationService,
-            loader,
+            loader.dialogLoader,
             setIsLoading,
             setIsRunning,
             resolveCondition
         )
         const lifecycleManager = new LifecycleManager({
-            gameLoader: loader,
+            gameLoader: loader.gameLoader,
             languageLoader: loader.languageLoader,
-            handlerLoader: loader,
+            handlerLoader: loader.handlerLoader,
             messageBus,
             stateManager,
             translationService,

@@ -3,7 +3,7 @@ import type { GameMap as MapData } from './data/map'
 import { squaresMapSchema, type SquaresMap as SchemaSquaresMap } from './schema/map'
 import { mapGameMap } from './mappers/map'
 import { fatalError } from '@utils/logMessage'
-import type { IGameLoader } from './loader'
+import type { IGameLoader } from './gameLoader'
 
 export interface IMapLoader {
     loadMap(id: string): Promise<MapData>

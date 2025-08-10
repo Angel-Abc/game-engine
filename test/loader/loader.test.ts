@@ -102,7 +102,7 @@ describe('Loader', () => {
     globalThis.fetch = fetchMock as any
 
     const loader = new Loader('/data')
-    await loader.loadRoot()
+    await loader.gameLoader.loadRoot()
 
     const first = await loader.pageLoader.loadPage('page1')
     const second = await loader.pageLoader.loadPage('page1')
@@ -123,7 +123,7 @@ describe('Loader', () => {
     globalThis.fetch = fetchMock as any
 
     const loader = new Loader('/data')
-    await loader.loadRoot()
+    await loader.gameLoader.loadRoot()
 
     await expect(loader.pageLoader.loadPage('missing')).rejects.toThrow()
   })
@@ -141,7 +141,7 @@ describe('Loader', () => {
     globalThis.fetch = fetchMock as any
 
     const loader = new Loader('/data')
-    await loader.loadRoot()
+    await loader.gameLoader.loadRoot()
 
     const first = await loader.languageLoader.loadLanguage('en')
     const second = await loader.languageLoader.loadLanguage('en')
@@ -165,10 +165,10 @@ describe('Loader', () => {
     globalThis.fetch = fetchMock as any
 
     const loader = new Loader('/data')
-    await loader.loadRoot()
+    await loader.gameLoader.loadRoot()
 
-    const first = await loader.loadHandlers('handlers.json')
-    const second = await loader.loadHandlers('handlers.json')
+    const first = await loader.handlerLoader.loadHandlers('handlers.json')
+    const second = await loader.handlerLoader.loadHandlers('handlers.json')
 
     expect(first).toEqual(handlersData)
     expect(second).toBe(first)
@@ -189,10 +189,10 @@ describe('Loader', () => {
     globalThis.fetch = fetchMock as any
 
     const loader = new Loader('/data')
-    await loader.loadRoot()
+    await loader.gameLoader.loadRoot()
 
-    const first = await loader.loadTileSet('outdoor')
-    const second = await loader.loadTileSet('outdoor')
+    const first = await loader.tileLoader.loadTileSet('outdoor')
+    const second = await loader.tileLoader.loadTileSet('outdoor')
 
     expect(first).toEqual(tileSetData)
     expect(second).toBe(first)
@@ -213,7 +213,7 @@ describe('Loader', () => {
     globalThis.fetch = fetchMock as any
 
     const loader = new Loader('/data')
-    await loader.loadRoot()
+    await loader.gameLoader.loadRoot()
 
     const first = await loader.mapLoader.loadMap('start')
     const second = await loader.mapLoader.loadMap('start')
@@ -237,10 +237,10 @@ describe('Loader', () => {
     globalThis.fetch = fetchMock as any
 
     const loader = new Loader('/data')
-    await loader.loadRoot()
+    await loader.gameLoader.loadRoot()
 
-    const first = await loader.loadVirtualKeys('virtual-keys.json')
-    const second = await loader.loadVirtualKeys('virtual-keys.json')
+    const first = await loader.inputLoader.loadVirtualKeys('virtual-keys.json')
+    const second = await loader.inputLoader.loadVirtualKeys('virtual-keys.json')
 
     expect(first).toEqual(virtualKeysData)
     expect(second).toBe(first)
@@ -261,10 +261,10 @@ describe('Loader', () => {
     globalThis.fetch = fetchMock as any
 
     const loader = new Loader('/data')
-    await loader.loadRoot()
+    await loader.gameLoader.loadRoot()
 
-    const first = await loader.loadVirtualInputs('virtual-inputs.json')
-    const second = await loader.loadVirtualInputs('virtual-inputs.json')
+    const first = await loader.inputLoader.loadVirtualInputs('virtual-inputs.json')
+    const second = await loader.inputLoader.loadVirtualInputs('virtual-inputs.json')
 
     expect(first).toEqual(virtualInputsData)
     expect(second).toBe(first)

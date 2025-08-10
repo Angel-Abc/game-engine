@@ -11,15 +11,37 @@ import { mapVirtualInputs, mapVirtualKeys } from './mappers/input'
 export interface IInputLoader {
     loadVirtualKeys(path: string): Promise<VirtualKeys>
     loadVirtualInputs(path: string): Promise<VirtualInputs>
+    reset(): void
 }
 
-export async function virtualKeysLoader(basePath: string, path: string): Promise<VirtualKeys> {
-    const schemaData = await loadJsonResource<SchemaVirtualKeys>(`${basePath}/${path}`, virtualKeysSchema)
-    return mapVirtualKeys(schemaData)
-}
+export class InputLoader implements IInputLoader {
+    private basePath: string
+    private virtualKeysCache: Map<string, VirtualKeys> = new Map()
+    private virtualInputsCache: Map<string, VirtualInputs> = new Map()
 
-export async function virtualInputsLoader(basePath: string, path: string): Promise<VirtualInputs> {
-    const schemaData = await loadJsonResource<SchemaVirtualInputs>(`${basePath}/${path}`, virtualInputsSchema)
-    return mapVirtualInputs(schemaData)
+    constructor(basePath: string) {
+        this.basePath = basePath
+    }
+
+    public reset(): void {
+        this.virtualKeysCache.clear()
+        this.virtualInputsCache.clear()
+    }
+
+    public async loadVirtualKeys(path: string): Promise<VirtualKeys> {
+        if (this.virtualKeysCache.has(path)) return this.virtualKeysCache.get(path)!
+        const schemaData = await loadJsonResource<SchemaVirtualKeys>(`${this.basePath}/${path}`, virtualKeysSchema)
+        const data = mapVirtualKeys(schemaData)
+        this.virtualKeysCache.set(path, data)
+        return data
+    }
+
+    public async loadVirtualInputs(path: string): Promise<VirtualInputs> {
+        if (this.virtualInputsCache.has(path)) return this.virtualInputsCache.get(path)!
+        const schemaData = await loadJsonResource<SchemaVirtualInputs>(`${this.basePath}/${path}`, virtualInputsSchema)
+        const data = mapVirtualInputs(schemaData)
+        this.virtualInputsCache.set(path, data)
+        return data
+    }
 }
 

@@ -2,7 +2,7 @@ import type { VirtualInput, VirtualKey } from '@loader/data/inputs'
 import { logDebug } from '@utils/logMessage'
 import { VIRTUAL_INPUT_MESSAGE } from '../messages/messages'
 import type { IInputLoader } from '@loader/inputsLoader'
-import type { IGameLoader } from '@loader/loader'
+import type { IGameLoader } from '@loader/gameLoader'
 import type { IMessageBus } from '@utils/messageBus'
 import type { KeyboardEventTarget } from './keyboardEventTarget'
 

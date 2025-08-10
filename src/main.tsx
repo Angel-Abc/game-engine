@@ -30,11 +30,11 @@ import './style/game.css'
 logDebug('Main', 'Application starting ...')
 
 const loader = new Loader()
-await loader.loadRoot()
+await loader.gameLoader.loadRoot()
 
 // add css files to the header
 // this is only done once
-loader.Styling.forEach(css => {
+loader.gameLoader.Styling.forEach(css => {
   const link = document.createElement('link')
   link.rel = 'stylesheet'
   link.href = css

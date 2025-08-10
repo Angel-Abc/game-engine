@@ -5,7 +5,7 @@ import type { IMessageBus } from '@utils/messageBus'
 import type { IStateManager } from '../core/stateManager'
 import type { ContextData } from '../core/context'
 import { PAGE_SWITCHED_MESSAGE, SWITCH_PAGE_MESSAGE } from '../messages/messages'
-import { EventHandlerManager } from '@engine/common/eventHandlerManager'
+import { MessageDrivenManager } from '@engine/common/messageDrivenManager'
 
 export interface IPageManager {
     initialize(): void
@@ -21,25 +21,20 @@ export type PageManagerServices = {
     setIsRunning: () => void
 }
 
-export class PageManager implements IPageManager {
+export class PageManager extends MessageDrivenManager implements IPageManager {
     private services: PageManagerServices
-    private eventHandlerManager = new EventHandlerManager()
 
     constructor(services: PageManagerServices) {
+        super()
         this.services = services
     }
 
     public initialize(): void {
-        this.eventHandlerManager.addListener(
-            this.services.messageBus.registerMessageListener(
-                SWITCH_PAGE_MESSAGE,
-                async (message) => this.switchPage(message.payload as string)
-            )
+        this.registerMessageListener(
+            this.services.messageBus,
+            SWITCH_PAGE_MESSAGE,
+            async (message) => this.switchPage(message.payload as string)
         )
-    }
-
-    public cleanup(): void {
-        this.eventHandlerManager.clearListeners()
     }
 
     public async switchPage(page: string): Promise<void> {

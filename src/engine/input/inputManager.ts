@@ -4,7 +4,7 @@ import type { Action, BaseAction } from '@loader/data/action'
 import type { Message } from '@utils/types'
 import { InputSourceTracker } from './inputSourceTracker'
 import { InputMatrixBuilder, type MatrixInputItem } from './inputMatrixBuilder'
-import { EventHandlerManager } from '@engine/common/eventHandlerManager'
+import { MessageDrivenManager } from '@engine/common/messageDrivenManager'
 
 export type { MatrixInputItem } from './inputMatrixBuilder'
 export { nullMatrixInputItem } from './inputMatrixBuilder'
@@ -23,25 +23,20 @@ export type InputManagerServices = {
     executeAction: <T extends BaseAction = Action>(action: T, message?: Message, data?: unknown) => void
 }
 
-export class InputManager implements IInputManager {
+export class InputManager extends MessageDrivenManager implements IInputManager {
     private services: InputManagerServices
-    private eventHandlerManager = new EventHandlerManager()
 
     constructor(services: InputManagerServices) {
+        super()
         this.services = services
     }
 
     public initialize(): void {
-        this.eventHandlerManager.addListener(
-            this.services.messageBus.registerMessageListener(
-                VIRTUAL_INPUT_MESSAGE,
-                (message) => this.onInput(message.payload as string)
-            )
+        this.registerMessageListener(
+            this.services.messageBus,
+            VIRTUAL_INPUT_MESSAGE,
+            (message) => this.onInput(message.payload as string)
         )
-    }
-
-    public cleanup(): void {
-        this.eventHandlerManager.clearListeners()
     }
 
     public update(): void {

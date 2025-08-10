@@ -7,7 +7,7 @@ import type { IDialogLoader } from '@loader/dialogLoader'
 import { loadOnce } from '@utils/loadOnce'
 import { trueCondition, type Condition } from '@loader/data/condition'
 import type { ITranslationService } from './translationService'
-import { EventHandlerManager } from '@engine/common/eventHandlerManager'
+import { MessageDrivenManager } from '@engine/common/messageDrivenManager'
 
 export interface IDialogManager {
     initialize(): void
@@ -24,31 +24,25 @@ export type DialogManagerServices = {
     resolveCondition: (condition: Condition | null) => boolean
 }
 
-export class DialogManager implements IDialogManager {
+export class DialogManager extends MessageDrivenManager implements IDialogManager {
     private services: DialogManagerServices
-    private eventHandlerManager = new EventHandlerManager()
 
     constructor(services: DialogManagerServices) {
+        super()
         this.services = services
     }
 
     public initialize(): void {
-        this.eventHandlerManager.addListener(
-            this.services.messageBus.registerMessageListener(
-                DIALOG_START_DIALOG,
-                async (message) => this.startDialog(message.payload as string)
-            )
+        this.registerMessageListener(
+            this.services.messageBus,
+            DIALOG_START_DIALOG,
+            async (message) => this.startDialog(message.payload as string)
         )
-        this.eventHandlerManager.addListener(
-            this.services.messageBus.registerMessageListener(
-                DIALOG_SHOW_DIALOG,
-                async (message) => this.showDialog(message.payload as string)
-            )
+        this.registerMessageListener(
+            this.services.messageBus,
+            DIALOG_SHOW_DIALOG,
+            async (message) => this.showDialog(message.payload as string)
         )
-    }
-
-    public cleanup(): void {
-        this.eventHandlerManager.clearListeners()
     }
 
     private async startDialog(dialogSetId: string): Promise<void> {

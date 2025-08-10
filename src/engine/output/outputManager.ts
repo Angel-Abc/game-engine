@@ -1,6 +1,6 @@
 import type { IMessageBus } from '@utils/messageBus'
 import { ADD_LINE_TO_OUTPUT_LOG, FINALIZE_END_TURN_MESSAGE, OUTPUT_LOG_LINE_ADDED } from '../messages/messages'
-import { EventHandlerManager } from '@engine/common/eventHandlerManager'
+import { MessageDrivenManager } from '@engine/common/messageDrivenManager'
 
 export interface IOutputManager {
     initialize(): void
@@ -12,34 +12,32 @@ export type OutputManagerServices = {
     messageBus: IMessageBus
 }
 
-export class OutputManager implements IOutputManager {
+export class OutputManager extends MessageDrivenManager implements IOutputManager {
     private services: OutputManagerServices
-    private eventHandlerManager = new EventHandlerManager()
     private outputLogLines: string[] = []
     private currentMaxSize: number = 0
     private needsNewDayLine: boolean = false
 
     constructor(services: OutputManagerServices) {
+        super()
         this.services = services
     }
 
     public initialize(): void {
-        this.eventHandlerManager.addListener(
-            this.services.messageBus.registerMessageListener(
-                ADD_LINE_TO_OUTPUT_LOG,
-                (message) => this.addLine(message.payload as string)
-            )
+        this.registerMessageListener(
+            this.services.messageBus,
+            ADD_LINE_TO_OUTPUT_LOG,
+            (message) => this.addLine(message.payload as string)
         )
-        this.eventHandlerManager.addListener(
-            this.services.messageBus.registerMessageListener(
-                FINALIZE_END_TURN_MESSAGE,
-                () => { this.needsNewDayLine = true }
-            )
+        this.registerMessageListener(
+            this.services.messageBus,
+            FINALIZE_END_TURN_MESSAGE,
+            () => { this.needsNewDayLine = true }
         )
     }
 
     public cleanup(): void {
-        this.eventHandlerManager.clearListeners()
+        super.cleanup()
         this.outputLogLines = []
     }
 

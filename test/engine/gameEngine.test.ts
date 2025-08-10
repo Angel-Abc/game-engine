@@ -1,10 +1,10 @@
 import { describe, it, expect, vi } from 'vitest'
-import { type IEngineManagerFactory, GameEngineInitializer } from '@engine/core/gameEngineInitializer'
+import { type IEngineManagerFactory, GameEngineInitializer, type DependencyOverrides } from '@engine/core/gameEngineInitializer'
 import type { Action } from '@loader/data/action'
 import type { Loader } from '@loader/loader'
 import { PostMessageActionHandler } from '@engine/actions/postMessageActionHandler'
 
-function createEngine() {
+function createEngine(overrides?: DependencyOverrides) {
   const loader = {
     gameLoader: {
       Game: {
@@ -76,7 +76,8 @@ function createEngine() {
     createScriptRunner: () => ({ run: vi.fn() }) as any
   }
   const engine = GameEngineInitializer.initialize(loader, factory, {
-    actionHandlers: [new PostMessageActionHandler()]
+    actionHandlers: [new PostMessageActionHandler()],
+    dependencies: overrides
   })
   const bus = engine.MessageBus as any
   vi.spyOn(bus, 'postMessage')
@@ -94,5 +95,16 @@ describe('GameEngine.executeAction', () => {
       message: 'TEST.MSG',
       payload: { a: 1 }
     })
+  })
+
+  it('allows dependency overrides', () => {
+    const customBus = {
+      postMessage: vi.fn(),
+      registerMessageListener: vi.fn(),
+      registerNotificationMessage: vi.fn(),
+      shutDown: vi.fn()
+    }
+    const { engine } = createEngine({ messageBus: customBus as any })
+    expect(engine.MessageBus).toBe(customBus)
   })
 })
